@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                template="./../../template/form.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="Navagador">
+        <a class="current">ConfiguraÃ§Ã£o</a>
+        <div class="breadcrumb_divider"></div> 
+        <a class="current">Etapas do Fluxo</a>
+    </ui:define>
+
+    <ui:define name="Titulo">
+        <h2>Etapas do Fluxo</h2>
+    </ui:define>
+
+    <ui:define name="Conteudo">
+        <h:form id="frmPesquisa">
+            <fieldset id="DescricaoPesquisaField">
+                <label id="DescricaoPesquisaLabel">DescriÃ§Ã£o</label>
+                <h:inputText id="DescricaoPesquisaInput" />
+            </fieldset>
+            <p:commandButton id="btnPesquisar" value="Pesquisar" type="button" />
+            <p:commandButton id="btnLimparPesquisa" value="Limpar" type="button" />
+        </h:form>
+        <div class="spacer"></div>
+        <div class="width_full_border">
+            <header>
+                <h3 class="tabs_involved">Listagem de Etapas</h3>
+                <ul>
+                    <h:form>
+                        <h:commandLink id="btnNovo" styleClass="btn_new" onclick="modalPopup.show(); return false;" value="Novo" />
+                    </h:form>
+                </ul>
+            </header>
+            <div id="tab1" class="tab_content">
+                <table class="tablesorter" cellspacing="0"> 
+                    <thead> 
+                        <tr> 
+                            <th width="50px">Ações</th>
+                            <th>Código</th>
+                            <th>Descrição</th> 
+                            <th>Ativo</th>
+                        </tr> 
+                    </thead> 
+                    <tbody> 
+                        <tr> 
+                            <td width="50px"> 
+                                <h:graphicImage alt="Editar" url="/images/icn_edit.png" style="margin-right: 10px;" />
+                                <h:graphicImage alt="Excluir" url="/images/icn_trash.png" />
+                            </td>
+                            <td>10</td>
+                            <td>Preparar para pintura</td> 
+                            <td>Sim</td>
+                        </tr> 
+                        <tr> 
+                            <td width="50px"> 
+                                <h:graphicImage alt="Editar" url="/images/icn_edit.png" style="margin-right: 10px;" />
+                                <h:graphicImage alt="Excluir" url="/images/icn_trash.png" />
+                            </td>
+                            <td>12</td>
+                            <td>Tirar a mecânica</td> 
+                            <td>Não</td>
+                        </tr> 
+                    </tbody> 
+                </table>
+            </div>
+        </div>
+
+        <p:dialog widgetVar="modalPopup" modal="true" height="550" width="750" header="Cadastro de Etapa" >
+            <h:form id="frmCadastro"> 
+                <fieldset id="DescricaoField">
+                    <label id="DecricaoLabel">Descrição *</label>
+                    <h:inputText id="DescricaoText" required="true" />
+                </fieldset>
+                <fieldset id="SetorField" style="width: 260px; float: left;">
+                    <label id="SetorLabel">Setor *</label>
+                    <h:selectOneMenu id="SetorListBox" value="#{subscriptionController.subscriptions}">
+                        <f:selectItem itemLabel="Setor de Pintura" itemValue="1" />
+                    </h:selectOneMenu>
+                </fieldset>
+                <fieldset id="TipoServicoField" style="width: 260px; display: inline-block; margin-left: 19px;">
+                    <label id="TipoServicoLabel">Tipo de ServiÃ§o *</label>
+                    <h:selectOneMenu id="TipoServicoListBox" value="#{subscriptionController.subscriptions}">
+                        <f:selectItem itemLabel="Pintura" itemValue="1" />
+                    </h:selectOneMenu>
+                </fieldset>
+           
+                <fieldset id="ImagemField" >
+                    <p:fileUpload label="Imagem" wmode="simple" />
+                </fieldset>
+                <fieldset id="ConfigField">
+                    <h:selectBooleanCheckbox value="1" /> <b>Ativo</b> <br/>
+                    <h:selectBooleanCheckbox value="1" /> <b>Etapa de decisÃ£o</b> <br/>
+                    <h:selectBooleanCheckbox value="1" /> <b>Etapa automÃ¡tica</b> <br/>
+                    <h:selectBooleanCheckbox value="1" /> <b>Exibir para o cliente</b> <br/>
+                    <h:selectBooleanCheckbox value="1" /> <b>Notificar via e-mail ao iniciar</b> <br/>
+                    <h:selectBooleanCheckbox value="1" /> <b>Notificar via e-mail ao concluir</b>
+                </fieldset>
+                <div class="spacer"></div>
+                <h:panelGrid id="panelBotao" columns="4">  
+                    <p:commandButton id="btnSalvar" value="Salvar" />  
+                    <p:commandButton id="btnCancelar" value="Cancelar" />  
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+    <ui:define name="Rodape">
+    </ui:define>
+
+</ui:composition>

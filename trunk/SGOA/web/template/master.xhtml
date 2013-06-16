@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" >
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>SGOA - Sistema Gerenciador de Oficinas Automotiva</title>
+        <h:outputStylesheet name="layout.css" library="css" value="text/css" /> 
+        <h:outputScript library="primefaces" name="jquery/jquery.js"/>
+        <h:outputScript name="hideshow.js" library="js" />
+        <h:outputScript name="jquery.tablesorter.min.js" library="js" />
+        <h:outputScript name="jquery.equalHeight.js" library="js" />
+
+        <script type="text/javascript">
+                    jQuery(document).ready(function() { 
+                      jQuery(".tablesorter").tablesorter(); 
+                    });
+                   jQuery(document).ready(function() {
+                      //When page loads...
+                      jQuery(".tab_content").hide(); //Hide all content
+                      jQuery("ul.tabs li:first").addClass("active").show(); //Activate first tab
+                      jQuery(".tab_content:first").show(); //Show first tab content
+                      //On Click Event
+                      jQuery("ul.tabs li").click(function() {
+                          jQuery("ul.tabs li").removeClass("active"); //Remove any "active" class
+                          jQuery(this).addClass("active"); //Add "active" class to selected tab
+                          jQuery(".tab_content").hide(); //Hide all tab content
+
+                          var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
+                          jQuery(activeTab).fadeIn(); //Fade in the active ID content
+                          return false;
+                      });
+                   });
+        </script>
+        <script type="text/javascript">
+            jQuery(function(){
+                jQuery('.column').equalHeight();
+            });
+        </script>	
+    </h:head>
+
+    <h:body>
+
+        <header id="header">
+            <hgroup>
+                <h1 class="site_title">
+                    <h:link id="Logo" value="" outcome="/faces/index.xhtml" title="Página Inicial" >
+                        <h:graphicImage id="logoMaster" url="/images/Logo.png" width="184" height="50" style="margin-top: 5px;"/>
+                    </h:link>
+                </h1>
+                <h2 class="section_title">Sistema Gerenciador de Oficinas Automotiva</h2>
+                <div class="btn_view_site">
+                    <h:link id="btnSair" value="Sair" outcome="/faces/login.xhtml" title="Sair" />
+                </div>
+            </hgroup>
+        </header> 
+
+        <section id="secondary_bar">
+            <div class="user">
+                <p>Olá <h:link id="UsuarioLogado" value="Reimann" outcome="/faces/views/config/alterarsenha.xhtml" title="Alterar Senha" /></p>
+            </div>
+            <div class="breadcrumbs_container">
+                <article class="breadcrumbs">
+                    <h:link id="HomeNavegacao" value="SGOA" outcome="/faces/index.xhtml" title="Página Inicial" />
+                    <div class="breadcrumb_divider"></div> 
+                    <ui:insert name="Nav"></ui:insert>
+                </article>
+            </div>
+        </section>
+
+        <aside id="sidebar" class="column">
+            <h3>Tabelas Básicas</h3>
+            <ul class="toggle">
+                <li class="icn_view_users"><h:link id="CorMenu" value="Cores" outcome="/faces/views/cadastro/cor.xhtml" title="Cores" /></li>
+                <li class="icn_view_users"><h:link id="ClienteMenu" value="Clientes" outcome="/faces/views/cadastro/cliente.xhtml" title="Clientes" /></li>
+                <li class="icn_view_users"><h:link id="FuncionarioMenu" value="Funcionários" outcome="/faces/views/cadastro/funcionario.xhtml" title="Funcionários" /></li>
+                <li class="icn_view_users"><h:link id="MarcaMenu" value="Marcas" outcome="/faces/views/cadastro/marca.xhtml" title="Marcas" /></li>
+                <li class="icn_view_users"><h:link id="ModeloMenu" value="Modelos" outcome="/faces/views/cadastro/modelo.xhtml" title="Modelos" /></li>
+                <li class="icn_view_users"><h:link id="ProfissaoMenu" value="Profissões" outcome="/faces/views/cadastro/profissao.xhtml" title="Profissões" /></li>
+                <li class="icn_view_users"><h:link id="SetorMenu" value="Setores" outcome="/faces/views/cadastro/setor.xhtml" title="Setores" /></li>
+                <li class="icn_view_users"><h:link id="TipoServicoMenu" value="Tipos Serviço" outcome="/faces/views/cadastro/tiposervico.xhtml" title="Tipos Serviço" /></li>       
+            </ul>
+            <h3>Cadastro</h3>
+            <ul class="toggle">
+                <li class="icn_new_article"><h:link id="OrcamentoMenu" value="Orçamentos" outcome="/faces/views/cadastro/orcamento.xhtml" title="Orçamentos" /></li>
+                <li class="icn_new_article"><h:link id="MonitorarPatioMenu" value="Monitorar Pátio" outcome="/faces/views/cadastro/monitorar.xhtml" title="Monitorar Pátio" /></li>
+                <li class="icn_folder"><h:link id="ServicoMenu" value="Controle de Serviços" outcome="/faces/views/cadastro/servico.xhtml" title="Controle de Serviços" /></li>             
+            </ul>
+            <h3>Configuração</h3>
+            <ul class="toggle">
+                <li class="icn_photo"><h:link id="EtapaFluxoMenu" value="Etapas do Fluxo" outcome="/faces/views/config/etapa.xhtml" title="Etapas do Fluxo" /></li>
+                <li class="icn_photo"><h:link id="FluxoMenu" value="Fluxos de Trabalho" outcome="/faces/views/config/fluxo.xhtml" title="Fluxos de Trabalho" /></li>
+            </ul>
+            <footer>
+                <hr /> 
+            </footer>
+        </aside><!-- end of sidebar -->
+
+        <ui:insert name="Formulario" ></ui:insert>
+
+
+    </h:body>
+
+</html>
