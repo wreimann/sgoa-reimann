@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                template="./../../template/form.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="Navagador">
+        <a class="current">Configuração</a>
+        <div class="breadcrumb_divider"></div> 
+        <a class="current">Fluxos de Trabalho</a>
+    </ui:define>
+
+    <ui:define name="Titulo">
+        <h2>Fluxos de Trabalho</h2>
+    </ui:define>
+
+    <ui:define name="Conteudo">
+        <h:form id="frmPesquisa">
+            <fieldset id="DescricaoPesquisaField">
+                <label id="DescricaoPesquisaLabel">Descrição</label>
+                <h:inputText id="DescricaoPesquisaInput" />
+            </fieldset>
+            <p:commandButton id="btnPesquisar" value="Pesquisar" type="button" />
+            <p:commandButton id="btnLimparPesquisa" value="Limpar" type="button" />
+        </h:form>
+        <div class="spacer"></div>
+        <div class="width_full_border">
+            <header>
+                <h3 class="tabs_involved">Listagem de Fluxos de Trabalho</h3>
+                <ul>
+                    <h:form>
+                        <h:commandLink id="btnNovo" styleClass="btn_new" onclick="modalPopup.show(); return false;" value="Novo" />
+                    </h:form>
+                </ul>
+            </header>
+            <div id="tab1" class="tab_content">
+                <table class="tablesorter" cellspacing="0"> 
+                    <thead> 
+                        <tr> 
+                            <th width="50px">Ações</th>
+                            <th>Código</th>
+                            <th>Fluxo</th> 
+                            <th>Ativo</th>
+                        </tr> 
+                    </thead> 
+                    <tbody> 
+                        <tr> 
+                            <td width="50px"> 
+                                <h:graphicImage alt="Editar" url="/images/icn_edit.png" style="margin-right: 10px;" />
+                                <h:graphicImage alt="Excluir" url="/images/icn_trash.png" />
+                            </td>
+                            <td>10</td>
+                            <td>Serviços rápidos (Sem lataria)</td> 
+                            <td>Sim</td>
+                        </tr> 
+                        <tr> 
+                            <td width="50px"> 
+                                <h:graphicImage alt="Editar" url="/images/icn_edit.png" style="margin-right: 10px;" />
+                                <h:graphicImage alt="Excluir" url="/images/icn_trash.png" />
+                            </td>
+                            <td>12</td>
+                            <td>Serviço completo (lataria e pintura)</td> 
+                            <td>Não</td>
+                        </tr> 
+                    </tbody> 
+                </table>
+            </div>
+        </div>
+
+        <p:dialog widgetVar="modalPopup" modal="true" height="550" width="800" header="Cadastro de Fluxo de Trabalho" >
+            <h:form id="frmCadastro"> 
+                <fieldset id="DescricaoField">
+                    <label id="DescricaoLabel">Descrição *</label>
+                    <h:inputText id="DescricaoText" required="true" />
+                </fieldset>
+                <fieldset id="AtivoField">
+                    <h:selectBooleanCheckbox id="AtivoCheck"  value="1" /> <b>Ativo *</b>
+                </fieldset>
+                <fieldset id="DesenhoField">
+                    <label id="DesenhoLabel">Desenho do Fluxo</label>
+                    <div class="spacer"></div>
+
+                    <p:mindmap value="#{mindmapController.root}" style="width:750px; height:300px;margin-left: 5px;margin-right: 5px; border:1px solid black;">  
+                        <p:ajax event="select" oncomplete="etapa.show()" />  
+                        <p:ajax event="dblselect" oncomplete="etapa.show()"/>  
+                    </p:mindmap>  
+                </fieldset>
+                <p:dialog widgetVar="etapa" header="Nova Etapa" modal="true" height="320" width="450"  appendToBody="true">  
+                    <h:outputText id="output" value="#{mindmapController.selectedNode.data}" />  
+                    <fieldset id="EtapaField">
+                        <label id="EtapaLabel">Etapa</label>
+                        <h:selectOneMenu id="EtapaListBox" value="#{subscriptionController.subscriptions}">
+                            <f:selectItem itemLabel="Desmontar veículo" itemValue="1" />
+                        </h:selectOneMenu>
+                    </fieldset>
+                    <fieldset id="NotificarEmailField">
+                        <label id="NotificarEmailLabel">Notificar via e-mail</label>
+                        <br />
+                        <br/>
+                        <h:selectBooleanCheckbox value="1" /> <b>Cliente</b> <br/>
+                        <div>
+                        <h:selectBooleanCheckbox value="1" /> <b>E-mail específico</b>
+                        <h:inputText id="EmailEspecificoText" style="width: 265px; float: right; "/>
+                        </div>
+                    </fieldset>
+                    <fieldset id="ProximaEtapaField">
+                        <label id="ProximaEtapaLabel">Próxima Etapa *</label>
+                        <h:selectOneMenu id="ProximaEtapaListBox" value="#{subscriptionController.subscriptions}">
+                            <f:selectItem itemLabel="Fim" itemValue="1" />
+                        </h:selectOneMenu>
+                    </fieldset>
+                    <div class="spacer"></div>
+                    <h:panelGrid columns="4">  
+                        <p:commandButton id="btnSalvarEtapa" value="Salvar" />  
+                        <p:commandButton id="btnCancelarEtapa" value="Cancelar" onclick="etapa.show(); return false;" />  
+                    </h:panelGrid>
+                </p:dialog>  
+
+                <div class="spacer"></div>
+                <h:panelGrid columns="4">  
+                    <p:commandButton id="btnSalvar" value="Salvar" />  
+                    <p:commandButton id="btnCancelar" value="Cancelar" onclick="etapa.show(); return false;" />  
+
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+
+    </ui:define>
+
+    <ui:define name="Rodape">
+    </ui:define>
+
+</ui:composition>

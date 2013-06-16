@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+      template="./master.xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"  
+      xmlns:f="http://java.sun.com/jsf/core"  
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+   
+    <ui:define name="Nav">
+        <ui:insert name="Navagador" ></ui:insert>
+    </ui:define>
+
+    <ui:define name="Formulario">
+        <section id="main" class="column">
+            <article class="module width_full">
+                <header>
+                    <ui:insert name="Titulo" ></ui:insert>
+                </header>
+                <div class="module_content">
+                    <ui:insert name="Conteudo" ></ui:insert>
+                </div>
+                <footer>
+                    <ui:insert name="Rodape" ></ui:insert>
+                    <h4>*  campos obrigatórios</h4>
+                </footer>
+            </article>
+            <div class="spacer"></div>
+        </section>
+    </ui:define>
+
+</ui:composition>
