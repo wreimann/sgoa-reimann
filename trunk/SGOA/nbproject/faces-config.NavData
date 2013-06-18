@@ -4,18 +4,20 @@
     <Scope Scope="Project">
         <Node id="views/cadastro/marca.xhtml" x="650" y="150" zoom="true"/>
         <Node id="template/master.xhtml" x="1152" y="32" zoom="true"/>
+        <Node id="views/tabelasBasicas/marca.xhtml" x="650" y="450" zoom="true"/>
         <Node id="login.xhtml" x="3209" y="32" zoom="true"/>
         <Node id="template/form.xhtml" x="3442" y="32" zoom="true"/>
         <Node id="views/cadastro/orcamento.xhtml" x="150" y="150" zoom="true"/>
         <Node id="views/cadastro/profissao.xhtml" x="400" y="300" zoom="true"/>
         <Node id="views/cadastro/setor.xhtml" x="400" y="150" zoom="true"/>
-        <Node id="views/cadastro/funcionario.xhtml" x="150" y="600" zoom="true"/>
         <Node id="views/cadastro/modelo.xhtml" x="3728" y="32" zoom="true"/>
+        <Node id="views/cadastro/funcionario.xhtml" x="150" y="600" zoom="true"/>
         <Node id="views/cadastro/tiposervico.xhtml" x="900" y="150" zoom="true"/>
         <Node id="views/config/etapa.xhtml" x="150" y="450" zoom="true"/>
-        <Node id="index.xhtml" x="4066" y="32" zoom="true"/>
         <Node id="views/cadastro/servico.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id="index.xhtml" x="4066" y="32" zoom="true"/>
         <Node id="views/cadastro/cliente.xhtml" x="1780" y="32" zoom="true"/>
+        <Node id="views/tabelasBasicas/modelo.xhtml" x="400" y="600" zoom="true"/>
         <Node id="views/cadastro/monitorar.xhtml" x="650" y="300" zoom="true"/>
         <Node id="views/cadastro/cor.xhtml" x="150" y="300" zoom="true"/>
         <Node id="views/config/fluxo.xhtml" x="400" y="450" zoom="true"/>
