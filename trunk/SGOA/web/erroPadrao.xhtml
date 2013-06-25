@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>SGOA - Acesso Negado</title>
+        <h:outputStylesheet name="layout.css" library="css" value="text/css" /> 
+        <h:outputScript name="hideshow.js" library="js" />
+        <h:outputScript name="jquery.tablesorter.min.js" library="js" />
+        <h:outputScript name="jquery.equalHeight.js" library="js" />
+
+        <script type="text/javascript">
+                    jQuery(document).ready(function() { 
+                      jQuery(".tablesorter").tablesorter(); 
+                    });
+                   jQuery(document).ready(function() {
+                      //When page loads...
+                      jQuery(".tab_content").hide(); //Hide all content
+                      jQuery("ul.tabs li:first").addClass("active").show(); //Activate first tab
+                      jQuery(".tab_content:first").show(); //Show first tab content
+                      //On Click Event
+                      jQuery("ul.tabs li").click(function() {
+                          jQuery("ul.tabs li").removeClass("active"); //Remove any "active" class
+                          jQuery(this).addClass("active"); //Add "active" class to selected tab
+                          jQuery(".tab_content").hide(); //Hide all tab content
+
+                          var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
+                          jQuery(activeTab).fadeIn(); //Fade in the active ID content
+                          return false;
+                      });
+                   });
+        </script>
+        <script type="text/javascript">
+            jQuery(function(){
+                jQuery('.column').equalHeight();
+            });
+        </script>	
+    </h:head>
+    <h:body>
+        <header id="header">
+            <hgroup>
+                <h1 class="site_title">
+                    <h:form>
+                        <h:commandLink id="Logo" action="/index?faces-redirect=true" value="" title="Página Inicial">
+                            <h:graphicImage id="logoMaster" url="/images/Logo.png" width="135" height="54"/>   
+                        </h:commandLink>
+                    </h:form>
+                </h1>
+                <h2 class="section_title">Acesso Negado</h2>
+                <div class="btn_view_site">
+                    <h:form>
+                        <h:commandLink id="btnSair" action="/index?faces-redirect=true" value="Voltar" title="Voltar"/>
+
+                    </h:form>
+                </div>
+            </hgroup>
+        </header> 
+        <div align="center" style="margin-top: 150px;">
+            <div id="logo">
+                <h:form>
+
+                    <h:graphicImage id="logoProjeto" url="/images/alert.png" />
+
+                </h:form>
+                <h2>Acesso Negado !</h2>
+
+                
+            </div>
+
+
+        </div>
+
+    </h:body>
+</html>
+

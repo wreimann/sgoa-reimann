@@ -1,5 +1,3 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
                 template="./../../template/form.xhtml"
                 xmlns:p="http://primefaces.org/ui"
@@ -8,7 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="Navagador">
-        <a class="current">Cadastro</a>
+        <a class="current">Tabelas Básicas</a>
         <div class="breadcrumb_divider"></div> 
         <a class="current">Modelo</a>
     </ui:define>
@@ -20,13 +18,13 @@
     <ui:define name="Conteudo">
         <h:form id="frmPesquisa" prependId="false">
             <p:focus context="frmPesquisa"/> 
-            <fieldset id="FabricantePesquisaField">
-                <label id="FabricantePesquisaLabel">Fabricante</label>
-                <p:selectOneMenu value="#{modeloController.fabricanteFiltro}" 
-                                 converter="fabricanteConverter" styleClass="selectOneMenu" >
+            <fieldset id="MarcaPesquisaField">
+                <label id="MarcaPesquisaLabel">Marca</label>
+                <p:selectOneMenu value="#{modeloController.marcaFiltro}" 
+                                 converter="marcaConverter" styleClass="selectOneMenu" >
                     <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                    <f:selectItems value="#{modeloController.fabricantes}" var="fabricante" 
-                                   itemLabel="#{fabricante.descricao}" itemValue="#{fabricante}" />  
+                    <f:selectItems value="#{modeloController.marcas}" var="marca" 
+                                   itemLabel="#{marca.descricao}" itemValue="#{marca}" />  
                 </p:selectOneMenu> 
             </fieldset>
             <fieldset id="DescricalPesquisaField">
@@ -70,8 +68,8 @@
                     <h:outputText value="#{item.id}" />  
                 </p:column>  
 
-                <p:column sortBy="#{item.fabricante.descricao}" headerText="Fabricante">  
-                    <h:outputText value="#{item.fabricante.descricao}" />  
+                <p:column sortBy="#{item.marca.descricao}" headerText="Marca">  
+                    <h:outputText value="#{item.marca.descricao}" />  
                 </p:column>  
 
                 <p:column sortBy="#{item.descricao}" headerText="Descrição">  
@@ -103,14 +101,14 @@
             <p:messages id="growl" />
             <h:form id="frmCadastro" prependId="false" >                
                 <p:focus context="frmCadastro"/> 
-                <fieldset id="FabricanteField">
-                    <label id="FabricanteLabel">Fabricante *</label>
-                    <p:selectOneMenu id="FabricanteListBox" required="true" styleClass="selectOneMenu" 
-                                     requiredMessage="O campo 'Fabricante' é obrigatório." 
-                                     value="#{modeloController.fabricanteCadastro}" converter="fabricanteConverter">  
+                <fieldset id="MarcaField">
+                    <label id="MarcaLabel">Marca *</label>
+                    <p:selectOneMenu id="MarcaListBox" required="true" styleClass="selectOneMenu" 
+                                     requiredMessage="O campo 'Marca' é obrigatório." 
+                                     value="#{modeloController.marcaCadastro}" converter="marcaConverter">  
                         <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                        <f:selectItems value="#{modeloController.fabricantesAtivos}" var="fabricante" 
-                                       itemLabel="#{fabricante.descricao}" itemValue="#{fabricante}"/>  
+                        <f:selectItems value="#{modeloController.marcasAtivos}" var="marca" 
+                                       itemLabel="#{marca.descricao}" itemValue="#{marca}"/>  
                     </p:selectOneMenu> 
                 </fieldset>
                 <fieldset id="Descricao">
