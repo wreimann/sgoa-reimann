@@ -2,8 +2,9 @@
 <Scene Scope="Project" version="2">
     <Scope Scope="Faces Configuration Only"/>
     <Scope Scope="Project">
-        <Node id="views/cadastro/marca.xhtml" x="650" y="150" zoom="true"/>
         <Node id="template/master.xhtml" x="1152" y="32" zoom="true"/>
+        <Node id="erroPadrao.xhtml" x="150" y="750" zoom="true"/>
+        <Node id="views/cadastro/marca.xhtml" x="650" y="150" zoom="true"/>
         <Node id="views/tabelasBasicas/marca.xhtml" x="650" y="450" zoom="true"/>
         <Node id="login.xhtml" x="3209" y="32" zoom="true"/>
         <Node id="template/form.xhtml" x="3442" y="32" zoom="true"/>
