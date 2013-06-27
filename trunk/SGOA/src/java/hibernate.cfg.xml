@@ -7,7 +7,11 @@
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sgoa</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">root</property>
+    <mapping class="model.Cor"/>
     <mapping class="model.Marca"/>
     <mapping class="model.Modelo"/>
+    <mapping class="model.Profissao"/>
+    <mapping class="model.TipoServico"/>
+    <mapping class="model.Setor"/>
   </session-factory>
 </hibernate-configuration>
