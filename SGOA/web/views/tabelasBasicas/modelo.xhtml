@@ -42,7 +42,7 @@
                          paginator="true" paginatorPosition="bottom"  
                          emptyMessage="Nenhum resultado encontrado." 
                          rows="#{modeloController.pageSize}"
-                         currentPageReportTemplate="({currentPage} de {totalPages})"
+                         currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >  
                 <f:facet name="header">  
                     <div class="tabs_involved">
@@ -78,10 +78,7 @@
 
                 <p:column sortBy="#{item.ativo}" headerText="Ativo"  width="40">  
                     <h:selectBooleanCheckbox value="#{item.ativo}" disabled="true" />
-                </p:column>  
-                <f:facet name="footer">  
-                    <h:outputText style="text-align: right" value="Total de Registros: #{modeloController.lazyModel.rowCount}"/>  
-                </f:facet>  
+                </p:column>   
             </p:dataTable>
             <p:confirmDialog widgetVar="confirmDialog" 
                              message="Confirma a exclusão do modelo selecionado ?" 

@@ -10,11 +10,11 @@
     <ui:define name="Navagador">
         <a class="current">Tabelas Básicas</a>
         <div class="breadcrumb_divider"></div> 
-        <a class="current">Marcas</a>
+        <a class="current">Profissões</a>
     </ui:define>
 
     <ui:define name="Titulo">
-        <h2>Marcas</h2>
+        <h2>Profissões</h2>
     </ui:define>
 
     <ui:define name="Conteudo">
@@ -22,37 +22,37 @@
             <p:focus context="frmPesquisa"/> 
             <fieldset id="DescricalPesquisaField">
                 <label id="DescricaoLabel">Descrição</label>
-                <p:inputText id="DescricaoInput" value="#{marcaController.descFiltro}"/>
+                <p:inputText id="DescricaoInput" value="#{profissaoController.descFiltro}"/>
             </fieldset>
             <p:commandButton id="btnPesquisar" value="Pesquisar"  
                             update=":frmPesquisa" title="Pesquisar"/>
             <p:commandButton id="btnLimparPesquisa" value="Limpar" update=":frmPesquisa"
-                             action="#{marcaController.limparCampos}" />
+                             action="#{profissaoController.limparCampos}" />
             <p:messages id="messages" autoUpdate="true" closable="true" />  
             <div class="spacer"></div>
             <p:dataTable id="dataTable" var="item" 
-                         value="#{marcaController.lazyModel}" lazy="true" 
+                         value="#{profissaoController.lazyModel}" lazy="true" 
                          paginator="true" paginatorPosition="bottom"  
                          emptyMessage="Nenhum resultado encontrado."                   
-                         rows="#{marcaController.pageSize}"
+                         rows="#{profissaoController.pageSize}"
                          currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >  
                 <f:facet name="header">  
                     <div class="tabs_involved">
-                        <h:outputLabel value="Listagem de Marca" styleClass="tabs_involved" />
+                        <h:outputLabel value="Listagem de Profissão" styleClass="tabs_involved" />
                         <p:commandLink id="btnNovo" title="Novo"  styleClass="btn_new" 
                                        value="Novo" update=":frmCadastro, :growl" 
-                                       actionListener="#{marcaController.prepararInclusao}" 
+                                       actionListener="#{profissaoController.prepararInclusao}" 
                                        oncomplete="modalPopup.show()"/>
                     </div>
                 </f:facet>  
                 <p:column headerText="Ações" width="60">
-                    <p:commandButton actionListener="#{marcaController.prepararEdicao}" 
+                    <p:commandButton actionListener="#{profissaoController.prepararEdicao}" 
                                      alt="Editar" title="Editar" image="btn_editar"
                                      style="margin-right: 10px; margin-left: 10px"
                                      oncomplete="modalPopup.show()" update=":frmCadastro, :growl" />
 
-                    <p:commandButton actionListener="#{marcaController.prepararExclusao}"
+                    <p:commandButton actionListener="#{profissaoController.prepararExclusao}"
                                      title="Excluir" alt="Excluir"
                                      image="btn_excluir" 
                                      oncomplete="confirmDialog.show()"  />
@@ -67,14 +67,14 @@
 
                 <p:column sortBy="#{item.ativo}" headerText="Ativo"  width="40">  
                     <h:selectBooleanCheckbox value="#{item.ativo}" disabled="true" />
-                </p:column>   
+                </p:column>  
             </p:dataTable>
             <p:confirmDialog widgetVar="confirmDialog" 
-                             message="Confirma a exclusão da marca selecionado ?" 
+                             message="Confirma a exclusão da profissão selecionado ?" 
                              showEffect="slide" hideEffect="clip" severity="alert">  
 
                 <p:commandButton oncomplete="confirmDialog.hide()" update=":frmPesquisa"
-                                 actionListener="#{marcaController.excluir}" 
+                                 actionListener="#{profissaoController.excluir}" 
                                  value="Sim"/> 
                 <p:commandButton value="Não" onclick="confirmDialog.hide()"/>    
 
@@ -83,7 +83,7 @@
 
 
         <p:dialog widgetVar="modalPopup" modal="true" width="600" resizable="false"
-                  showEffect=" fade" header="Cadastro de Marca" id="dialog">
+                  showEffect=" fade" header="Cadastro de Profissão" id="dialog">
             <p:messages id="growl" for="DescricaoText" />
             <h:form id="frmCadastro" prependId="false" > 
                 <p:focus context="frmCadastro"/> 
@@ -91,17 +91,17 @@
                     <label id="DecricaoLabel">Descrição *</label>
                     <p:inputText id="DescricaoText" required="true" 
                                  requiredMessage="O campo 'Descrição' é obrigatório." 
-                                 value="#{marcaController.current.descricao}"  />                 
+                                 value="#{profissaoController.current.descricao}"  />                 
                 </fieldset>
                 <fieldset id="Ativo">
                     <h:selectBooleanCheckbox id="AtivoCheck" 
-                                             value="#{marcaController.current.ativo}" /> <b>Ativo *</b>
+                                             value="#{profissaoController.current.ativo}" /> <b>Ativo *</b>
                 </fieldset>
                 <div class="spacer"></div>
 
                 <p:commandButton id="btnSalvar" 
                                  oncomplete="validarFormDialog(xhr, status, args)"
-                                 actionListener="#{marcaController.salvar}" 
+                                 actionListener="#{profissaoController.salvar}" 
                                  update=":growl, :frmPesquisa" value="Salvar"/>
                 <p:commandButton id="btnCancelar" value="Cancelar" 
                                  oncomplete="fecharFormDialog()"
