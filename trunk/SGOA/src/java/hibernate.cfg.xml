@@ -13,5 +13,11 @@
     <mapping class="model.Profissao"/>
     <mapping class="model.TipoServico"/>
     <mapping class="model.Setor"/>
+    <mapping class="model.Cliente"/>
+    <mapping class="model.Pessoa"/>
+    <mapping class="model.PessoaEndereco"/>
+    <mapping class="model.PessoaFisica"/>
+    <mapping class="model.PessoaJuridica"/>
+    <mapping class="model.Veiculo"/>
   </session-factory>
 </hibernate-configuration>

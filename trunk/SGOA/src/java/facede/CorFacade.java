@@ -56,4 +56,5 @@ public class CorFacade extends BaseFacade<Cor> {
         List<Cor> lista = c.list();
         return lista;
     }
+
 }
