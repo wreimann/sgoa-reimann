@@ -13,18 +13,16 @@ import javax.validation.constraints.Size;
 @Table(name = "pessoajuridica")
 @DiscriminatorValue(value = "J")
 public class PessoaJuridica extends Pessoa {
+    
+    public PessoaJuridica() {
+       super();
+    }
 
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 18)
     @Column(name = "CNPJ")
-    private String cnpj;
-
-    public PessoaJuridica() {
-        if (super.getEnderecos() == null) {
-            super.setEnderecos(new ArrayList<PessoaEndereco>());
-        }
-    }
+    private String cnpj;  
 
     public String getCnpj() {
         return cnpj;

@@ -1,4 +1,5 @@
 package model;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -23,6 +24,9 @@ public class Cliente extends BaseEntidadeAtivo<Cliente> {
 
      public Cliente() {
         pessoa = new Pessoa();
+         if (veiculos == null) {
+            veiculos = new ArrayList<Veiculo>();
+        }
     }
     
     @ManyToOne(optional = false, fetch = FetchType.EAGER)

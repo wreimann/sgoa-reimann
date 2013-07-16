@@ -6,18 +6,28 @@ import facede.MarcaFacade;
 import facede.ModeloFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.ArrayDataModel;
+import javax.faces.model.DataModel;
 import javax.validation.ConstraintViolationException;
 import model.Cliente;
 import model.Cor;
 import model.Marca;
 import model.Modelo;
+import model.Pessoa;
+import model.PessoaEndereco;
+import model.PessoaFisica;
+import model.PessoaJuridica;
 import model.Veiculo;
 import org.hibernate.Session;
 import org.primefaces.model.LazyDataModel;
@@ -54,28 +64,25 @@ public class ClienteController implements Serializable {
         this.placaFiltro = placaFiltro;
     }
     //propriedades cadastro
+    private PessoaEndereco enderecoAux;
     private String tipoPessoa = "F";
     private String documento;
     private String sexo;
     private Date dataNasc;
-    private String telefoneSecundario;
-    private String cepEnd;
-    private String ruaEnd;
-    private Integer numeroEnd;
-    private String complementoEnd;
-    private String bairroEnd;
-    private String cidadeEnd;
-    private String ufEnd;
     private Marca marca;
-    private Modelo modelo;
-    private String placa;
-    private Integer anoFab;
-    private Integer anoModelo;
-    private Cor cor;
+    private Veiculo currentVeiculo;
     private List<Veiculo> veiculos;
     private List<Marca> marcasAtivos;
     private List<Modelo> modelosAtivos;
     private List<Cor> coresAtivas;
+
+    public PessoaEndereco getEnderecoAux() {
+        return enderecoAux;
+    }
+
+    public void setTipoPessoa(PessoaEndereco enderecoAux) {
+        this.enderecoAux = enderecoAux;
+    }
 
     public String getTipoPessoa() {
         return tipoPessoa;
@@ -109,72 +116,16 @@ public class ClienteController implements Serializable {
         this.dataNasc = dataNasc;
     }
 
-    public String getTelefoneSecundario() {
-        return telefoneSecundario;
-    }
-
-    public void setTelefoneSecundario(String telefoneSecundario) {
-        this.telefoneSecundario = telefoneSecundario;
-    }
-
-    public String getCepEnd() {
-        return cepEnd;
-    }
-
-    public void setCepEnd(String cepEnd) {
-        this.cepEnd = cepEnd;
-    }
-
-    public String getRuaEnd() {
-        return ruaEnd;
-    }
-
-    public void setRuaEnd(String ruaEnd) {
-        this.ruaEnd = ruaEnd;
-    }
-
-    public Integer getNumeroEnd() {
-        return numeroEnd;
-    }
-
-    public void setNumeroEnd(Integer numeroEnd) {
-        this.numeroEnd = numeroEnd;
-    }
-
-    public String getComplementoEnd() {
-        return complementoEnd;
-    }
-
-    public void setComplementoEnd(String complementoEnd) {
-        this.complementoEnd = complementoEnd;
-    }
-
-    public String getBairroEnd() {
-        return bairroEnd;
-    }
-
-    public void setBairroEnd(String bairroEnd) {
-        this.bairroEnd = bairroEnd;
-    }
-
-    public String getCidadeEnd() {
-        return cidadeEnd;
-    }
-
-    public void setCidadeEnd(String cidadeEnd) {
-        this.cidadeEnd = cidadeEnd;
-    }
-
-    public String getUfEnd() {
-        return ufEnd;
-    }
-
-    public void setUfEnd(String ufEnd) {
-        this.ufEnd = ufEnd;
-    }
-
     public List<Veiculo> getVeiculos() {
         return veiculos;
+    }
+
+    public Veiculo getCurrentVeiculo() {
+        return currentVeiculo;
+    }
+
+    public void setCurrentVeiculo(Veiculo currentVeiculo) {
+        this.currentVeiculo = currentVeiculo;
     }
 
     public Marca getMarca() {
@@ -183,46 +134,6 @@ public class ClienteController implements Serializable {
 
     public void setMarca(Marca marca) {
         this.marca = marca;
-    }
-
-    public Modelo getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(Modelo modelo) {
-        this.modelo = modelo;
-    }
-
-    public String getPlaca() {
-        return placa;
-    }
-
-    public void setPlaca(String placa) {
-        this.placa = placa;
-    }
-
-    public Integer getAnoFab() {
-        return anoFab;
-    }
-
-    public void setAnoFab(Integer anoFab) {
-        this.anoFab = anoFab;
-    }
-
-    public Integer getAnoModelo() {
-        return anoModelo;
-    }
-
-    public void setAnoModelo(Integer anoModelo) {
-        this.anoModelo = anoModelo;
-    }
-
-    public Cor getCor() {
-        return cor;
-    }
-
-    public void setCor(Cor cor) {
-        this.cor = cor;
     }
 
     public List<Marca> getMarcasAtivos() {
@@ -238,9 +149,7 @@ public class ClienteController implements Serializable {
     }
 
     public ClienteController() {
-        this.veiculos = new ArrayList<Veiculo>();
-        montaListaCor();
-        montaListaMarca();
+        limparCampos();
         lazyModel = new LazyDataModel<Cliente>() {
 
             @Override
@@ -279,6 +188,20 @@ public class ClienteController implements Serializable {
 
     public void prepararEdicao(ActionEvent event) {
         current = (Cliente) lazyModel.getRowData();
+        //dados basicos
+        tipoPessoa = String.valueOf(current.getPessoa().getTipo());
+        if (tipoPessoa.equals("F")) {
+            documento = ((PessoaFisica) current.getPessoa()).getCpf();
+            sexo = String.valueOf(((PessoaFisica) current.getPessoa()).getSexo());
+            dataNasc = ((PessoaFisica) current.getPessoa()).getDataNascimento();
+        } else {
+            documento = ((PessoaJuridica) current.getPessoa()).getCnpj();
+        }
+        //veiculos
+        veiculos = null;
+        for (Veiculo veiculo : current.getVeiculos()) {
+            veiculos.add(veiculo);
+        }
     }
 
     public void prepararExclusao(ActionEvent event) {
@@ -288,12 +211,84 @@ public class ClienteController implements Serializable {
     public void prepararInclusao(ActionEvent event) {
         current = new Cliente();
         current.setAtivo(true);
+        limparCamposCadastro();
+        currentVeiculo = new Veiculo();
+        currentVeiculo.setAtivo(true);
+        veiculos = new ArrayList<Veiculo>();
+    }
+
+    public void excluirVeiculo(Veiculo veiculo) {
+        veiculos.remove(veiculo);
+    }
+
+    public void editarVeiculo(Veiculo veiculo) {
+        currentVeiculo = veiculo;
+        marca = currentVeiculo.getModelo().getMarca();
+    }
+
+    public void excluirVeiculo(ActionEvent actionEvent) {
+        //
     }
 
     public void salvar(ActionEvent actionEvent) {
         try {
+            Pessoa pesAux = null;
+            if (current.getId() != null) {
+                pesAux = current.getPessoa();
+            } else {
+                Calendar cal = Calendar.getInstance();
+                current.setDataCadastro(cal.getTime());
+                if (tipoPessoa.equals("F")) {
+                    pesAux = new PessoaFisica();
+                } else {
+                    pesAux = new PessoaJuridica();
+                }
+            }
+            //dados basicos
+            pesAux.setNome(current.getPessoa().getNome());
+            pesAux.setTipo(tipoPessoa.charAt(0));
+            if (tipoPessoa.equals("F")) {
+                ((PessoaFisica) pesAux).setDataNascimento(dataNasc);
+                ((PessoaFisica) pesAux).setCpf(documento);
+                ((PessoaFisica) pesAux).setSexo(sexo.charAt(0));
+            } else {
+                ((PessoaJuridica) pesAux).setCnpj(documento);
+            }
+            //veiculo
+            for (Veiculo veiculo : veiculos) {
+                if (!current.getVeiculos().contains(veiculo)) {
+                    veiculo.setPessoa(pesAux);
+                    current.getVeiculos().add(veiculo);
+                } else {
+                    int index = current.getVeiculos().indexOf(veiculo);
+                    current.getVeiculos().get(index).setAtivo(veiculo.getAtivo());
+                    current.getVeiculos().get(index).setPessoa(pesAux);
+                    current.getVeiculos().get(index).setAnoFabricacao(veiculo.getAnoFabricacao());
+                    current.getVeiculos().get(index).setAnoModelo(veiculo.getAnoModelo());
+                    current.getVeiculos().get(index).setPlaca(veiculo.getPlaca());
+                    current.getVeiculos().get(index).setCor(veiculo.getCor());
+                    current.getVeiculos().get(index).setModelo(veiculo.getModelo());
+                }
+            }
+            for (int i = 0; i < current.getVeiculos().size(); i++) {
+                if (!veiculos.contains(current.getVeiculos().get(i))) {
+                    current.getVeiculos().remove(i);
+                }
+            }
+            //contato
+            pesAux.setTelefonePrimario(current.getPessoa().getTelefonePrimario());
+            pesAux.setTelefoneSecundario(current.getPessoa().getTelefoneSecundario());
+            pesAux.setEmail(current.getPessoa().getEmail());
+            //endereco
+            if (enderecoAux.getLogradouro() != null) {
+                enderecoAux.setPessoa(pesAux);
+                current.getPessoa().setEndereco(enderecoAux);
+            } else {
+                current.getPessoa().setEndereco(null);
+            }
+            //inclusão
+            current.setPessoa(pesAux);
             Session sessao = HibernateFactory.currentSession();
-            // current.setMarca(marcaCadastro);
             if (current.getId() != null) {
                 ejbFacade.alterar(sessao, current);
                 JsfUtil.addSuccessMessage("Cliente alterado com sucesso!");
@@ -303,10 +298,7 @@ public class ClienteController implements Serializable {
             }
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Erro ao salvar o registro. ");
-        } finally {
-            HibernateFactory.closeSession();
         }
-
     }
 
     public void excluir(ActionEvent actionEvent) {
@@ -326,7 +318,7 @@ public class ClienteController implements Serializable {
     }
 
     public void changeMarca() {
-        setModelo(null);
+        currentVeiculo.setModelo(null);
         montaListaModelo();
     }
 
@@ -334,7 +326,19 @@ public class ClienteController implements Serializable {
         current = null;
         setNomeFiltro(null);
         setPlacaFiltro(null);
-        setModelo(null);
+        limparCamposCadastro();
+    }
+
+    private void limparCamposCadastro() {
+        tipoPessoa = "F";
+        documento = "";
+        sexo = "";
+        dataNasc = null;
+        this.enderecoAux = new PessoaEndereco();
+        //campos do cadastro de veiculo
+        marca = null;
+        currentVeiculo = null;
+        veiculos = null;
         montaListaCor();
         montaListaMarca();
     }
@@ -363,7 +367,7 @@ public class ClienteController implements Serializable {
         }
 
     }
-    
+
     private void montaListaCor() {
         try {
             Session sessao = HibernateFactory.currentSession();
@@ -374,5 +378,32 @@ public class ClienteController implements Serializable {
         } finally {
             HibernateFactory.closeSession();
         }
+    }
+
+    public void adicionarVeiculo(ActionEvent actionEvent) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String mensagem = "O campo '%s' é obrigatório.";
+        if (currentVeiculo.getAnoFabricacao() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, String.format(mensagem, "Ano Fabricação"), ""));
+        }
+        if (currentVeiculo.getAnoModelo() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, String.format(mensagem, "Ano Modelo"), ""));
+        }
+        if (currentVeiculo.getPlaca() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, String.format(mensagem, "Placa"), ""));
+        }
+        if (currentVeiculo.getCor() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, String.format(mensagem, "Cor"), ""));
+        }
+        if (currentVeiculo.getModelo() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, String.format(mensagem, "Modelo"), ""));
+        }
+        if (context.getMessageList().isEmpty()) {
+            veiculos.add(currentVeiculo);
+            //limpa campos
+            currentVeiculo = new Veiculo();
+            marca = new Marca();
+        }
+
     }
 }

@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -11,18 +10,22 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import model.Base.BaseEntidade;
-import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "pessoa")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo", discriminatorType = DiscriminatorType.STRING)
 public class Pessoa extends BaseEntidade<Pessoa> {
+    
+     public Pessoa() {
+        
+    }
 
     @Basic(optional = false)
     @NotNull
@@ -47,16 +50,12 @@ public class Pessoa extends BaseEntidade<Pessoa> {
     @Column(name = "TelefoneSecundario")
     private String telefoneSecundario;
     
-    @OneToMany(cascade={javax.persistence.CascadeType.ALL}, orphanRemoval=true, fetch= FetchType.EAGER)
-    @JoinColumn(name="idpessoa")
-    private List<PessoaEndereco> enderecos;
+    @OneToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name="idpessoa", table="PessoaEndereco",referencedColumnName="idpessoa")
+    @PrimaryKeyJoinColumn(referencedColumnName="idpessoa", columnDefinition="idpessoa")
+    private PessoaEndereco endereco;
 
-    public Pessoa() {
-        if (enderecos == null) {
-            enderecos = new ArrayList<PessoaEndereco>();
-        }
-    }
-
+  
     public String getNome() {
         return nome;
     }
@@ -102,11 +101,11 @@ public class Pessoa extends BaseEntidade<Pessoa> {
         return getNome();
     }
 
-    public List<PessoaEndereco> getEnderecos() {
-        return enderecos;
+    public PessoaEndereco getEndereco() {
+        return endereco;
     }
 
-    public void setEnderecos(List<PessoaEndereco> enderecos) {
-        this.enderecos = enderecos;
+    public void setEndereco(PessoaEndereco endereco) {
+        this.endereco = endereco;
     }
 }
