@@ -17,6 +17,11 @@ import javax.validation.constraints.Size;
 @DiscriminatorValue(value = "F")
 @PrimaryKeyJoinColumn(name = "id")
 public class PessoaFisica extends Pessoa {
+    
+    public PessoaFisica() {
+        super();
+     
+    }
 
     @Size(min = 1, max = 15)
     @NotNull
@@ -29,13 +34,7 @@ public class PessoaFisica extends Pessoa {
     @Temporal(TemporalType.DATE)
     private Date dataNascimento;
     
-    
-    public PessoaFisica() {
-        if (super.getEnderecos() == null) {
-            super.setEnderecos(new ArrayList<PessoaEndereco>());
-        }
-    }
-
+   
     public String getCpf() {
         return cpf;
     }

@@ -48,13 +48,13 @@
                 </f:facet>  
                 <p:column headerText="Ações" width="60">
                     <p:commandButton actionListener="#{profissaoController.prepararEdicao}" 
-                                     alt="Editar" title="Editar" image="btn_editar"
+                                     alt="Editar" title="Editar" icon="btn_editar"
                                      style="margin-right: 10px; margin-left: 10px"
                                      oncomplete="modalPopup.show()" update=":frmCadastro, :growl" />
 
                     <p:commandButton actionListener="#{profissaoController.prepararExclusao}"
                                      title="Excluir" alt="Excluir"
-                                     image="btn_excluir" 
+                                     icon="btn_excluir" 
                                      oncomplete="confirmDialog.show()"  />
                 </p:column>
                 <p:column sortBy="#{item.id}" headerText="Código"  width="60" >  

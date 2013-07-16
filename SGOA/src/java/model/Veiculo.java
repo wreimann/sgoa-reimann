@@ -1,32 +1,33 @@
 package model;
 
-import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import model.Base.BaseEntidadeAtivo;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 
 @Entity
 @Table(name = "veiculo")
-public class Veiculo extends BaseEntidadeAtivo<Veiculo>  {
-    
-     public Veiculo() {
-        pessoa = new Pessoa();
+public class Veiculo extends BaseEntidadeAtivo<Veiculo> {
+
+    public Veiculo() {
+        if (this.pessoa == null) {
+            this.pessoa = new Pessoa();
+        }
+        if (this.modelo == null) {
+            this.modelo = new Modelo();
+        }
     }
     
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade= CascadeType.MERGE)
     @JoinColumn(name = "idpessoa", insertable = true, updatable = true)
     @Fetch(org.hibernate.annotations.FetchMode.JOIN)
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Pessoa pessoa;
- 
+
     public Pessoa getPessoa() {
         return pessoa;
     }
@@ -36,7 +37,6 @@ public class Veiculo extends BaseEntidadeAtivo<Veiculo>  {
     }
     
     @JoinColumn(name = "idmodelo")
-    @NotNull
     @ManyToOne(optional = false)
     private Modelo modelo;
 
@@ -49,7 +49,6 @@ public class Veiculo extends BaseEntidadeAtivo<Veiculo>  {
     }
     
     @JoinColumn(name = "idcor")
-    @NotNull
     @ManyToOne(optional = false)
     private Cor cor;
 
@@ -61,12 +60,9 @@ public class Veiculo extends BaseEntidadeAtivo<Veiculo>  {
         this.cor = cor;
     }
     
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "placa")
     private String placa;
-    
+
     public String getPlaca() {
         return placa;
     }
@@ -75,29 +71,25 @@ public class Veiculo extends BaseEntidadeAtivo<Veiculo>  {
         this.placa = placa;
     }
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "anoFabricacao")
-    private int anoFabricacao;
-    
-    public int getAnoFabricacao() {
+    private Integer anoFabricacao;
+
+    public Integer getAnoFabricacao() {
         return anoFabricacao;
     }
 
-    public void setAnoFabricacao(int ano) {
+    public void setAnoFabricacao(Integer ano) {
         this.anoFabricacao = ano;
     }
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "anoModelo")
-    private int anoModelo;
-    
-    public int getAnoModelo() {
+    private Integer anoModelo;
+
+    public Integer getAnoModelo() {
         return anoModelo;
     }
 
-    public void setAnoModelo(int ano) {
+    public void setAnoModelo(Integer ano) {
         this.anoModelo = ano;
     }
 }

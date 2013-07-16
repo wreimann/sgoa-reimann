@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 
 @Stateless
 public class ClienteFacade extends BaseFacade<Cliente> {
@@ -36,7 +37,7 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         //  busca o total de registro que atendam o filtro da pesquisa
         Criteria c = sessao.createCriteria(Cliente.class);
         c.createCriteria("pessoa", "pessoa");
-        c.createCriteria("veiculos", "veiculos");
+        c.createCriteria("veiculos", "veiculos", JoinType.LEFT_OUTER_JOIN);
         if (nomeFiltro != null && !nomeFiltro.isEmpty()) {
             c.add(Restrictions.like("pessoa.nome", nomeFiltro, MatchMode.ANYWHERE).ignoreCase());
         }
@@ -47,7 +48,7 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         // realizar a pesquisa por demanda
         c = sessao.createCriteria(Cliente.class);
         c.createCriteria("pessoa", "pessoa");
-        c.createCriteria("veiculos", "veiculos");
+        c.createCriteria("veiculos", "veiculos", JoinType.LEFT_OUTER_JOIN);
         c.setProjection(null).setResultTransformer(Criteria.ROOT_ENTITY);
         c.setFirstResult(page).setMaxResults(maxPage);
         if (sort != null) {

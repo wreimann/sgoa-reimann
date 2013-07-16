@@ -3,11 +3,9 @@ package model;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import model.Base.BaseEntidade;
 
@@ -16,21 +14,21 @@ import model.Base.BaseEntidade;
 @Table(name = "pessoaendereco")
 public class PessoaEndereco extends BaseEntidade<PessoaEndereco> {
     
-
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    public PessoaEndereco() {
+    
+    }
+    
+    @OneToOne
     @JoinColumn(name="idpessoa")
     private Pessoa pessoa;
     
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 250)
+
+    @Size(max = 250)
     @Column(name = "Logradouro")
     private String logradouro;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "Predical")
-    private int predical;
+    private Integer predical;
     
     @Size(max = 12)
     @Column(name = "CEP")
@@ -40,24 +38,17 @@ public class PessoaEndereco extends BaseEntidade<PessoaEndereco> {
     @Column(name = "Bairro")
     private String bairro;
     
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 200)
+    @Size(max = 200)
     @Column(name = "Municipio")
     private String municipio;
     
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2)
+    @Size(max = 2)
     @Column(name = "UF")
     private String uf;
     
     @Size(max = 200)
     @Column(name = "Complemento")
     private String complemento;
-
-    public PessoaEndereco() {
-    }
 
     public Pessoa getPessoa() {
         return pessoa;
@@ -66,7 +57,7 @@ public class PessoaEndereco extends BaseEntidade<PessoaEndereco> {
     public void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
     }
-
+  
     public String getLogradouro() {
         return logradouro;
     }
@@ -75,11 +66,11 @@ public class PessoaEndereco extends BaseEntidade<PessoaEndereco> {
         this.logradouro = logradouro;
     }
 
-    public int getPredical() {
+    public Integer getPredical() {
         return predical;
     }
 
-    public void setPredical(int predical) {
+    public void setPredical(Integer predical) {
         this.predical = predical;
     }
 

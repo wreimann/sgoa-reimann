@@ -50,13 +50,13 @@
                 </f:facet>  
                 <p:column headerText="Ações" width="60">
                     <p:commandButton actionListener="#{clienteController.prepararEdicao}" 
-                                     alt="Editar" title="Editar" image="btn_editar"
+                                     alt="Editar" title="Editar" icon="btn_editar"
                                      style="margin-right: 10px; margin-left: 10px"
                                      oncomplete="modalPopup.show()" update=":frmCadastro, :growl" />
 
                     <p:commandButton actionListener="#{clienteController.prepararExclusao}"
                                      title="Inativar" alt="Excluir"
-                                     image="btn_excluir" 
+                                     icon="btn_excluir" 
                                      oncomplete="confirmDialog.show()"  />
                 </p:column>
                 <p:column sortBy="#{item.id}" headerText="Código"  width="60" >  
@@ -84,7 +84,7 @@
                              showEffect="slide" hideEffect="clip" severity="alert">  
 
                 <p:commandButton oncomplete="confirmDialog.hide()" update=":frmPesquisa"
-                                 actionListener="#{modeloController.excluir}" 
+                                 actionListener="#{clienteController.excluir}" 
                                  value="Sim"/> 
                 <p:commandButton value="Não" onclick="confirmDialog.hide()"/>    
 
@@ -94,10 +94,11 @@
 
         <p:dialog  widgetVar="modalPopup" modal="true" width="700" resizable="false"
                    showEffect="fade" header="Cadastro de Cliente" id="dialog">
-            <p:messages id="growl" />
+            <p:messages id="growl" autoUpdate="true" closable="true"  />
+
             <h:form id="frmCadastro" prependId="false" >                
                 <p:focus context="frmCadastro"/> 
-                <p:tabView id="tabView">
+                <p:tabView id="tabView" >
                     <p:tab id="tab2" title="Dados básico">  
                         <fieldset id="NomeField">
                             <label id="NomeLabel">Nome *</label>
@@ -105,7 +106,7 @@
                                          requiredMessage="O campo 'Nome' é obrigatório." 
                                          value="#{clienteController.current.pessoa.nome}"/>
                         </fieldset>
-                        <fieldset id="TipoField" style="width: 288px; float: left;">
+                        <p:fieldset id="TipoField" style="width: 265px; float: left;">
                             <label id="TipoLabel">Tipo *</label>
                             <h:selectOneMenu id="TipoListBox" value="#{clienteController.tipoPessoa}"
                                              disabled="#{clienteController.current.id > 0}" immediate="true">
@@ -113,8 +114,8 @@
                                 <f:selectItem itemLabel="Juridica" itemValue="J" />
                                 <p:ajax event="change" update="DocumentoPanel, DetalhesPessoaFisicaPanel" />
                             </h:selectOneMenu>
-                        </fieldset>
-                        <fieldset id="DocumentoField" style="width: 260px; float: left; margin-left: 19px;">
+                        </p:fieldset>
+                        <p:fieldset id="DocumentoField" style="width: 285px; display: inline-block; margin-left: 19px;">
                             <h:panelGroup id="DocumentoPanel">
                                 <p:outputLabel id="CpfLabel" value="CPF *" rendered="#{clienteController.tipoPessoa == 'F'}" />
                                 <p:outputLabel id="CnpjLabel" value="CNJP *" rendered="#{clienteController.tipoPessoa =='J'}" />
@@ -128,9 +129,9 @@
                                              value="#{clienteController.documento}" mask="99.999.999/9999-99" />
                             </h:panelGroup>
 
-                        </fieldset>
+                        </p:fieldset>
                         <h:panelGroup id="DetalhesPessoaFisicaPanel" >
-                            <p:fieldset styleClass="fieldset" id="SexoField"  style="float: left; width: 260px;" 
+                            <p:fieldset styleClass="fieldset" id="SexoField"  style="float: left; width: 265px;" 
                                         rendered="#{clienteController.tipoPessoa == 'F'}" >
                                 <p:outputLabel id="SexoLabel" value="Sexo"
                                                rendered="#{clienteController.tipoPessoa == 'F'}"/>
@@ -142,7 +143,7 @@
 
                             </p:fieldset>
 
-                            <p:fieldset styleClass="fieldset" id="NascimentoField" style="width: 260px; float: left; margin-left: 19px"
+                            <p:fieldset styleClass="fieldset" id="NascimentoField" style="width: 285px; display: inline-block; margin-left: 19px;"
                                         rendered="#{clienteController.tipoPessoa == 'F'}">
                                 <p:outputLabel id="NascLabel" value="Data Nascimento"
                                                rendered="#{clienteController.tipoPessoa == 'F'}"/>
@@ -162,12 +163,11 @@
 
                     </p:tab>
                     <p:tab id="tab3" title="Veículos">
-                        <h:panelGroup id="pnlGrupoVeiculo">
-                            <fieldset id="MarcaField" style="width: 260px; float: left;">
+                        <h:panelGroup id="pnlGrupoVeiculo"  >
+                            <fieldset id="MarcaField" style="width: 300px; float: left;">
                                 <label id="MarcaLabel">Marca *</label>
-                                <p:selectOneMenu id="MarcaListBox" required="true" styleClass="selectOneMenu" 
-                                                 requiredMessage="O campo 'Marca' é obrigatório." 
-                                                 value="#{clienteController.marca}" converter="marcaConverter">  
+                                <p:selectOneMenu id="MarcaListBox" styleClass="selectOneMenu" 
+                                                 value="#{clienteController.marca}" converter="marcaConverter" >  
                                     <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
                                     <f:selectItems value="#{clienteController.marcasAtivos}" var="marca" 
                                                    itemLabel="#{marca.descricao}" itemValue="#{marca}"/> 
@@ -175,41 +175,43 @@
                                 </p:selectOneMenu> 
                             </fieldset>
                             <h:panelGroup id="ModeloPanel">
-                                <fieldset id="ModeloField" style="width: 260px; float: left; margin-left: 19px">
+                                <fieldset id="ModeloField" style="width: 300px; float: left; margin-left: 19px">
                                     <label id="ModeloLabel">Modelo *</label>
-                                    <p:selectOneMenu id="ModeloListBox" required="true" styleClass="selectOneMenu" 
-                                                     requiredMessage="O campo 'Modelo' é obrigatório." 
-                                                     value="#{clienteController.modelo}" converter="modeloConverter">  
+                                    <p:selectOneMenu id="ModeloListBox" styleClass="selectOneMenu" 
+                                                     value="#{clienteController.currentVeiculo.modelo}" converter="modeloConverter">  
                                         <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
                                         <f:selectItems value="#{clienteController.modelosAtivos}" var="modelo" 
                                                        itemLabel="#{modelo.descricao}" itemValue="#{modelo}"/>  
                                     </p:selectOneMenu> 
                                 </fieldset>
                             </h:panelGroup>  
-                            <fieldset id="PlacaField" style="width: 260px; float: left;" >
-                                <label id="PlacaLabel">Placa</label>
-                                <p:inputText id="PlacaInput" value="#{clienteController.placa}"/>
+                            <fieldset id="PlacaField" style="width: 300px; float: left;" >
+                                <label id="PlacaLabel">Placa *</label>
+                                <p:inputMask id="PlacaInput" mask="aaa9999" value="#{clienteController.currentVeiculo.placa}"  />
                             </fieldset>
-                            <fieldset id="CorField" style="width: 260px; float: left; margin-left: 19px" >
+                            <fieldset id="CorField" style="width: 300px; float: left; margin-left: 19px" >
                                 <label id="CorLabel">Cor *</label>
-                                <p:selectOneMenu id="CorListBox" required="true" styleClass="selectOneMenu" 
-                                                 requiredMessage="O campo 'Cor' é obrigatório." 
-                                                 value="#{clienteController.cor}" converter="corConverter">  
+                                <p:selectOneMenu id="CorListBox" styleClass="selectOneMenu"  
+                                                 value="#{clienteController.currentVeiculo.cor}" converter="corConverter">  
                                     <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
                                     <f:selectItems value="#{clienteController.coresAtivas}" var="cor" 
                                                    itemLabel="#{cor.descricao}" itemValue="#{cor}"/> 
                                 </p:selectOneMenu> 
                             </fieldset>
-                            <fieldset id="AnoFabField"  style="width: 260px; float: left;" >
-                                <label id="AnoFabLabel">Ano Fab. *</label>
-                                <p:inputText id="AnoFabInput" value="#{clienteController.anoFab}"/>
+                            <fieldset id="AnoFabField"  style="width: 300px; float: left;"  >
+                                <label id="AnoFabLabel">Ano Fabricação *</label>
+                                <p:inputMask id="AnoFabInput" mask="9999" value="#{clienteController.currentVeiculo.anoFabricacao}" />
                             </fieldset>
-                            <fieldset id="AnoModeloField" style="width: 260px; float: left; margin-left: 19px" >
+                            <fieldset id="AnoModeloField" style="width: 300px; float: left; margin-left: 19px" >
                                 <label id="AnoModeloLabel">Ano Modelo *</label>
-                                <p:inputText id="AnoModeloInput" value="#{clienteController.anoModelo}"/>
+                                <p:inputMask id="AnoModeloInput" mask="9999" value="#{clienteController.currentVeiculo.anoModelo}" />
                             </fieldset>
-                            <p:commandButton id="btnAdicionarVeiculo" value="Adicionar"  
-                                             update="pnlGrupoVeiculo" title="Adicionar"/>
+                            <p:commandButton id="btnAdicionarVeiculo" value="Adicionar" actionListener="#{clienteController.adicionarVeiculo}" 
+                                             title="Adicionar Veículo" process="pnlGrupoVeiculo" 
+                                             update="pnlGrupoVeiculo">
+                                
+                            </p:commandButton>
+
                             <div class="spacer"></div>
                             <p:dataTable id="dataTableVeiculo" var="item" 
                                          value="#{clienteController.veiculos}" lazy="false" 
@@ -217,17 +219,14 @@
                                          emptyMessage="Nenhum veículo cadastrado." 
                                          rows="5">  
                                 <p:column headerText="Ações" width="60">
-                                    <p:commandButton actionListener="#{clienteController.prepararEdicaoVeiculo}" 
-                                                     alt="Editar" title="Editar" image="btn_editar"
-                                                     style="margin-right: 10px; margin-left: 10px"
-                                                     oncomplete="modalPopup.show()" update=":frmCadastro, :growl" />
-
-                                    <p:commandButton actionListener="#{clienteController.prepararExclusaoVeiculo}"
-                                                     title="Inativar" alt="Excluir"
-                                                     image="btn_excluir" 
-                                                     oncomplete="confirmDialog.show()"  />
+                                    <p:commandButton actionListener="#{clienteController.editarVeiculo(item)}" process="dataTableVeiculo"
+                                                     alt="Editar" title="Editar" icon="btn_editar" 
+                                                     style="margin-right: 10px; margin-left: 10px" update=":frmCadastro:tabView:pnlGrupoVeiculo" />
+                                    <p:commandButton actionListener="#{clienteController.excluirVeiculo(item)}" process="dataTableVeiculo"
+                                                     title="Excluir" alt="Excluir" update=":frmCadastro:tabView:pnlGrupoVeiculo"
+                                                     icon="btn_excluir"  />
                                 </p:column>
-                                
+
                                 <p:column sortBy="#{item.placa}" headerText="Placa">  
                                     <h:outputText value="#{item.placa}" />  
                                 </p:column>  
@@ -236,14 +235,15 @@
                                     <h:outputText value="#{item.modelo}" />  
                                 </p:column>  
 
-                                <p:column sortBy="#{item.anoModelo}" headerText="Ano">  
-                                    <h:outputText value="#{item.anoModelo}" />  
+                                <p:column sortBy="#{item.anoFabricacao}" headerText="Ano">  
+                                    <h:outputText value="#{item.anoFabricacao} / #{item.anoModelo} " />  
                                 </p:column>  
 
                                 <p:column sortBy="#{item.ativo}" headerText="Ativo"  width="40">  
                                     <h:selectBooleanCheckbox value="#{item.ativo}" disabled="true" />
                                 </p:column>   
-                            </p:dataTable>
+                            </p:dataTable>    
+
                         </h:panelGroup>
                     </p:tab>
                     <p:tab id="tab4" title="Contatos">
@@ -251,7 +251,7 @@
                         <fieldset id="TelefonePrimarioField" style="width: 288px;">
                             <label id="TelefonePrimarioLabel">Telefone Primário *</label>
                             <p:inputMask mask="(99) 9999-9999" id="TelefonePrimarioInput" required="true" converterMessage="Valor inválido!"
-                                         requiredMessage="O campo 'Telefone' é obrigatório."
+                                         requiredMessage="O campo 'Telefone Primário' é obrigatório."
                                          value="#{clienteController.current.pessoa.telefonePrimario}"/>
                         </fieldset>
                         <fieldset id="TelefoneSecundarioField" style="width: 288px;">
@@ -277,39 +277,38 @@
                         <fieldset id="CEPField" style="width: 260px">
                             <label id="CEPLabel">CEP</label>
                             <p:inputMask mask="99.999-999" id="CepInput" converterMessage="Valor inválido!"
-                                         value="#{clienteController.cepEnd}" />
+                                         value="#{clienteController.enderecoAux.cep}" />
                         </fieldset>
 
                         <fieldset id="RuaField" style="width: 430px; float: left" >
                             <label id="RuaLabel">Rua</label>
-                            <h:inputText id="RuaInput" value="#{clienteController.ruaEnd}" />
+                            <h:inputText id="RuaInput" value="#{clienteController.enderecoAux.logradouro}" />
                         </fieldset>
 
                         <fieldset id="NumeroField" style="width: 175px; float: left; margin-left: 19px">
                             <label id="NumeroLabel">Número</label>
                             <p:inputMask mask="9?99999" id="NumeroInput" converterMessage="Valor inválido!"
-                                         value="#{clienteController.numeroEnd}"/>
-
+                                         value="#{clienteController.enderecoAux.predical}"/>
                         </fieldset>
 
                         <fieldset id="ComplementoField" style="width: 230px; float: left" >
                             <label id="ComplementoLabel">Complemento</label>
-                            <h:inputText id="ComplementoInput" value="#{clienteController.complementoEnd}" />
+                            <h:inputText id="ComplementoInput" value="#{clienteController.enderecoAux.complemento}" />
                         </fieldset>
 
                         <fieldset id="BairroField" style="width: 375px; float: left; margin-left: 19px" >
                             <label id="BairroLabel">Bairro</label>
-                            <h:inputText id="BairroInput" value="#{clienteController.bairroEnd}" />
+                            <h:inputText id="BairroInput" value="#{clienteController.enderecoAux.bairro}" />
                         </fieldset>
 
                         <fieldset id="MunicipioField" style="width: 430px; float: left;">
                             <label id="MunicipioLabel">Município</label>
-                            <h:inputText id="MunicipioInput" value="#{clienteController.cidadeEnd}"/>
+                            <h:inputText id="MunicipioInput" value="#{clienteController.enderecoAux.municipio}"/>
                         </fieldset>
 
                         <fieldset id="UFField" style="width: 175px; display: inline-block; margin-left: 19px">
                             <label id="UFabel">UF</label>
-                            <p:inputMask mask="aa" id="UFInput" value="#{clienteController.ufEnd}" 
+                            <p:inputMask mask="aa" id="UFInput" value="#{clienteController.enderecoAux.uf}" 
                                          converterMessage="Valor inválido!" />
                         </fieldset>
                     </p:tab>

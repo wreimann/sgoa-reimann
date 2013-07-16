@@ -817,6 +817,7 @@ fieldset input[type=text] {
     width: 90%;
     margin: 0 10px;
     padding: 1px 0px;
+    text-transform: uppercase;
 }
 
 fieldset input[type=text]:focus {

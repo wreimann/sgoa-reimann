@@ -4,17 +4,17 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import model.Base.BaseEntidadeDescricao;
 
 @Entity
 @Table(name = "modelo")
 public class Modelo extends BaseEntidadeDescricao<Modelo> {
+
     public Modelo() {
+
     }
     
     @JoinColumn(name = "idmarca")
-    @NotNull
     @ManyToOne(optional = false)
     private Marca marca;
 
@@ -34,5 +34,4 @@ public class Modelo extends BaseEntidadeDescricao<Modelo> {
             return super.toString();
         }
     }
-    
 }
