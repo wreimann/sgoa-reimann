@@ -21,6 +21,7 @@ public class Veiculo extends BaseEntidadeAtivo<Veiculo> {
         if (this.modelo == null) {
             this.modelo = new Modelo();
         }
+        placa = "";
     }
     
     @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade= CascadeType.MERGE)
@@ -91,5 +92,25 @@ public class Veiculo extends BaseEntidadeAtivo<Veiculo> {
 
     public void setAnoModelo(Integer ano) {
         this.anoModelo = ano;
+    }
+    
+    @Override
+    public boolean equals(Object object) {
+        if (!(object.getClass().equals(this.getClass()))) {
+            return false;
+        }
+
+        Veiculo other = (Veiculo) object;
+        if ((this.placa.isEmpty() && !other.placa.isEmpty()) || (!this.placa.isEmpty() && !this.placa.equals(other.placa))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + (this.placa != null ? this.placa.hashCode() : 0);
+        return hash;
     }
 }
