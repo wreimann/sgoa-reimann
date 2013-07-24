@@ -24,7 +24,7 @@
             </fieldset>
             <fieldset id="PlacaPesquisaField" style="width: 260px;" >
                 <label id="PlacaPesquisaLabel">Placa</label>
-                <p:inputText id="PlacaPesquisaInput" value="#{clienteController.placaFiltro}"/>
+                <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" value="#{clienteController.placaFiltro}" style="text-transform: uppercase;"/>
             </fieldset>
             <p:commandButton id="btnPesquisar" value="Pesquisar"  
                              update=":frmPesquisa" title="Pesquisar"/>
@@ -185,9 +185,10 @@
                                     </p:selectOneMenu> 
                                 </fieldset>
                             </h:panelGroup>  
-                            <fieldset id="PlacaField" style="width: 300px; float: left;" >
+                            <fieldset id="PlacaField" style="width: 300px; float: left; text-transform: uppercase;" >
                                 <label id="PlacaLabel">Placa *</label>
-                                <p:inputMask id="PlacaInput" mask="aaa9999" value="#{clienteController.currentVeiculo.placa}"  />
+                                <p:inputMask id="PlacaInput" mask="aaa9999" value="#{clienteController.currentVeiculo.placa}"
+                                             disabled="#{clienteController.editandoVeiculo}" />
                             </fieldset>
                             <fieldset id="CorField" style="width: 300px; float: left; margin-left: 19px" >
                                 <label id="CorLabel">Cor *</label>
@@ -206,8 +207,8 @@
                                 <label id="AnoModeloLabel">Ano Modelo *</label>
                                 <p:inputMask id="AnoModeloInput" mask="9999" value="#{clienteController.currentVeiculo.anoModelo}" />
                             </fieldset>
-                            <p:commandButton id="btnAdicionarVeiculo" value="Adicionar" actionListener="#{clienteController.adicionarVeiculo}" 
-                                             title="Adicionar Veículo" process="pnlGrupoVeiculo" 
+                            <p:commandButton id="btnAdicionarVeiculo" value="Incluir" actionListener="#{clienteController.adicionarVeiculo}" 
+                                             title="Salvar veículo" process="pnlGrupoVeiculo" 
                                              update="pnlGrupoVeiculo">
                                 
                             </p:commandButton>
@@ -228,7 +229,7 @@
                                 </p:column>
 
                                 <p:column sortBy="#{item.placa}" headerText="Placa">  
-                                    <h:outputText value="#{item.placa}" />  
+                                    <h:outputText value="#{item.placa}" style="text-transform: uppercase;"/>  
                                 </p:column>  
 
                                 <p:column sortBy="#{item.modelo}" headerText="Veículo">  

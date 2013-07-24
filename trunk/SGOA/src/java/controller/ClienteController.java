@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -17,8 +16,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.model.ArrayDataModel;
-import javax.faces.model.DataModel;
 import javax.validation.ConstraintViolationException;
 import model.Cliente;
 import model.Cor;
@@ -75,6 +72,7 @@ public class ClienteController implements Serializable {
     private List<Marca> marcasAtivos;
     private List<Modelo> modelosAtivos;
     private List<Cor> coresAtivas;
+    private boolean editandoVeiculo = false;
 
     public PessoaEndereco getEnderecoAux() {
         return enderecoAux;
@@ -90,6 +88,10 @@ public class ClienteController implements Serializable {
 
     public void setTipoPessoa(String tipoPessoa) {
         this.tipoPessoa = tipoPessoa;
+    }
+
+    public boolean isEditandoVeiculo() {
+        return editandoVeiculo;
     }
 
     public String getDocumento() {
@@ -187,6 +189,7 @@ public class ClienteController implements Serializable {
     }
 
     public void prepararEdicao(ActionEvent event) {
+        currentVeiculo = new Veiculo();
         current = (Cliente) lazyModel.getRowData();
         //dados basicos
         tipoPessoa = String.valueOf(current.getPessoa().getTipo());
@@ -198,7 +201,7 @@ public class ClienteController implements Serializable {
             documento = ((PessoaJuridica) current.getPessoa()).getCnpj();
         }
         //veiculos
-        veiculos = null;
+        veiculos = new ArrayList<Veiculo>();
         for (Veiculo veiculo : current.getVeiculos()) {
             veiculos.add(veiculo);
         }
@@ -224,10 +227,7 @@ public class ClienteController implements Serializable {
     public void editarVeiculo(Veiculo veiculo) {
         currentVeiculo = veiculo;
         marca = currentVeiculo.getModelo().getMarca();
-    }
-
-    public void excluirVeiculo(ActionEvent actionEvent) {
-        //
+        editandoVeiculo = true;
     }
 
     public void salvar(ActionEvent actionEvent) {
@@ -339,6 +339,7 @@ public class ClienteController implements Serializable {
         marca = null;
         currentVeiculo = null;
         veiculos = null;
+        editandoVeiculo = false;
         montaListaCor();
         montaListaMarca();
     }
@@ -383,13 +384,13 @@ public class ClienteController implements Serializable {
     public void adicionarVeiculo(ActionEvent actionEvent) {
         FacesContext context = FacesContext.getCurrentInstance();
         String mensagem = "O campo '%s' é obrigatório.";
-        if (currentVeiculo.getAnoFabricacao() == null) {
+        if (currentVeiculo.getAnoFabricacao() == null || currentVeiculo.getAnoFabricacao() == 0) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, String.format(mensagem, "Ano Fabricação"), ""));
         }
-        if (currentVeiculo.getAnoModelo() == null) {
+        if (currentVeiculo.getAnoModelo() == null || currentVeiculo.getAnoModelo() == 0) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, String.format(mensagem, "Ano Modelo"), ""));
         }
-        if (currentVeiculo.getPlaca() == null) {
+        if (currentVeiculo.getPlaca() == null || currentVeiculo.getPlaca().isEmpty()) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, String.format(mensagem, "Placa"), ""));
         }
         if (currentVeiculo.getCor() == null) {
@@ -399,6 +400,15 @@ public class ClienteController implements Serializable {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, String.format(mensagem, "Modelo"), ""));
         }
         if (context.getMessageList().isEmpty()) {
+            if (veiculos.contains(currentVeiculo)) {
+                if (editandoVeiculo) {
+                    veiculos.remove(currentVeiculo);
+                } else {
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Veículo já cadastrado.", ""));
+                    return;
+                }
+            }
+            editandoVeiculo = false;
             veiculos.add(currentVeiculo);
             //limpa campos
             currentVeiculo = new Veiculo();
