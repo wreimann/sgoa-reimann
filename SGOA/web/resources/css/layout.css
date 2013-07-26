@@ -34,7 +34,9 @@ h4{
     text-align: left !important;
     height: 30px;
 }
-
+.ui-inputfield{
+    padding: 0 !important;
+}
 .clear {
     clear: both;
 }

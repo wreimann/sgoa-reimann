@@ -21,6 +21,7 @@ public class Veiculo extends BaseEntidadeAtivo<Veiculo> {
         if (this.modelo == null) {
             this.modelo = new Modelo();
         }
+        setAtivo(true);
         placa = "";
     }
     

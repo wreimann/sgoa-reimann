@@ -216,7 +216,6 @@ public class ClienteController implements Serializable {
         current.setAtivo(true);
         limparCamposCadastro();
         currentVeiculo = new Veiculo();
-        currentVeiculo.setAtivo(true);
         veiculos = new ArrayList<Veiculo>();
     }
 
@@ -247,6 +246,7 @@ public class ClienteController implements Serializable {
             //dados basicos
             pesAux.setNome(current.getPessoa().getNome());
             pesAux.setTipo(tipoPessoa.charAt(0));
+            documento = documento.replaceAll("\\.", "").replaceAll("-", "").replace("/", "");
             if (tipoPessoa.equals("F")) {
                 ((PessoaFisica) pesAux).setDataNascimento(dataNasc);
                 ((PessoaFisica) pesAux).setCpf(documento);
