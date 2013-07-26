@@ -11,7 +11,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.model.SortOrder;
 import util.HibernateFactory;
 
-public abstract class BaseFacade<T> {
+public abstract class BaseFacade<T>  {
 
     private Class<T> entityClass;
     private long rowCount = 0;

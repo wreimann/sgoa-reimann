@@ -4,11 +4,15 @@ import facede.base.BaseFacade;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import model.Pessoa;
 import org.primefaces.model.SortOrder;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import model.Cliente;
+import model.PessoaFisica;
+import model.PessoaJuridica;
 import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
@@ -30,6 +34,47 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         super(Cliente.class);
     }
 
+    @Override
+    public void incluir(Session sessao, Cliente item) throws Exception {
+        validarDocumento(sessao, item);
+        super.incluir(sessao, item);
+    }
+
+    @Override
+    public void alterar(Session sessao, Cliente item) throws Exception {
+        validarDocumento(sessao, item);
+        super.alterar(sessao, item);
+    }
+
+    private void validarDocumento(Session sessao, Cliente item) throws Exception {
+        if (item == null) {
+            throw new EntityNotFoundException("Objeto nulo.");
+        }
+        PessoaFacade pessoaFacade = new PessoaFacade();
+        if (item.getPessoa() instanceof PessoaFisica) {
+            if (!util.Comum.isValidoCPF(((PessoaFisica) item.getPessoa()).getCpf())) {
+                throw new Exception("CPF inválido.");
+            }
+            if (item.getId() == null || item.getId() == 0) {
+                List<Pessoa> pessoas = pessoaFacade.selecionarPorNumeroDocumento(sessao, true, ((PessoaFisica) item.getPessoa()).getCpf());
+                pessoas.remove(item.getPessoa());
+                if (pessoas != null && !pessoas.isEmpty()) {
+                    throw new Exception("Já existe um cliente cadastrado com o mesmo número de CPF.");
+                }
+            }
+        } else {
+            if (!util.Comum.isValidoCNPJ(((PessoaJuridica) item.getPessoa()).getCnpj())) {
+                throw new Exception("CNPJ inválido.");
+            }
+            if (item.getId() == null || item.getId() == 0) {
+                List<Pessoa> pessoas = pessoaFacade.selecionarPorNumeroDocumento(sessao, false, ((PessoaJuridica) item.getPessoa()).getCnpj());
+                if (pessoas != null && !pessoas.isEmpty()) {
+                    throw new Exception("Já existe um cliente cadastrado com o mesmo número de CNPJ.");
+                }
+            }
+        }
+    }
+
     public List<Cliente> selecionarPorParametros(Session sessao, String sort, SortOrder order, Integer page, Integer maxPage, String nomeFiltro, String placaFiltro) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
@@ -41,10 +86,10 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         if (nomeFiltro != null && !nomeFiltro.isEmpty()) {
             c.add(Restrictions.like("pessoa.nome", nomeFiltro, MatchMode.ANYWHERE).ignoreCase());
         }
-       if (placaFiltro != null && !placaFiltro.isEmpty()) {
+        if (placaFiltro != null && !placaFiltro.isEmpty()) {
             c.add(Restrictions.like("veiculos.placa", placaFiltro, MatchMode.ANYWHERE).ignoreCase());
         }
-        super.setRowCount((Long)c.setProjection(Projections.rowCount()).uniqueResult());
+        super.setRowCount((Long) c.setProjection(Projections.rowCount()).uniqueResult());
         // realizar a pesquisa por demanda
         c = sessao.createCriteria(Cliente.class);
         c.createCriteria("pessoa", "pessoa");
@@ -61,12 +106,10 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         if (nomeFiltro != null && !nomeFiltro.isEmpty()) {
             c.add(Restrictions.like("pessoa.nome", nomeFiltro, MatchMode.ANYWHERE).ignoreCase());
         }
-       if (placaFiltro != null && !placaFiltro.isEmpty()) {
+        if (placaFiltro != null && !placaFiltro.isEmpty()) {
             c.add(Restrictions.like("veiculos.placa", placaFiltro, MatchMode.ANYWHERE).ignoreCase());
         }
         List<Cliente> lista = c.list();
         return lista;
     }
-    
-      
 }

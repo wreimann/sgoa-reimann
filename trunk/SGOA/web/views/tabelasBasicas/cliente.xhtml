@@ -122,11 +122,13 @@
 
                                 <p:inputMask id="CpfInput" required="true" rendered="#{clienteController.tipoPessoa == 'F'}"
                                              requiredMessage="O campo 'CPF' é obrigatório." 
-                                             value="#{clienteController.documento}" mask="999.999.999-99" />
+                                             value="#{clienteController.documento}" mask="999.999.999-99" 
+                                             disabled="#{clienteController.current.pessoa.id > 0}"/>
 
                                 <p:inputMask id="CnpjInput" required="true" rendered="#{clienteController.tipoPessoa == 'J'}"
                                              requiredMessage="O campo 'CNPJ' é obrigatório." 
-                                             value="#{clienteController.documento}" mask="99.999.999/9999-99" />
+                                             value="#{clienteController.documento}" mask="99.999.999/9999-99"
+                                             disabled="#{clienteController.current.pessoa.id > 0}"/>
                             </h:panelGroup>
 
                         </p:fieldset>
@@ -207,10 +209,13 @@
                                 <label id="AnoModeloLabel">Ano Modelo *</label>
                                 <p:inputMask id="AnoModeloInput" mask="9999" value="#{clienteController.currentVeiculo.anoModelo}" />
                             </fieldset>
+                            <fieldset id="VeiculoAtivo" >
+                                <h:selectBooleanCheckbox id="AtivoVeiculoCheck"  value="#{clienteController.currentVeiculo.ativo}" /> <b>Ativo *</b>
+                            </fieldset>
                             <p:commandButton id="btnAdicionarVeiculo" value="Incluir" actionListener="#{clienteController.adicionarVeiculo}" 
                                              title="Salvar veículo" process="pnlGrupoVeiculo" 
                                              update="pnlGrupoVeiculo">
-                                
+
                             </p:commandButton>
 
                             <div class="spacer"></div>
@@ -218,7 +223,7 @@
                                          value="#{clienteController.veiculos}" lazy="false" 
                                          paginator="true" paginatorPosition="bottom"  
                                          emptyMessage="Nenhum veículo cadastrado." 
-                                         rows="5">  
+                                         rows="3">  
                                 <p:column headerText="Ações" width="60">
                                     <p:commandButton actionListener="#{clienteController.editarVeiculo(item)}" process="dataTableVeiculo"
                                                      alt="Editar" title="Editar" icon="btn_editar" 
@@ -319,8 +324,7 @@
                                  actionListener="#{clienteController.salvar}" 
                                  update=":growl, :frmPesquisa" value="Salvar"/>
                 <p:commandButton id="btnCancelar" value="Cancelar" 
-                                 oncomplete="fecharFormDialog()"
-                                 />  
+                                 oncomplete="fecharFormDialog()" />  
             </h:form>
         </p:dialog>
 
