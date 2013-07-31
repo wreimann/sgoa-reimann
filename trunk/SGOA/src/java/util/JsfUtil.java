@@ -6,6 +6,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
+import org.primefaces.context.RequestContext;
 
 public class JsfUtil {
 
@@ -30,6 +31,7 @@ public class JsfUtil {
         } else {
             addErrorMessage(defaultMsg);
         }
+        RequestContext.getCurrentInstance().addCallbackParam("exceptionThrown", ex);   
     }
 
     public static void addErrorMessages(List<String> messages) {

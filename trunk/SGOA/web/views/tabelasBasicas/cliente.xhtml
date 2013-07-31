@@ -187,10 +187,10 @@
                                     </p:selectOneMenu> 
                                 </fieldset>
                             </h:panelGroup>  
-                            <fieldset id="PlacaField" style="width: 300px; float: left; text-transform: uppercase;" >
+                            <fieldset id="PlacaField" style="width: 300px; float: left; " >
                                 <label id="PlacaLabel">Placa *</label>
                                 <p:inputMask id="PlacaInput" mask="aaa9999" value="#{clienteController.currentVeiculo.placa}"
-                                             disabled="#{clienteController.editandoVeiculo}" />
+                                             disabled="#{clienteController.editandoVeiculo}"  style="text-transform: uppercase;" />
                             </fieldset>
                             <fieldset id="CorField" style="width: 300px; float: left; margin-left: 19px" >
                                 <label id="CorLabel">Cor *</label>
@@ -214,9 +214,7 @@
                             </fieldset>
                             <p:commandButton id="btnAdicionarVeiculo" value="Incluir" actionListener="#{clienteController.adicionarVeiculo}" 
                                              title="Salvar veículo" process="pnlGrupoVeiculo" 
-                                             update="pnlGrupoVeiculo">
-
-                            </p:commandButton>
+                                             update="pnlGrupoVeiculo"/>
 
                             <div class="spacer"></div>
                             <p:dataTable id="dataTableVeiculo" var="item" 
@@ -280,7 +278,7 @@
                     </p:tab>
                     <p:tab id="tab5" title="Endereço">
 
-                        <fieldset id="CEPField" style="width: 260px">
+                        <fieldset id="CEPField" style="width: 230px">
                             <label id="CEPLabel">CEP</label>
                             <p:inputMask mask="99.999-999" id="CepInput" converterMessage="Valor inválido!"
                                          value="#{clienteController.enderecoAux.cep}" />
@@ -302,17 +300,17 @@
                             <h:inputText id="ComplementoInput" value="#{clienteController.enderecoAux.complemento}" />
                         </fieldset>
 
-                        <fieldset id="BairroField" style="width: 375px; float: left; margin-left: 19px" >
+                        <fieldset id="BairroField" style="width: 375px; display: inline-block; margin-left: 19px" >
                             <label id="BairroLabel">Bairro</label>
                             <h:inputText id="BairroInput" value="#{clienteController.enderecoAux.bairro}" />
                         </fieldset>
 
-                        <fieldset id="MunicipioField" style="width: 430px; float: left;">
+                        <fieldset id="MunicipioField" style="width: 430px; float: left; margin-right:19px">
                             <label id="MunicipioLabel">Município</label>
                             <h:inputText id="MunicipioInput" value="#{clienteController.enderecoAux.municipio}"/>
                         </fieldset>
 
-                        <fieldset id="UFField" style="width: 175px; display: inline-block; margin-left: 19px">
+                        <fieldset id="UFField" style="width: 175px; display: inline-block; ">
                             <label id="UFabel">UF</label>
                             <p:inputMask mask="aa" id="UFInput" value="#{clienteController.enderecoAux.uf}" 
                                          converterMessage="Valor inválido!" />
@@ -328,22 +326,7 @@
             </h:form>
         </p:dialog>
 
-        <script type="text/javascript">  
-            function validarFormDialog(xhr, status, args) {  
-                if(args.validationFailed) {  
-                    jQuery('#dialog').effect("shake", { times:3 }, 100);
-                    jQuery('#messages').hide();
-                } else {  
-                    modalPopup.hide();  
-
-                }  
-            }  
-            function fecharFormDialog(xhr, status, args) {  
-                    modalPopup.hide();  
-                    jQuery('#messages').hide();
-                    jQuery('#growl').hide();
-            }  
-        </script>  
+         
     </ui:define>
     <ui:define name="Rodape">
     </ui:define>

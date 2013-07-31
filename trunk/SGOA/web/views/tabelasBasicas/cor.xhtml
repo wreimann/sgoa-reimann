@@ -110,23 +110,6 @@
             </h:form>
         </p:dialog>
 
-        <script type="text/javascript">  
-            function validarFormDialog(xhr, status, args) {  
-                if(args.validationFailed) {  
-                    jQuery('#dialog').effect("shake", { times:3 }, 100);
-                    jQuery('#messages').hide();
-                } else {  
-                    modalPopup.hide();  
-
-                }  
-            }  
-            function fecharFormDialog(xhr, status, args) {  
-                    modalPopup.hide();  
-                    jQuery('#messages').hide();
-                    jQuery('#growl').hide();
-            }  
-        </script>  
-
     </ui:define>
     <ui:define name="Rodape">
     </ui:define>
