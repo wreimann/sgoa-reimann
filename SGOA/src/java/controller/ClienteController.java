@@ -27,6 +27,7 @@ import model.PessoaFisica;
 import model.PessoaJuridica;
 import model.Veiculo;
 import org.hibernate.Session;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import util.HibernateFactory;

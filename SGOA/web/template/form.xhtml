@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
-      template="./master.xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"  
-      xmlns:f="http://java.sun.com/jsf/core"  
-      xmlns:ui="http://java.sun.com/jsf/facelets">
-   
+                template="./master.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"  
+                xmlns:f="http://java.sun.com/jsf/core"  
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
     <ui:define name="Nav">
         <ui:insert name="Navagador" ></ui:insert>
     </ui:define>
@@ -17,6 +17,22 @@
                     <ui:insert name="Titulo" ></ui:insert>
                 </header>
                 <div class="module_content">
+                    <script type="text/javascript">  
+                        function validarFormDialog(xhr, status, args) {  
+                            if(args.validationFailed || args.exceptionThrown) {  
+                                jQuery('#dialog').effect("shake", { times:3 }, 100);
+                                jQuery('#messages').hide();
+                            } else {  
+                                modalPopup.hide();  
+
+                            }  
+                        }  
+                        function fecharFormDialog(xhr, status, args) {  
+                                modalPopup.hide();  
+                                jQuery('#messages').hide();
+                                jQuery('#growl').hide();
+                        }  
+                    </script> 
                     <ui:insert name="Conteudo" ></ui:insert>
                 </div>
                 <footer>
