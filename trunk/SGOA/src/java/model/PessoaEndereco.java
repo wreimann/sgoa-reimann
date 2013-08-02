@@ -1,54 +1,25 @@
 package model;
 
-import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import model.Base.BaseEntidade;
 
-
 @Entity
 @Table(name = "pessoaendereco")
 public class PessoaEndereco extends BaseEntidade<PessoaEndereco> {
-    
+
     public PessoaEndereco() {
-    
     }
-    
-    @OneToOne
+
+    @OneToOne(optional = false)
     @JoinColumn(name="idpessoa")
     private Pessoa pessoa;
-    
-
-    @Size(max = 250)
-    @Column(name = "Logradouro")
-    private String logradouro;
-    
-    @Column(name = "Predical")
-    private Integer predical;
-    
-    @Size(max = 12)
-    @Column(name = "CEP")
-    private String cep;
-    
-    @Size(max = 200)
-    @Column(name = "Bairro")
-    private String bairro;
-    
-    @Size(max = 200)
-    @Column(name = "Municipio")
-    private String municipio;
-    
-    @Size(max = 2)
-    @Column(name = "UF")
-    private String uf;
-    
-    @Size(max = 200)
-    @Column(name = "Complemento")
-    private String complemento;
 
     public Pessoa getPessoa() {
         return pessoa;
@@ -57,7 +28,27 @@ public class PessoaEndereco extends BaseEntidade<PessoaEndereco> {
     public void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
     }
-  
+    @Column(name = "Logradouro")
+    @Size(max = 250)
+    private String logradouro;
+    @Column(name = "Predical")
+    private Integer predical;
+    @Column(name = "cep")
+    @Size(max = 12)
+    private String cep;
+    @Column(name = "Bairro")
+    @Size(max = 200)
+    private String bairro;
+    @Column(name = "Municipio")
+    @Size(max = 200)
+    private String municipio;
+    @Column(name = "UF")
+    @Size(max = 2)
+    private String uf;
+    @Column(name = "Complemento")
+    @Size(max = 200)
+    private String complemento;
+
     public String getLogradouro() {
         return logradouro;
     }
@@ -114,10 +105,8 @@ public class PessoaEndereco extends BaseEntidade<PessoaEndereco> {
         this.complemento = complemento;
     }
 
-   
     @Override
     public String toString() {
-        return getLogradouro() + "," + getPredical() + " - "+ getMunicipio();
+        return getLogradouro() + "," + getPredical() + " - " + getMunicipio();
     }
-    
 }
