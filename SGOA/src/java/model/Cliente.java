@@ -1,21 +1,23 @@
 package model;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import model.Base.BaseEntidadeAtivo;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 
 @Entity
@@ -29,10 +31,9 @@ public class Cliente extends BaseEntidadeAtivo<Cliente> {
         }
     }
     
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade={CascadeType.ALL})
     @JoinColumn(name = "idpessoa", insertable = true, updatable = true)
     @Fetch(org.hibernate.annotations.FetchMode.JOIN)
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Pessoa pessoa;
  
     public Pessoa getPessoa() {
@@ -43,8 +44,8 @@ public class Cliente extends BaseEntidadeAtivo<Cliente> {
         this.pessoa = pessoa;
     }
     
-    @OneToMany(cascade={javax.persistence.CascadeType.ALL}, orphanRemoval=true, fetch= FetchType.LAZY)
-    @JoinColumn(name="idpessoa")
+    @OneToMany(cascade= CascadeType.ALL, orphanRemoval=true, fetch= FetchType.EAGER)
+    @JoinColumn(name="idpessoa", referencedColumnName="idpessoa")
     private List<Veiculo> veiculos;
  
      public List<Veiculo> getVeiculos() {

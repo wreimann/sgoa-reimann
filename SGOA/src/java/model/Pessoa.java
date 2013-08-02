@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -50,9 +49,9 @@ public class Pessoa extends BaseEntidade<Pessoa> {
     @Column(name = "TelefoneSecundario")
     private String telefoneSecundario;
     
-    @OneToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name="idpessoa", table="PessoaEndereco",referencedColumnName="idpessoa")
-    @PrimaryKeyJoinColumn(referencedColumnName="idpessoa", columnDefinition="idpessoa")
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    @JoinColumn(name="idpessoa")
+    @PrimaryKeyJoinColumn
     private PessoaEndereco endereco;
 
   

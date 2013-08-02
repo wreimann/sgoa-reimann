@@ -16,7 +16,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.validation.ConstraintViolationException;
 import model.Cliente;
 import model.Cor;
 import model.Marca;
@@ -27,7 +26,7 @@ import model.PessoaFisica;
 import model.PessoaJuridica;
 import model.Veiculo;
 import org.hibernate.Session;
-import org.primefaces.context.RequestContext;
+import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import util.HibernateFactory;
@@ -201,6 +200,11 @@ public class ClienteController implements Serializable {
         } else {
             documento = ((PessoaJuridica) current.getPessoa()).getCnpj();
         }
+        //endereco
+        enderecoAux = current.getPessoa().getEndereco();
+        if(enderecoAux == null){
+        enderecoAux = new PessoaEndereco();
+        }
         //veiculos
         veiculos = new ArrayList<Veiculo>();
         for (Veiculo veiculo : current.getVeiculos()) {
@@ -218,6 +222,7 @@ public class ClienteController implements Serializable {
         limparCamposCadastro();
         currentVeiculo = new Veiculo();
         veiculos = new ArrayList<Veiculo>();
+        enderecoAux = new PessoaEndereco();
     }
 
     public void excluirVeiculo(Veiculo veiculo) {
@@ -281,11 +286,12 @@ public class ClienteController implements Serializable {
             pesAux.setTelefoneSecundario(current.getPessoa().getTelefoneSecundario());
             pesAux.setEmail(current.getPessoa().getEmail());
             //endereco
-            if (enderecoAux.getLogradouro() != null) {
+            if (!enderecoAux.getLogradouro().isEmpty()) {
+                enderecoAux.setCep(enderecoAux.getCep().replaceAll("\\.", "").replaceAll("-", ""));
                 enderecoAux.setPessoa(pesAux);
-                current.getPessoa().setEndereco(enderecoAux);
+                pesAux.setEndereco(enderecoAux);
             } else {
-                current.getPessoa().setEndereco(null);
+                pesAux.setEndereco(null);
             }
             //inclusão
             current.setPessoa(pesAux);
