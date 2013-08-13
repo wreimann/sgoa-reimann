@@ -11,10 +11,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import model.Base.BaseEntidade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "pessoa")
@@ -49,8 +53,7 @@ public class Pessoa extends BaseEntidade<Pessoa> {
     @Column(name = "TelefoneSecundario")
     private String telefoneSecundario;
     
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
-    @JoinColumn(name="idpessoa")
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, mappedBy="pessoa")
     @PrimaryKeyJoinColumn
     private PessoaEndereco endereco;
 

@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import model.Base.BaseEntidadeAtivo;
 import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "cliente")
@@ -45,6 +45,7 @@ public class Cliente extends BaseEntidadeAtivo<Cliente> {
     }
     
     @OneToMany(cascade= CascadeType.ALL, orphanRemoval=true, fetch= FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     @JoinColumn(name="idpessoa", referencedColumnName="idpessoa")
     private List<Veiculo> veiculos;
  

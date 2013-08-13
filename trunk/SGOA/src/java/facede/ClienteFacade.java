@@ -13,10 +13,15 @@ import javax.persistence.EntityNotFoundException;
 import model.Cliente;
 import model.PessoaFisica;
 import model.PessoaJuridica;
+import model.Veiculo;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.ExistsSubqueryExpression;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.hibernate.sql.JoinType;
 
 @Stateless
@@ -80,20 +85,18 @@ public class ClienteFacade extends BaseFacade<Cliente> {
             throw new Exception("Sessão não iniciada.");
         }
         //  busca o total de registro que atendam o filtro da pesquisa
-        Criteria c = sessao.createCriteria(Cliente.class);
-        c.createCriteria("pessoa", "pessoa");
-        c.createCriteria("veiculos", "veiculos", JoinType.LEFT_OUTER_JOIN);
+        Criteria c = sessao.createCriteria(Cliente.class, "cli");
         if (nomeFiltro != null && !nomeFiltro.isEmpty()) {
+            c.createCriteria("pessoa", "pessoa");
             c.add(Restrictions.like("pessoa.nome", nomeFiltro, MatchMode.ANYWHERE).ignoreCase());
         }
         if (placaFiltro != null && !placaFiltro.isEmpty()) {
-            c.add(Restrictions.like("veiculos.placa", placaFiltro, MatchMode.ANYWHERE).ignoreCase());
+            DetachedCriteria veiculosCriteria = DetachedCriteria.forClass(Veiculo.class, "veiculos");
+            veiculosCriteria.add(Restrictions.like("veiculos.placa", placaFiltro, MatchMode.EXACT).ignoreCase());
+            veiculosCriteria.add(Restrictions.eqProperty("veiculos.pessoa.id", "cli.pessoa.id"));
+            c.add(Subqueries.exists(veiculosCriteria.setProjection(Projections.property("veiculos.id"))));
         }
         super.setRowCount((Long) c.setProjection(Projections.rowCount()).uniqueResult());
-        // realizar a pesquisa por demanda
-        c = sessao.createCriteria(Cliente.class);
-        c.createCriteria("pessoa", "pessoa");
-        c.createCriteria("veiculos", "veiculos", JoinType.LEFT_OUTER_JOIN);
         c.setProjection(null).setResultTransformer(Criteria.ROOT_ENTITY);
         c.setFirstResult(page).setMaxResults(maxPage);
         if (sort != null) {
@@ -104,10 +107,14 @@ public class ClienteFacade extends BaseFacade<Cliente> {
             }
         }
         if (nomeFiltro != null && !nomeFiltro.isEmpty()) {
+            c.createCriteria("pessoa", "pessoa");
             c.add(Restrictions.like("pessoa.nome", nomeFiltro, MatchMode.ANYWHERE).ignoreCase());
         }
         if (placaFiltro != null && !placaFiltro.isEmpty()) {
-            c.add(Restrictions.like("veiculos.placa", placaFiltro, MatchMode.ANYWHERE).ignoreCase());
+            DetachedCriteria veiculosCriteria = DetachedCriteria.forClass(Veiculo.class, "veiculos");
+            veiculosCriteria.add(Restrictions.like("veiculos.placa", placaFiltro, MatchMode.EXACT).ignoreCase());
+            veiculosCriteria.add(Restrictions.eqProperty("veiculos.pessoa.id", "cli.pessoa.id"));
+            c.add(Subqueries.exists(veiculosCriteria.setProjection(Projections.property("veiculos.id"))));
         }
         List<Cliente> lista = c.list();
         return lista;
