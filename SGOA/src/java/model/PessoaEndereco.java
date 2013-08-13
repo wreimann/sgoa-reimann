@@ -5,7 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import model.Base.BaseEntidade;
@@ -17,7 +16,7 @@ public class PessoaEndereco extends BaseEntidade<PessoaEndereco> {
     public PessoaEndereco() {
     }
 
-    @OneToOne(optional = false)
+    @OneToOne(optional=false, cascade= CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="idpessoa")
     private Pessoa pessoa;
 
