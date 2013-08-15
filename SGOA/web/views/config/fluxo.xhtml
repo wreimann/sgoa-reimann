@@ -18,10 +18,10 @@
 
     <ui:define name="Conteudo">
         <h:form id="frmPesquisa">
-            <fieldset id="DescricaoPesquisaField">
+            <p:fieldset id="DescricaoPesquisaField">
                 <label id="DescricaoPesquisaLabel">Descrição</label>
                 <h:inputText id="DescricaoPesquisaInput" />
-            </fieldset>
+            </p:fieldset>
             <p:commandButton id="btnPesquisar" value="Pesquisar" type="button" />
             <p:commandButton id="btnLimparPesquisa" value="Limpar" type="button" />
         </h:form>
@@ -71,14 +71,14 @@
 
         <p:dialog widgetVar="modalPopup" modal="true" height="550" width="800" header="Cadastro de Fluxo de Trabalho" >
             <h:form id="frmCadastro"> 
-                <fieldset id="DescricaoField">
+                <p:fieldset id="DescricaoField">
                     <label id="DescricaoLabel">Descrição *</label>
                     <h:inputText id="DescricaoText" required="true" />
-                </fieldset>
-                <fieldset id="AtivoField">
+                </p:fieldset>
+                <p:fieldset id="AtivoField">
                     <h:selectBooleanCheckbox id="AtivoCheck"  value="1" /> <b>Ativo *</b>
-                </fieldset>
-                <fieldset id="DesenhoField">
+                </p:fieldset>
+                <p:fieldset id="DesenhoField">
                     <label id="DesenhoLabel">Desenho do Fluxo</label>
                     <div class="spacer"></div>
 
@@ -86,16 +86,16 @@
                         <p:ajax event="select" oncomplete="etapa.show()" />  
                         <p:ajax event="dblselect" oncomplete="etapa.show()"/>  
                     </p:mindmap>  
-                </fieldset>
+                </p:fieldset>
                 <p:dialog widgetVar="etapa" header="Nova Etapa" modal="true" height="320" width="450"  appendToBody="true">  
                     <h:outputText id="output" value="#{mindmapController.selectedNode.data}" />  
-                    <fieldset id="EtapaField">
+                    <p:fieldset id="EtapaField">
                         <label id="EtapaLabel">Etapa</label>
                         <h:selectOneMenu id="EtapaListBox" value="#{subscriptionController.subscriptions}">
                             <f:selectItem itemLabel="Desmontar veículo" itemValue="1" />
                         </h:selectOneMenu>
-                    </fieldset>
-                    <fieldset id="NotificarEmailField">
+                    </p:fieldset>
+                    <p:fieldset id="NotificarEmailField">
                         <label id="NotificarEmailLabel">Notificar via e-mail</label>
                         <br />
                         <br/>
@@ -104,13 +104,13 @@
                         <h:selectBooleanCheckbox value="1" /> <b>E-mail específico</b>
                         <h:inputText id="EmailEspecificoText" style="width: 265px; float: right; "/>
                         </div>
-                    </fieldset>
-                    <fieldset id="ProximaEtapaField">
+                    </p:fieldset>
+                    <p:fieldset id="ProximaEtapaField">
                         <label id="ProximaEtapaLabel">Próxima Etapa *</label>
                         <h:selectOneMenu id="ProximaEtapaListBox" value="#{subscriptionController.subscriptions}">
                             <f:selectItem itemLabel="Fim" itemValue="1" />
                         </h:selectOneMenu>
-                    </fieldset>
+                    </p:fieldset>
                     <div class="spacer"></div>
                     <h:panelGrid columns="4">  
                         <p:commandButton id="btnSalvarEtapa" value="Salvar" />  

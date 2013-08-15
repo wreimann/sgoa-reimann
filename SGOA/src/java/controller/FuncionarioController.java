@@ -7,21 +7,16 @@ import facede.SetorFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import model.Funcionario;
 import model.Perfil;
-import model.Pessoa;
 import model.PessoaEndereco;
 import model.PessoaFisica;
-import model.PessoaJuridica;
 import model.Profissao;
 import model.Setor;
 import org.hibernate.Session;
@@ -53,12 +48,9 @@ public class FuncionarioController implements Serializable {
     //propriedades cadastro
     private PessoaEndereco enderecoAux;
     private String documento;
-    private Setor setorTrabalho;
-    private Profissao profissao;
-    private Perfil perfilAcesso;
     private List<Setor> setoresAtivos;
     private List<Profissao> profissoesAtivos;
-    private List<Perfil> perfisAtivas;
+    private List<Perfil> perfisAtivos;
 
     public PessoaEndereco getEnderecoAux() {
         return enderecoAux;
@@ -74,6 +66,18 @@ public class FuncionarioController implements Serializable {
 
     public void setDocumento(String documento) {
         this.documento = documento;
+    }
+    
+    public List<Setor> getSetoresAtivos() {
+        return setoresAtivos;
+    }
+
+    public List<Profissao> getProfissoesAtivos() {
+        return profissoesAtivos;
+    }
+
+    public List<Perfil> getPerfisAtivos() {
+        return perfisAtivos;
     }
 
     public FuncionarioController() {
@@ -207,6 +211,7 @@ public class FuncionarioController implements Serializable {
         //campos do cadastro de veiculo
         montaListaProfissao();
         montaListaSetor();
+        montaListaPerfil();
     }
 
     private void montaListaSetor() {
@@ -237,12 +242,13 @@ public class FuncionarioController implements Serializable {
     private void montaListaPerfil() {
         try {
             Session sessao = HibernateFactory.currentSession();
-            PerfilFacade ebjCor = new PerfilFacade();
-            perfisAtivas = ebjCor.selecionarTodosAtivos(sessao);
+            PerfilFacade ebj = new PerfilFacade();
+            perfisAtivos = ebj.selecionarTodosAtivos(sessao);
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de perfil. ");
         } finally {
             HibernateFactory.closeSession();
         }
     }
+
 }

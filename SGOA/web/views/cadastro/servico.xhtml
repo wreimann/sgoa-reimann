@@ -19,49 +19,49 @@
     <ui:define name="Conteudo">
         <h:form id="frmCadastro"> 
             <h:commandLink id="btnDetalhe" styleClass="btn_new" onclick="modalPopup.show(); return false;" value="Detalhe" />
-            <fieldset id="PlacaField" style="width: 260px;">
+            <p:fieldset id="PlacaField" style="width: 260px;">
                 <label id="PlacaLabel">Placa * </label>
                 <h:inputText id="PlacaInput" readonly="true" />
 
-            </fieldset>
+            </p:fieldset>
 
-            <fieldset id="ClienteOSField" >
+            <p:fieldset id="ClienteOSField" >
                 <label id="ClienteOSLabel">Cliente</label>
                 <h:inputText id="ClienteOSText" required="true" />
-            </fieldset>
-            <fieldset id="FluxoField" >
+            </p:fieldset>
+            <p:fieldset id="FluxoField" >
                 <label id="FluxoLabel">Fluxo de Trabalho</label>
                 <h:inputText id="FluxoInput" />
                 <p:commandButton id="btnRemoverFluxo" value="Remover" />  
-            </fieldset>
-            <fieldset id="EtapaAtualField" >
+            </p:fieldset>
+            <p:fieldset id="EtapaAtualField" >
                 <label id="SituacaoLabel">Etapa Atual *</label>
                 <h:selectOneMenu id="EtapaAtualListBox" value="#{subscriptionController.subscriptions}">
                     <f:selectItem itemLabel="Desmontar Veículo" itemValue="1" />
                 </h:selectOneMenu>
-            </fieldset>
-            <fieldset id="DataConclusaoField" style="width: 260px; float: left;" >
+            </p:fieldset>
+            <p:fieldset id="DataConclusaoField" style="width: 260px; float: left;" >
                 <label id="DataConclusaoLabel">Conclusão *</label>
                 <h:inputText id="DataConclusaoInput" readonly="true" />
-            </fieldset>
-            <fieldset id="HorasTrabalhadaField" style="width: 260px; float: left; margin-left: 19px;" >
+            </p:fieldset>
+            <p:fieldset id="HorasTrabalhadaField" style="width: 260px; float: left; margin-left: 19px;" >
                 <label id="HorasTrabalhadaLabel">Horas trabalhadas *</label>
                 <h:inputText id="HorasTrabalhadaText"  />
-            </fieldset>
-            <fieldset id="FuncionarioField" style="width: 552px; display: inline-block; margin-left: 19px;">
+            </p:fieldset>
+            <p:fieldset id="FuncionarioField" style="width: 552px; display: inline-block; margin-left: 19px;">
                 <label id="FuncionarioLabel">Funcionário *</label>
                 <h:selectOneMenu id="FuncionarioListBox" value="#{subscriptionController.subscriptions}">
                     <f:selectItem itemLabel=" 1245 - Cesar Carlos Reimann" itemValue="1" />
                 </h:selectOneMenu>
-            </fieldset>
-            <fieldset id="ObsField" >
+            </p:fieldset>
+            <p:fieldset id="ObsField" >
                 <label id="ObsLabel">Observação</label>
                 <h:inputTextarea id="ObsInput" />
-            </fieldset>
-            <fieldset id="FotosField" >
+            </p:fieldset>
+            <p:fieldset id="FotosField" >
                 <p:fileUpload label="Imagem" mode="simple" />
-            </fieldset>
-            <fieldset id="DesenhoField">
+            </p:fieldset>
+            <p:fieldset id="DesenhoField">
                 <label id="DesenhoLabel">Andamento do Serviço</label>
                 <div class="spacer"></div>
 
@@ -69,7 +69,7 @@
                     <p:ajax event="select" oncomplete="etapa.show()" />  
                     <p:ajax event="dblselect" oncomplete="etapa.show()"/>  
                 </p:mindmap>  
-            </fieldset>
+            </p:fieldset>
 
 
             <div class="spacer"></div>
@@ -84,43 +84,43 @@
                 <p:tabView id="tabView">
                     <p:tab id="tab2" title="Dados básicos">  
                         <h:form>
-                            <fieldset id="EtapaField" >
+                            <p:fieldset id="EtapaField" >
                                 <label id="EtapaLabel">Etapa</label>
                                 <h:inputText id="EtapaText" />
-                            </fieldset>
-                            <fieldset id="SetorField" >
+                            </p:fieldset>
+                            <p:fieldset id="SetorField" >
                                 <label id="SetorLabel">Setor</label>
                                 <h:inputText id="SetorText" />
-                            </fieldset>
-                            <fieldset id="DataEntradaField" style="width: 210px; float: left;" >
+                            </p:fieldset>
+                            <p:fieldset id="DataEntradaField" style="width: 210px; float: left;" >
                                 <label id="DataEntradaLabel">Data Entrada</label>
                                 <h:inputText id="DataEntradaInput"  />
-                            </fieldset>
-                            <fieldset id="DataSaidaField" style="width: 210px; float: left; margin-left: 19px" >
+                            </p:fieldset>
+                            <p:fieldset id="DataSaidaField" style="width: 210px; float: left; margin-left: 19px" >
                                 <label id="DataSaidaLabel">Data Saida</label>
                                 <h:inputText id="DataSaidaInput"  />
-                            </fieldset>
-                            <fieldset id="HorasField" style="width: 210px; float: left; display: inline-block; margin-left: 19px;" >
+                            </p:fieldset>
+                            <p:fieldset id="HorasField" style="width: 210px; float: left; display: inline-block; margin-left: 19px;" >
                                 <label id="HorasLabel">Horas trabalhadas</label>
                                 <h:inputText id="HorasText"  />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="FuncionarioDetalheField">
+                            <p:fieldset id="FuncionarioDetalheField">
                                 <label id="FuncionarioDetalheLabel">Funcionário</label>
                                 <h:inputText id="FuncionarioDetalheInput" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="ObsDetalheField">
+                            <p:fieldset id="ObsDetalheField">
                                 <label id="ObsDetalheLabel">Observação</label>
                                 <h:inputTextarea id="ObsDetalheInput" />
-                            </fieldset>
+                            </p:fieldset>
                         </h:form>
                     </p:tab>
                     <p:tab id="tab3" title="Fotos">
                         <h:form>
-                            <fieldset id="FotosDetalheField" >
+                            <p:fieldset id="FotosDetalheField" >
                                 <p:fileUpload label="Imagem" mode="simple" />
-                            </fieldset>
+                            </p:fieldset>
                         </h:form>
                     </p:tab>
 

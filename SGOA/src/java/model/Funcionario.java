@@ -77,6 +77,17 @@ public class Funcionario extends BaseEntidadeAtivo<Funcionario> {
         this.perfilAcesso = perfil;
     }
     
+    @Column(name = "matricula")
+    private String matricula;
+
+    public String getMatricula() {
+        return matricula;
+    }
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
+    
     @Column(name = "Senha")
     private String senha;
 
