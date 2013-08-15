@@ -5,7 +5,7 @@ import javax.persistence.Table;
 import model.Base.BaseEntidadeDescricao;
 
 @Entity
-@Table(name = "setor")
+@Table(name = "perfil")
 public class Perfil extends BaseEntidadeDescricao<Perfil> {
     
 }
