@@ -18,27 +18,27 @@
 
     <ui:define name="Conteudo">
         <h:form id="frmPesquisa" >
-            <fieldset id="NumeroPesquisaField" style="width: 260px;">
+            <p:fieldset id="NumeroPesquisaField" style="width: 260px;">
                 <label id="NumeroPesquisaLabel">NÃºmero</label>
                 <h:inputText id="NumeroPesquisaInput" />
-            </fieldset>
-            <fieldset id="ClientePesquisaField">
+            </p:fieldset>
+            <p:fieldset id="ClientePesquisaField">
                 <label id="ClientePesquisaLabel">Cliente</label>
                 <p:autoComplete id="ClientePesquisaInput" />
-            </fieldset>
-            <fieldset id="PlacaPesquisaField" style="width: 260px;" >
+            </p:fieldset>
+            <p:fieldset id="PlacaPesquisaField" style="width: 260px;" >
                 <label id="PlacaPesquisaLabel">Placa</label>
                 <h:inputText id="PlacaPesquisaInput" />
-            </fieldset>
-            <fieldset id="DataInicioPesquisaField" style="width: 260px; display: inline; margin-right: 19px;">
+            </p:fieldset>
+            <p:fieldset id="DataInicioPesquisaField" style="width: 260px; display: inline; margin-right: 19px;">
                 <label id="DataInicioPesquisaLabel">Data Início</label>
                 <p:calendar showButtonPanel="true" navigator="true" id="ptCalInicioConserto" /> 
-            </fieldset>
-            <fieldset id="DataFimPesquisaField" style="width: 260px; display: inline;">
+            </p:fieldset>
+            <p:fieldset id="DataFimPesquisaField" style="width: 260px; display: inline;">
                 <label id="DataFimPesquisaLabel">Data Final</label>
                 <p:calendar  showButtonPanel="true" navigator="true" id="ptCalFimConserto" /> 
-            </fieldset>
-            <fieldset id="SituacaoPesquisaField" style="width: 540px;">
+            </p:fieldset>
+            <p:fieldset id="SituacaoPesquisaField" style="width: 540px;">
                 <label id="SituacaoPesquisaLabel">Situação</label>
                 <h:selectOneMenu id="SituacaoPesquisaListBox" value="#{subscriptionController.subscriptions}">
                     <f:selectItem itemLabel="Selecione..." itemValue="0" />
@@ -46,7 +46,7 @@
                     <f:selectItem itemLabel="Cancelado" itemValue="2" />
                     <f:selectItem itemLabel="Aprovado" itemValue="3" />
                 </h:selectOneMenu>
-            </fieldset>
+            </p:fieldset>
             <p:commandButton id="btnPesquisar" value="Pesquisar" type="button" />
             <p:commandButton id="btnLimparPesquisa" value="Limpar" type="button" />
         </h:form>
@@ -95,66 +95,66 @@
                 <p:tabView id="tabView">
                     <p:tab id="tab2" title="Dados bÃ¡sico">  
                         <h:form>
-                            <fieldset id="NumeroField" style="width: 260px; float: left;">
+                            <p:fieldset id="NumeroField" style="width: 260px; float: left;">
                                 <label id="NumeroLabel">NÃºmero</label>
                                 <h:inputText id="NumeroInput" readonly="true" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="DataEntradaField" style="width: 260px; float: left; margin-left: 19px; margin-right: 19px;" >
+                            <p:fieldset id="DataEntradaField" style="width: 260px; float: left; margin-left: 19px; margin-right: 19px;" >
                                 <label id="DataEntradaLabel">Data Cadastro</label>
                                 <h:inputText id="DataEntradaInput" readonly="true" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="SituacaoField" style="width: 550px; display: inline-block; ">
+                            <p:fieldset id="SituacaoField" style="width: 550px; display: inline-block; ">
                                 <label id="SituacaoLabel">SituaÃ§Ã£o</label>
                                 <h:selectOneMenu id="SituacaoListBox" value="#{subscriptionController.subscriptions}">
                                     <f:selectItem itemLabel="Em Aberto" itemValue="1" />
                                     <f:selectItem itemLabel="Cancelado" itemValue="2" />
                                     <f:selectItem itemLabel="Aprovado" itemValue="3" />
                                 </h:selectOneMenu>
-                            </fieldset>
-                            <fieldset id="ClienteField">
+                            </p:fieldset>
+                            <p:fieldset id="ClienteField">
                                 <label id="ClienteLabel">Cliente *</label>
                                 <h:inputText id="ClienteText" required="true" />
-                            </fieldset>
-                            <fieldset id="VeiculoField" style="width: 260px;">
+                            </p:fieldset>
+                            <p:fieldset id="VeiculoField" style="width: 260px;">
                                 <label id="VeiculoLabel">VeÃ­culo *</label>
                                 <h:selectOneMenu id="VeiculoListBox" value="#{subscriptionController.subscriptions}">
                                     <f:selectItem itemLabel="ATO-3804 / Fiat - PÃ¡lio" itemValue="1" />
                                 </h:selectOneMenu>
-                            </fieldset>
-                            <fieldset id="SeguradoraField">
+                            </p:fieldset>
+                            <p:fieldset id="SeguradoraField">
                                 <label id="SeguradoraLabel">Seguradora</label>
                                 <h:inputText id="SeguradoraText"  />
-                            </fieldset>
-                            <fieldset id="ObsField">
+                            </p:fieldset>
+                            <p:fieldset id="ObsField">
                                 <label id="ObsLabel">ObservaÃ§Ã£o</label>
                                 <h:inputTextarea id="ObsInput" />
-                            </fieldset>
+                            </p:fieldset>
                         </h:form>
                     </p:tab>
                     <p:tab id="tab3" title="ServiÃ§os">
                         <h:form> 
-                            <fieldset id="TotalPecasField" style="width: 260px;" >
+                            <p:fieldset id="TotalPecasField" style="width: 260px;" >
                                 <label id="TotalPecasLabel">Valor de PeÃ§as *</label>
                                 <h:inputText id="TotalPecasInput" />
-                            </fieldset>
-                            <fieldset id="ValorServicoField" style="width: 260px; float: left;">
+                            </p:fieldset>
+                            <p:fieldset id="ValorServicoField" style="width: 260px; float: left;">
                                 <label id="ValorServicoLabel">Valor dos ServiÃ§os</label>
                                 <h:inputText id="ValorServicoText"  />
-                            </fieldset>
-                            <fieldset id="TotalHorasField" style="width: 260px; float: left; margin-left: 19px;">
+                            </p:fieldset>
+                            <p:fieldset id="TotalHorasField" style="width: 260px; float: left; margin-left: 19px;">
                                 <label id="TotalHorasLabel">Total de Horas</label>
                                 <h:inputText id="TotaHorasText"  />
-                            </fieldset>
-                            <fieldset id="ValorTotalField" style="width: 260px;" >
+                            </p:fieldset>
+                            <p:fieldset id="ValorTotalField" style="width: 260px;" >
                                 <label id="ValorTotalLabel">Valor Total</label>
                                 <h:inputText id="ValorTotalInput" />
-                            </fieldset>
-                            <fieldset id="AnexoField" >
+                            </p:fieldset>
+                            <p:fieldset id="AnexoField" >
                                 <label id="AnexoLabel">Anexo</label>
                                 <h:inputText id="AnexoInput" />
-                            </fieldset>
+                            </p:fieldset>
 
                             <div class="spacer"></div>
                             <div class="width_full_border">
@@ -201,25 +201,25 @@
         <p:dialog widgetVar="modalPopupOS" modal="true" height="600" width="800" 
                   header="Cadastro de Ordem de ServiÃ§o" >
             <h:form id="frmCadastroOS"> 
-                <fieldset id="NumeroOSField" style="width: 260px;">
+                <p:fieldset id="NumeroOSField" style="width: 260px;">
                     <label id="NumeroOSLabel">Orçamento</label>
                     <h:inputText id="NumeroOSInput" readonly="true" />
-                </fieldset>
+                </p:fieldset>
 
-                <fieldset id="ClienteOSField">
+                <p:fieldset id="ClienteOSField">
                     <label id="ClienteOSLabel">Cliente</label>
                     <h:inputText id="ClienteOSText" required="true" />
-                </fieldset>
-                <fieldset id="VeiculoOSField" style="width: 260px;">
+                </p:fieldset>
+                <p:fieldset id="VeiculoOSField" style="width: 260px;">
                     <label id="VeiculoOSLabel">VeÃ­culo</label>
                     <h:selectOneMenu id="VeiculoOSListBox" value="#{subscriptionController.subscriptions}">
                         <f:selectItem itemLabel="ATO-3804 / Fiat - PÃ¡lio" itemValue="1" />
                     </h:selectOneMenu>
-                </fieldset>
-                <fieldset id="FluxoField" >
+                </p:fieldset>
+                <p:fieldset id="FluxoField" >
                     <label id="FluxoLabel">Fluxo de Trabalho</label>
                     <h:inputText id="FluxoInput" />
-                </fieldset>
+                </p:fieldset>
                 <div class="spacer"></div>
                 <div class="width_full_border">
                     <header>

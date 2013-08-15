@@ -18,14 +18,14 @@
 
     <ui:define name="Conteudo">
         <h:form id="frmPesquisa">
-            <fieldset id="MatriculaPesquisaField" style="width: 260px;" >
+            <p:fieldset id="MatriculaPesquisaField" style="width: 260px;" >
                 <label id="MatriculaPesquisaLabel">MatrÃ­cula</label>
                 <h:inputText id="MatriculaPesquisaInput" />
-            </fieldset>
-            <fieldset id="NomePesquisaField">
+            </p:fieldset>
+            <p:fieldset id="NomePesquisaField">
                 <label id="NomePesquisaLabel">Nome</label>
                 <h:inputText id="NomePesquisaInput" />
-            </fieldset>
+            </p:fieldset>
             <p:commandButton id="btnPesquisar" value="Pesquisar" type="button" />
             <p:commandButton id="btnLimparPesquisa" value="Limpar" type="button" />
         </h:form>
@@ -84,127 +84,127 @@
                 <p:tabView id="tabView">
                     <p:tab id="tab2" title="Dados bÃ¡sico">  
                         <h:form>
-                            <fieldset id="MatriculaField" style="width: 260px; float: left;" >
+                            <p:fieldset id="MatriculaField" style="width: 260px; float: left;" >
                                 <label id="MatriculaLabel">MatrÃ­cula *</label>
                                 <h:inputText id="MatriculaInput" />
-                            </fieldset>
-                            <fieldset id="NascimentoField" style="width: 260px; float: left; margin-left: 19px;">
+                            </p:fieldset>
+                            <p:fieldset id="NascimentoField" style="width: 260px; float: left; margin-left: 19px;">
                                 <label id="NascimentoLabel">Data de Nascimento *</label>
                                 <p:calendar showButtonPanel="true" navigator="true" id="pnlDataNasc"/>  
-                            </fieldset>
-                            <fieldset id="NomeField">
+                            </p:fieldset>
+                            <p:fieldset id="NomeField">
                                 <label id="NomeLabel">Nome *</label>
                                 <h:inputText id="NomeText" required="true" />
-                            </fieldset>
-                            <fieldset id="SexoField" style="float: left; width: 260px;">
+                            </p:fieldset>
+                            <p:fieldset id="SexoField" style="float: left; width: 260px;">
                                 <label id="SexoLabel">Sexo *</label>
                                 <h:selectOneMenu id="SexoListBox" value="#{subscriptionController.subscriptions}">
                                     <f:selectItem itemLabel="Masculino" itemValue="1" />
                                     <f:selectItem itemLabel="Feminino" itemValue="2" />
                                 </h:selectOneMenu>
-                            </fieldset>
-                            <fieldset id="DocumentoField" style="width: 260px; float: left; margin-left: 19px;">
+                            </p:fieldset>
+                            <p:fieldset id="DocumentoField" style="width: 260px; float: left; margin-left: 19px;">
                                 <label id="DocumentoLabel">CPF</label>
                                 <h:inputText id="DocumentoInput" />
-                            </fieldset>
-                            <fieldset id="ProfissaoField">
+                            </p:fieldset>
+                            <p:fieldset id="ProfissaoField">
                                 <label id="ProfissaoLabel">ProfissÃ£o *</label>
                                 <h:selectOneMenu id="FabricantePesquisaListBox" value="#{subscriptionController.subscriptions}">
                                     <f:selectItem itemLabel="Pintor" itemValue="1" />
                                     <f:selectItem itemLabel="GM" itemValue="2" />
                                 </h:selectOneMenu>
-                            </fieldset>
-                            <fieldset id="SetorField">
+                            </p:fieldset>
+                            <p:fieldset id="SetorField">
                                 <label id="SetorLabel">Setor de trabalho *</label>
                                 <h:selectOneMenu id="SetorListBox" value="#{subscriptionController.subscriptions}">
                                     <f:selectItem itemLabel="Setor de Pintura" itemValue="1" />
                                     <f:selectItem itemLabel="GM" itemValue="2" />
                                 </h:selectOneMenu>
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="ObsField">
+                            <p:fieldset id="ObsField">
                                 <label id="ObsLabel">ObservaÃ§Ã£o</label>
                                 <h:inputTextarea id="ObsInput" />
-                            </fieldset>
-                            <fieldset id="Ativo">
+                            </p:fieldset>
+                            <p:fieldset id="Ativo">
                                 <h:selectBooleanCheckbox id="AtivoCheck"  value="1" /> <b>Ativo *</b>
-                            </fieldset>
+                            </p:fieldset>
                         </h:form>
                     </p:tab>
                     <p:tab id="tab3" title="Contatos">
                         <h:form>
-                            <fieldset id="TelefoneField" style="width: 260px;">
+                            <p:fieldset id="TelefoneField" style="width: 260px;">
                                 <label id="TelefoneLabel">Telefone PrimÃ¡rio*</label>
                                 <h:inputText id="TelefoneInput" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="CelularField" style="width: 260px;">
+                            <p:fieldset id="CelularField" style="width: 260px;">
                                 <label id="CelularLabel">Telefone SecundÃ¡rio</label>
                                 <h:inputText id="CelularInput" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="EmailField">
+                            <p:fieldset id="EmailField">
                                 <label id="EmailLabel">E-mail</label>
                                 <h:inputText id="EmailInput" />
-                            </fieldset>
+                            </p:fieldset>
                         </h:form>
                     </p:tab>
                     <p:tab id="tab4" title="EndereÃ§o">
                         <h:form> 
-                            <fieldset id="CEPField" style="width: 260px">
+                            <p:fieldset id="CEPField" style="width: 260px">
                                 <label id="CEPLabel">CEP</label>
                                 <h:inputText id="CepInput" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="RuaField" style="width: 430px; float: left" >
+                            <p:fieldset id="RuaField" style="width: 430px; float: left" >
                                 <label id="RuaLabel">Rua</label>
                                 <h:inputText id="RuaInput" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="NumeroField" style="width: 175px; float: left; margin-left: 19px">
+                            <p:fieldset id="NumeroField" style="width: 175px; float: left; margin-left: 19px">
                                 <label id="NumeroLabel">NÃºmero</label>
                                 <h:inputText id="NumeroInput" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="BairroField" >
+                            <p:fieldset id="BairroField" >
                                 <label id="BairroLabel">Bairro</label>
                                 <h:inputText id="BairroInput" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="MunicipioField" style="width: 430px; float: left">
+                            <p:fieldset id="MunicipioField" style="width: 430px; float: left">
                                 <label id="MunicipioLabel">MunicÃ­pio</label>
                                 <h:inputText id="MunicipioInput" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="UFField" style="width: 175px; float:  left; margin-left: 19px">
+                            <p:fieldset id="UFField" style="width: 175px; float:  left; margin-left: 19px">
                                 <label id="UFabel">UF</label>
                                 <h:inputText id="UFInput" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="ComplementoField">
+                            <p:fieldset id="ComplementoField">
                                 <label id="ComplementoLabel">Complemento</label>
                                 <h:inputTextarea id="ComplementoInput" />
-                            </fieldset>
+                            </p:fieldset>
                         </h:form>
                     </p:tab>
                     <p:tab id="tab5" title="Acesso Sistema">
                         <h:form> 
-                            <fieldset id="PerfilField">
+                            <p:fieldset id="PerfilField">
                                 <label id="PerfilLabel">Perfil de acesso</label>
                                 <h:selectOneMenu id="PerfilListBox" value="#{subscriptionController.subscriptions}">
                                     <f:selectItem itemLabel="Sem acesso ..." itemValue="1" />
                                     <f:selectItem itemLabel="GM" itemValue="2" />
                                 </h:selectOneMenu>
-                            </fieldset>
-                            <fieldset id="NovaSenha" style="width: 260px; display:inline; margin-right: 19px">
+                            </p:fieldset>
+                            <p:fieldset id="NovaSenha" style="width: 260px; display:inline; margin-right: 19px">
                                 <label id="NovaSenhaLabel">Nova Senha</label>
                                 <h:inputSecret id="NovaSenhaText" required="true" />
-                            </fieldset>
+                            </p:fieldset>
 
-                            <fieldset id="ConfirmarSenha" style="width: 260px; display:inline; margin-right: 19px">
+                            <p:fieldset id="ConfirmarSenha" style="width: 260px; display:inline; margin-right: 19px">
                                 <label id="ConfirmarSenhaLabel">Confirmar Senha</label>
                                 <h:inputSecret id="ConfirmarSenhaText" required="true" />
-                            </fieldset>
+                            </p:fieldset>
                         </h:form> 
                     </p:tab>
                 </p:tabView>

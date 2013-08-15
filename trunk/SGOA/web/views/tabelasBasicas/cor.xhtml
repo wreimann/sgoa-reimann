@@ -20,10 +20,10 @@
     <ui:define name="Conteudo">
         <h:form id="frmPesquisa" prependId="false">
             <p:focus context="frmPesquisa"/> 
-            <fieldset id="DescricalPesquisaField">
+            <p:fieldset id="DescricalPesquisaField">
                 <label id="DescricaoLabel">Descrição</label>
                 <p:inputText id="DescricaoInput" value="#{corController.descFiltro}"/>
-            </fieldset>
+            </p:fieldset>
             <p:commandButton id="btnPesquisar" value="Pesquisar"  
                             update=":frmPesquisa" title="Pesquisar"/>
             <p:commandButton id="btnLimparPesquisa" value="Limpar" update=":frmPesquisa"
@@ -88,16 +88,16 @@
             <p:messages id="growl" for="DescricaoText" />
             <h:form id="frmCadastro" prependId="false" > 
                 <p:focus context="frmCadastro"/> 
-                <fieldset id="Descricao">
+                <p:fieldset id="Descricao">
                     <label id="DecricaoLabel">Descrição *</label>
                     <p:inputText id="DescricaoText" required="true" 
                                  requiredMessage="O campo 'Descrição' é obrigatório." 
                                  value="#{corController.current.descricao}"  />                 
-                </fieldset>
-                <fieldset id="Ativo">
+                </p:fieldset>
+                <p:fieldset id="Ativo">
                     <h:selectBooleanCheckbox id="AtivoCheck" 
                                              value="#{corController.current.ativo}" /> <b>Ativo *</b>
-                </fieldset>
+                </p:fieldset>
                 <div class="spacer"></div>
 
                 <p:commandButton id="btnSalvar" 
