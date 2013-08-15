@@ -132,7 +132,8 @@
                                         pattern="dd/MM/yyyy" required="true"  
                                         requiredMessage="O campo 'Data Nascimento' é obrigatório."  />  
                         </p:fieldset>
-                        <p:fieldset id="ProfissaoField" style="float: left; width: 280px; margin-right: 18px;">
+                        <div class="clear"> </div>
+                        <p:fieldset id="ProfissaoField" style="float: left; width: 280px; margin-right: 18px; display: block;">
                             <label id="ProfissaoLabel">Profissão *</label>
                             <p:selectOneMenu id="ProfissaoListBox" required="true" styleClass="selectOneMenu" 
                                              requiredMessage="O campo 'Profissão' é obrigatório." 
@@ -176,7 +177,7 @@
                         </p:fieldset>
 
                         <p:fieldset id="EmailField">
-                            <label id="EmailLabel">E-mail *</label>
+                            <label id="EmailLabel">E-mail</label>
                             <h:inputText id="EmailInput" required="true"
                                          requiredMessage="O campo 'E-mail' é obrigatório."
                                          value="#{funcionarioController.current.pessoa.email}"
