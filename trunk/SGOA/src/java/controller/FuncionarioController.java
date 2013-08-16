@@ -48,6 +48,7 @@ public class FuncionarioController implements Serializable {
     //propriedades cadastro
     private PessoaEndereco enderecoAux;
     private String documento;
+    private String matricula;
     private List<Setor> setoresAtivos;
     private List<Profissao> profissoesAtivos;
     private List<Perfil> perfisAtivos;
@@ -66,6 +67,14 @@ public class FuncionarioController implements Serializable {
 
     public void setDocumento(String documento) {
         this.documento = documento;
+    }
+    
+     public String getMatricula() {
+        return matricula;
+    }
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
     }
     
     public List<Setor> getSetoresAtivos() {
@@ -120,6 +129,8 @@ public class FuncionarioController implements Serializable {
 
     public void prepararEdicao(ActionEvent event) {
         current = (Funcionario) lazyModel.getRowData();
+        documento = current.getPessoa().getCpf();
+        matricula = current.getMatricula();
         //endereco
         enderecoAux = current.getPessoa().getEndereco();
         if (enderecoAux == null) {
@@ -169,6 +180,8 @@ public class FuncionarioController implements Serializable {
                 pesAux.setEndereco(null);
             }
             //inclusão
+            matricula = matricula.replaceAll("\\.", "");
+            current.setMatricula(matricula);
             current.setPessoa(pesAux);
             Session sessao = HibernateFactory.currentSession();
             if (current.getId() != null) {
@@ -206,7 +219,7 @@ public class FuncionarioController implements Serializable {
     }
 
     private void limparCamposCadastro() {
-        documento = "";
+        documento = matricula = "";
         this.enderecoAux = new PessoaEndereco();
         //campos do cadastro de veiculo
         montaListaProfissao();

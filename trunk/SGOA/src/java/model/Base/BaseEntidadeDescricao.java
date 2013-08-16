@@ -25,6 +25,6 @@ public class BaseEntidadeDescricao<T extends BaseEntidadeDescricao> extends Base
     
     @Override
     public String toString() {
-        return getId().toString() + " - " + getDescricao();
+        return getDescricao();
     }
 }
