@@ -59,7 +59,7 @@
                     <h:outputText value="#{item.matricula}" />  
                 </p:column>  
 
-                <p:column sortBy="#{item.pessoa.nome}" headerText="Nome">  
+                <p:column sortBy="#{item.pessoa}" headerText="Nome">  
                     <h:outputText value="#{item.pessoa.nome}" />  
                 </p:column>  
 
@@ -98,8 +98,9 @@
                     <p:tab id="tab2" title="Dados básicos">  
                         <p:fieldset id="MatriculaField" style="width: 265px;">
                             <label id="TipoLabel">Matrícula </label>
-                            <p:inputMask id="MatriculaInput"  
-                                         value="#{funcionarioController.current.matricula}" mask="9999.9?999" 
+                            <p:inputMask id="MatriculaInput"  required="true"
+                                         requiredMessage="O campo 'Matrícula' é obrigatório."
+                                         value="#{funcionarioController.matricula}" mask="9999.9?999" 
                                          disabled="#{funcionarioController.current.id > 0}"/>
                         </p:fieldset>
                         <p:fieldset id="NomeField">
@@ -231,8 +232,7 @@
                     <p:tab id="tab6" title="Acesso Sistema">
                         <p:fieldset id="PerfilField">
                             <label id="PerfilLabel">Perfil de Acesso *</label>
-                            <p:selectOneMenu id="PerfilListBox" required="true" styleClass="selectOneMenu" 
-                                             requiredMessage="O campo 'Perfil de Acesso' é obrigatório." 
+                            <p:selectOneMenu id="PerfilListBox" styleClass="selectOneMenu" 
                                              value="#{funcionarioController.current.perfilAcesso}" converter="perfilConverter">  
                                 <f:selectItem itemValue="#{null}" itemLabel="Sem acesso" noSelectionOption="true" />
                                 <f:selectItems value="#{funcionarioController.perfisAtivos}" var="perfilAcesso" 

@@ -16,13 +16,10 @@ import model.PessoaJuridica;
 import model.Veiculo;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.ExistsSubqueryExpression;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.hibernate.sql.JoinType;
 
 @Stateless
 public class ClienteFacade extends BaseFacade<Cliente> {
@@ -55,15 +52,13 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         if (item == null) {
             throw new EntityNotFoundException("Objeto nulo.");
         }
-        PessoaFacade pessoaFacade = new PessoaFacade();
         if (item.getPessoa() instanceof PessoaFisica) {
             if (!util.Comum.isValidoCPF(((PessoaFisica) item.getPessoa()).getCpf())) {
                 throw new Exception("CPF inválido.");
             }
             if (item.getId() == null || item.getId() == 0) {
-                List<Pessoa> pessoas = pessoaFacade.selecionarPorNumeroDocumento(sessao, true, ((PessoaFisica) item.getPessoa()).getCpf());
-                pessoas.remove(item.getPessoa());
-                if (pessoas != null && !pessoas.isEmpty()) {
+                List<Cliente> clientes = selecionarPorNumeroDocumento(sessao, true, ((PessoaFisica) item.getPessoa()).getCpf());
+                if (clientes != null && !clientes.isEmpty()) {
                     throw new Exception("Já existe um cliente cadastrado com o mesmo número de CPF.");
                 }
             }
@@ -72,8 +67,8 @@ public class ClienteFacade extends BaseFacade<Cliente> {
                 throw new Exception("CNPJ inválido.");
             }
             if (item.getId() == null || item.getId() == 0) {
-                List<Pessoa> pessoas = pessoaFacade.selecionarPorNumeroDocumento(sessao, false, ((PessoaJuridica) item.getPessoa()).getCnpj());
-                if (pessoas != null && !pessoas.isEmpty()) {
+                List<Cliente> clientes = selecionarPorNumeroDocumento(sessao, false, ((PessoaJuridica) item.getPessoa()).getCnpj());
+                if (clientes != null && !clientes.isEmpty()) {
                     throw new Exception("Já existe um cliente cadastrado com o mesmo número de CNPJ.");
                 }
             }
@@ -115,6 +110,27 @@ public class ClienteFacade extends BaseFacade<Cliente> {
             veiculosCriteria.add(Restrictions.like("veiculos.placa", placaFiltro, MatchMode.EXACT).ignoreCase());
             veiculosCriteria.add(Restrictions.eqProperty("veiculos.pessoa.id", "cli.pessoa.id"));
             c.add(Subqueries.exists(veiculosCriteria.setProjection(Projections.property("veiculos.id"))));
+        }
+        List<Cliente> lista = c.list();
+        return lista;
+    }
+
+    public List<Cliente> selecionarPorNumeroDocumento(Session sessao, boolean pessoaFisica, String numero) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        Criteria c = sessao.createCriteria(Cliente.class, "cli");
+        if (pessoaFisica) {
+            DetachedCriteria dc = DetachedCriteria.forClass(PessoaFisica.class, "pf");
+            dc.add(Restrictions.eq("cpf", numero));
+            dc.add(Restrictions.eqProperty("pf.id", "cli.pessoa.id"));
+            c.add(Subqueries.exists(dc.setProjection(Projections.property("pf.id"))));
+
+        } else {
+            DetachedCriteria dc = DetachedCriteria.forClass(PessoaJuridica.class, "pj");
+            dc.add(Restrictions.eq("cnpj", numero));
+            dc.add(Restrictions.eqProperty("pj.id", "cli.pessoa.id"));
+            c.add(Subqueries.exists(dc.setProjection(Projections.property("pj.id"))));
         }
         List<Cliente> lista = c.list();
         return lista;
