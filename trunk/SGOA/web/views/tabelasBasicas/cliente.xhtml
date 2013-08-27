@@ -96,7 +96,12 @@
                    showEffect="fade" header="Cadastro de Cliente" id="dialog">
             <p:messages id="growl" autoUpdate="true" closable="true"  />
 
-            <h:form id="frmCadastro" prependId="false" >                
+            <h:form id="frmCadastro" prependId="false" >    
+                 <script type="text/javascript">  
+                   jQuery(function($) {
+                       $("#tabView\\:pnlDataNasc_input").mask("99/99/9999");
+                   });
+                </script>
                 <p:focus context="frmCadastro"/> 
                 <p:tabView id="tabView" >
                     <p:tab id="tab2" title="Dados básicos">  
@@ -165,7 +170,7 @@
 
                     </p:tab>
                     <p:tab id="tab3" title="Veículos">
-                        <h:panelGroup id="pnlGrupoVeiculo"  >
+                        <h:panelGroup id="pnlGrupoVeiculo" >
                             <p:fieldset id="MarcaField" style="width: 170px; float: left; margin-right: 19px;">
                                 <label id="MarcaLabel">Marca *</label>
                                 <p:selectOneMenu id="MarcaListBox" styleClass="selectOneMenu" 

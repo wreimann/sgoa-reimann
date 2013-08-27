@@ -89,13 +89,19 @@
 
 
         <p:dialog  widgetVar="modalPopup" modal="true" width="715" height="550" resizable="false"
-                   showEffect="fade" header="Cadastro de Funcionário" id="dialog">
+                   showEffect="fade" header="Cadastro de Funcionário" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
 
-            <h:form id="frmCadastro" prependId="false" >                
+            <h:form id="frmCadastro" prependId="false" >  
+
+                <script type="text/javascript">  
+                   jQuery(function($) {
+                       $("#tabView\\:pnlDataNasc_input").mask("99/99/9999");
+                   });
+                </script> 
                 <p:focus context="frmCadastro"/> 
-                <p:tabView id="tabView" >
-                    <p:tab id="tab2" title="Dados básicos">  
+                <p:tabView id="tabView" activeIndex="0" >
+                    <p:tab id="tab2" title="Dados básicos" >  
                         <p:fieldset id="MatriculaField" style="width: 265px;">
                             <label id="TipoLabel">Matrícula </label>
                             <p:inputMask id="MatriculaInput"  required="true"
@@ -130,7 +136,7 @@
                             <p:calendar showButtonPanel="true" navigator="true" id="pnlDataNasc"
                                         value="#{funcionarioController.current.pessoa.dataNascimento}" 
                                         converterMessage="Valor inválido!"
-                                        pattern="dd/MM/yyyy" required="true"  
+                                        pattern="dd/MM/yyyy" required="true"  widgetVar="dataNascimento"
                                         requiredMessage="O campo 'Data Nascimento' é obrigatório."  />  
                         </p:fieldset>
                         <div class="clear"> </div>
@@ -251,8 +257,6 @@
                 </h:panelGroup>
             </h:form>
         </p:dialog>
-
-
     </ui:define>
     <ui:define name="Rodape">
     </ui:define>
