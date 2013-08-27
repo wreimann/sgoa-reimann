@@ -1,205 +1,319 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
                 template="./../../template/form.xhtml"
+                xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core" 
-                xmlns:p="http://primefaces.org/ui">
-
+                xmlns:f="http://java.sun.com/jsf/core">
     <ui:define name="Navagador">
         <a class="current">Cadastro</a>
         <div class="breadcrumb_divider"></div> 
-        <a class="current">OrÃ§amentos</a>
+        <a class="current">Orçamentos</a>
     </ui:define>
 
     <ui:define name="Titulo">
-        <h2>OrÃ§amentos</h2>
+        <h2>Orçamentos</h2>
     </ui:define>
 
     <ui:define name="Conteudo">
-        <h:form id="frmPesquisa" >
+        <h:form id="frmPesquisa" prependId="false">
+            <script type="text/javascript">  
+                  jQuery(function($) {
+                      $("#DataInicioPesquisa").mask("99/99/9999");
+                      $("#DataFinalPesquisa").mask("99/99/9999");
+                  });
+            </script>
+            <p:focus context="frmPesquisa"/> 
             <p:fieldset id="NumeroPesquisaField" style="width: 260px;">
-                <label id="NumeroPesquisaLabel">NÃºmero</label>
-                <h:inputText id="NumeroPesquisaInput" />
+                <p:outputLabel id="NumeroPesquisaLabel" value="Número"/>
+                <p:inputMask id="NumeroPesquisaInput"  
+                             value="#{orcamentoController.matricula}" mask="9999.9?999" />
             </p:fieldset>
             <p:fieldset id="ClientePesquisaField">
-                <label id="ClientePesquisaLabel">Cliente</label>
+                <p:outputLabel id="ClientePesquisaLabel" value="Cliente"/>
                 <p:autoComplete id="ClientePesquisaInput" />
             </p:fieldset>
             <p:fieldset id="PlacaPesquisaField" style="width: 260px;" >
-                <label id="PlacaPesquisaLabel">Placa</label>
-                <h:inputText id="PlacaPesquisaInput" />
+                <p:outputLabel id="PlacaPesquisaLabel" value="Placa"/>
+                <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" value="#{orcamentoController.placaFiltro}" 
+                             style="text-transform: uppercase;"/>
             </p:fieldset>
-            <p:fieldset id="DataInicioPesquisaField" style="width: 260px; display: inline; margin-right: 19px;">
-                <label id="DataInicioPesquisaLabel">Data Início</label>
-                <p:calendar showButtonPanel="true" navigator="true" id="ptCalInicioConserto" /> 
+            <p:fieldset styleClass="fieldset" id="DataInicialPesquisa" style="width: 260px; display: inline; margin-right: 19px;">
+                <p:outputLabel id="DataInicioPesquisaLabel" value="Data Inicial"/>
+                <p:calendar showButtonPanel="true" navigator="true" id="DataInicioPesquisa"
+                            value="#{orcamentoController.dataInicial}" converterMessage="Valor inválido!"
+                            pattern="dd/MM/yyyy" />  
             </p:fieldset>
-            <p:fieldset id="DataFimPesquisaField" style="width: 260px; display: inline;">
-                <label id="DataFimPesquisaLabel">Data Final</label>
-                <p:calendar  showButtonPanel="true" navigator="true" id="ptCalFimConserto" /> 
+
+            <p:fieldset styleClass="fieldset" id="DataFinalPesquisa" style="width: 260px; display: inline;">
+                <p:outputLabel id="DataFinalPesquisaLabel" value="Data Final"/>
+                <p:calendar showButtonPanel="true" navigator="true" id="DataFinalPesquisa"
+                            value="#{clienteController.dataFinal}" converterMessage="Valor inválido!"
+                            pattern="dd/MM/yyyy" />  
             </p:fieldset>
             <p:fieldset id="SituacaoPesquisaField" style="width: 540px;">
-                <label id="SituacaoPesquisaLabel">Situação</label>
-                <h:selectOneMenu id="SituacaoPesquisaListBox" value="#{subscriptionController.subscriptions}">
+                <p:outputLabel id="SituacaoPesquisaLabel" value="Situação"/>
+                <p:selectOneMenu id="SituacaoPesquisaListBox" styleClass="selectOneMenu" 
+                                 value="#{orcamentoController.situacao}" >  
                     <f:selectItem itemLabel="Selecione..." itemValue="0" />
                     <f:selectItem itemLabel="Em Aberto" itemValue="1" />
                     <f:selectItem itemLabel="Cancelado" itemValue="2" />
-                    <f:selectItem itemLabel="Aprovado" itemValue="3" />
-                </h:selectOneMenu>
+                    <f:selectItem itemLabel="Aprovado" itemValue="3" />  
+                </p:selectOneMenu> 
             </p:fieldset>
-            <p:commandButton id="btnPesquisar" value="Pesquisar" type="button" />
-            <p:commandButton id="btnLimparPesquisa" value="Limpar" type="button" />
+            <p:commandButton id="btnPesquisar" value="Pesquisar"  
+                             update="messages, :frmPesquisa" title="Pesquisar"/>
+            <p:commandButton id="btnLimparPesquisa" value="Limpar" update=":frmPesquisa"
+                             action="#{orcamentoController.limparCampos}" />
+            <p:messages id="messages" autoUpdate="true" closable="true"  />  
+            <div class="spacer"></div>
+            <p:dataTable id="dataTable" var="item" 
+                         value="#{orcamentoController.lazyModel}" lazy="true" 
+                         paginator="true" paginatorPosition="bottom"  
+                         emptyMessage="Nenhum resultado encontrado." 
+                         rows="#{orcamentoController.pageSize}"
+                         currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >  
+                <f:facet name="header">  
+                    <div class="tabs_involved">
+                        <h:outputLabel value="Listagem de Orçamento" styleClass="tabs_involved" />
+                        <p:commandLink id="btnNovo" title="Novo"  styleClass="btn_new" 
+                                       value="Novo" update=":frmCadastro, :growl" 
+                                       actionListener="#{orcamentoController.prepararInclusao}" 
+                                       oncomplete="modalPopup.show()"/>
+                    </div>
+                </f:facet>  
+                <p:column headerText="Ações" width="60">
+                    <p:commandButton actionListener="#{orcamentoController.prepararEdicao}" 
+                                     alt="Editar" title="Editar" icon="btn_editar"
+                                     style="margin-right: 10px; margin-left: 10px"
+                                     oncomplete="modalPopup.show()" update=":frmCadastro, :growl" />
+                    <p:commandButton actionListener="#{orcamentoController.prepararOrdemServico}"
+                                     title="Inativar" alt="OrdemServico"
+                                     icon="btn_excluir" 
+                                     oncomplete="modalOSPopup.show()" />
+                    <p:commandButton actionListener="#{orcamentoController.prepararExclusao}"
+                                     title="Inativar" alt="Cancelar"
+                                     icon="btn_excluir" 
+                                     oncomplete="confirmCancelamentoDialog.show()" />
+                </p:column>
+                <p:column sortBy="#{item.numero}" headerText="Orçamento"  width="60" >  
+                    <h:outputText value="#{item.numero}" />  
+                </p:column>  
+                <p:column sortBy="#{item.dataCadastro}" headerText="Data Cadastro">  
+                    <h:outputText value="#{item.dataCadastro}" />  
+                </p:column>  
+                <p:column sortBy="#{item.cliente}" headerText="Cliente">  
+                    <h:outputText value="#{item.cliente.pessoa.nome}" />  
+                </p:column>  
+
+                <p:column sortBy="#{item.veiculo}" headerText="Veículo">  
+                    <h:outputText value="#{item.veiculo}" />  
+                </p:column>  
+
+                <p:column sortBy="#{item.situacao}" headerText="Situação">  
+                    <h:outputText value="#{item.situacao}" />  
+                </p:column>  
+            </p:dataTable>
+            <p:confirmDialog widgetVar="confirmCancelamentoDialog" 
+                             message="Confirma o cancelamento do orçamento selecionado ?" 
+                             showEffect="slide" hideEffect="clip" severity="alert">  
+
+                <p:commandButton oncomplete="confirmCancelamentoDialog.hide()" update=":frmPesquisa"
+                                 actionListener="#{orcamentoController.cancelar}" 
+                                 value="Sim"/> 
+                <p:commandButton value="Não" onclick="confirmCancelamentoDialog.hide()"/>    
+
+            </p:confirmDialog> 
         </h:form>
-        <div class="spacer"></div>
-        <div class="width_full_border">
-            <header>
-                <h3 class="tabs_involved">Listagem de Orçamentos</h3>
-                <ul>
-                    <h:form>
-                        <h:commandLink id="btnNovo" styleClass="btn_new" onclick="modalPopupOS.show(); return false;" value="Novo" />
-                    </h:form>
-                </ul>
-            </header>
-            <div id="tab1" class="tab_content">
-                <table class="tablesorter" cellspacing="0"> 
-                    <thead> 
-                        <tr> 
-                            <th width="75px">Ações</th>
-                            <th>Orçamento</th>
-                            <th>Cliente</th> 
-                            <th>VeÃ­culo</th>
-                            <th>Data Cadastro</th>
-                            <th>SituaÃ§Ã£o</th>
-                        </tr> 
-                    </thead> 
-                    <tbody> 
-                        <tr> 
-                            <td width="75px"> 
-                                <h:graphicImage alt="Editar" url="/images/icn_edit.png" style="margin-right: 10px;" />
-                                <h:graphicImage alt="Aprovar" url="/images/icn_alert_success.png" />
-                                <h:graphicImage alt="Cancelar" url="/images/icn_trash.png" />
-                            </td>
-                            <td>2012.00010</td>
-                            <td>Reimann</td> 
-                            <td> ATO-3804 / Fiat - PÃ¡lio</td> 
-                            <td>12/06/2012</td>
-                            <td>Aprovado</td>
-                        </tr> 
-                    </tbody> 
-                </table>
-            </div>
-        </div>
 
-        <p:dialog widgetVar="modalPopup" modal="true" height="600" width="720" header="Cadastro de OrÃ§amento" >
-            <h:form id="frmCadastro">
+        <p:dialog  widgetVar="modalPopup" modal="true" width="700" height="550" resizable="false"
+                   showEffect="fade" header="Cadastro de Orçamento" id="dialog" >
+            <p:messages id="growl" autoUpdate="true" closable="true"  />
+            <h:form id="frmCadastro" prependId="false" >
+                <script type="text/javascript">  
+                    function mascara(o, f) {  
+                        v_obj = o;  
+                        v_fun = f;  
+                        setTimeout("execmascara()", 1);  
+                    }  
+  
+                    function execmascara() {  
+                        v_obj.value = v_fun(v_obj.value);  
+                    }  
+
+                    function valor(v) {  
+                        v = v.replace(/\D/g, "");  
+                        v = v.replace(/[0-9]{15}/, "inválido");  
+                        v = v.replace(/(\d{1})(\d{11})$/, "$1.$2"); // coloca ponto antes dos  
+                        v = v.replace(/(\d{1})(\d{8})$/, "$1.$2"); // coloca ponto antes dos  
+                        v = v.replace(/(\d{1})(\d{5})$/, "$1.$2"); // coloca ponto antes dos  
+                        v = v.replace(/(\d{1})(\d{1,2})$/, "$1,$2"); // coloca virgula antes dos  
+                        return v;  
+                    }  
+                </script>
                 <p:tabView id="tabView">
-                    <p:tab id="tab2" title="Dados bÃ¡sico">  
-                        <h:form>
-                            <p:fieldset id="NumeroField" style="width: 260px; float: left;">
-                                <label id="NumeroLabel">NÃºmero</label>
-                                <h:inputText id="NumeroInput" readonly="true" />
-                            </p:fieldset>
+                    <p:tab id="tab2" title="Dados básicos">  
+                        <p:fieldset id="NumeroField" style="width: 265px;">
+                            <p:outputLabel id="NumeroLabel" value="Número"/>
+                            <p:inputMask id="NumeroInput"  
+                                         value="#{orcamentoController.current.numero}" mask="9999.9?999" 
+                                         disabled="true"/>
+                        </p:fieldset>
+                        <p:fieldset id="DataEntradaField" style="width: 260px; float: left; margin-left: 19px; margin-right: 19px;" >
+                            <p:outputLabel id="DataCadastroLabel" value="Data Cadastro"/>
+                            <p:calendar showButtonPanel="true" navigator="true" id="DataCadastroInput"
+                                        value="#{orcamentoController.current.dataCadastro}" pattern="dd/MM/yyyy" /> 
+                        </p:fieldset>
 
-                            <p:fieldset id="DataEntradaField" style="width: 260px; float: left; margin-left: 19px; margin-right: 19px;" >
-                                <label id="DataEntradaLabel">Data Cadastro</label>
-                                <h:inputText id="DataEntradaInput" readonly="true" />
-                            </p:fieldset>
-
-                            <p:fieldset id="SituacaoField" style="width: 550px; display: inline-block; ">
-                                <label id="SituacaoLabel">SituaÃ§Ã£o</label>
-                                <h:selectOneMenu id="SituacaoListBox" value="#{subscriptionController.subscriptions}">
-                                    <f:selectItem itemLabel="Em Aberto" itemValue="1" />
-                                    <f:selectItem itemLabel="Cancelado" itemValue="2" />
-                                    <f:selectItem itemLabel="Aprovado" itemValue="3" />
-                                </h:selectOneMenu>
-                            </p:fieldset>
-                            <p:fieldset id="ClienteField">
-                                <label id="ClienteLabel">Cliente *</label>
-                                <h:inputText id="ClienteText" required="true" />
-                            </p:fieldset>
+                        <p:fieldset id="SituacaoField" style="width: 550px; display: inline-block; ">
+                            <label id="SituacaoLabel">Situação</label>
+                            <h:selectOneMenu id="SituacaoListBox" value="#{orcamentoController.current.situacao}">
+                                <f:selectItem itemLabel="Em Aberto" itemValue="1" />
+                                <f:selectItem itemLabel="Cancelado" itemValue="2" />
+                                <f:selectItem itemLabel="Aprovado" itemValue="3" />
+                                <f:selectItem itemLabel="Finalizado" itemValue="4" />
+                            </h:selectOneMenu>
+                        </p:fieldset>
+                        <p:fieldset id="ClienteField">
+                            <label id="ClienteLabel">Cliente *</label>
+                            <p:autoComplete value="#{orcamentoController.current.cliente}" id="ClienteText" 
+                                            completeMethod="#{orcamentoController.selecionarClienteAutoComplete}"  
+                                            var="cliente" itemLabel="#{cliente.pessoa.nome}" 
+                                            itemValue="#{cliente}" converter="clienteConverter" 
+                                            forceSelection="true" required="true"
+                                            requiredMessage="O campo 'Cliente' é obrigatório.">
+                                <p:ajax event="change" update="VeiculosPanel" />
+                            </p:autoComplete>
+                        </p:fieldset>
+                        <h:panelGroup id="DocumentoPanel">
                             <p:fieldset id="VeiculoField" style="width: 260px;">
-                                <label id="VeiculoLabel">VeÃ­culo *</label>
-                                <h:selectOneMenu id="VeiculoListBox" value="#{subscriptionController.subscriptions}">
-                                    <f:selectItem itemLabel="ATO-3804 / Fiat - PÃ¡lio" itemValue="1" />
-                                </h:selectOneMenu>
+                                <label id="VeiculoLabel">Veículo *</label>
+                                <p:selectOneMenu id="VeiculoListBox" required="true" styleClass="selectOneMenu" 
+                                                 requiredMessage="O campo 'Veículo' é obrigatório." 
+                                                 value="#{orcamentoController.veiculoCliente}" converter="veiculoConverter">  
+                                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                                    <f:selectItems value="#{orcamentoController.veiculosCliente}" var="veiculo" 
+                                                   itemLabel="#{veiculo}" itemValue="#{veiculo}"/>  
+                                </p:selectOneMenu> 
                             </p:fieldset>
-                            <p:fieldset id="SeguradoraField">
-                                <label id="SeguradoraLabel">Seguradora</label>
-                                <h:inputText id="SeguradoraText"  />
-                            </p:fieldset>
-                            <p:fieldset id="ObsField">
-                                <label id="ObsLabel">ObservaÃ§Ã£o</label>
-                                <h:inputTextarea id="ObsInput" />
-                            </p:fieldset>
-                        </h:form>
+                        </h:panelGroup>
+                        <p:fieldset id="SeguradoraField">
+                            <label id="SeguradoraLabel">Seguradora</label>
+                            <p:inputTextarea id="SeguradoraInput" value="#{orcamentoController.current.seguradora}" />
+                        </p:fieldset>
+                        <p:fieldset id="ObsField">
+                            <label id="ObsLabel">Observação</label>
+                            <p:inputTextarea id="ObsInput" value="#{orcamentoController.current.obs}" />
+                        </p:fieldset>
+
                     </p:tab>
-                    <p:tab id="tab3" title="ServiÃ§os">
-                        <h:form> 
+                    <p:tab id="tab3" title="Serviços">
+                        <h:panelGroup id="pnlGrupoServicos"> 
                             <p:fieldset id="TotalPecasField" style="width: 260px;" >
-                                <label id="TotalPecasLabel">Valor de PeÃ§as *</label>
-                                <h:inputText id="TotalPecasInput" />
+                                <label id="TotalPecasLabel">Valor de Peças *</label>
+                                <p:inputText id="TotalPecasInput" maxlength="11" size="20" 
+                                             value="#{orcamentoController.current.valorPecas}" 
+                                             onkeypress="mascara(this, valor);"/>
                             </p:fieldset>
                             <p:fieldset id="ValorServicoField" style="width: 260px; float: left;">
-                                <label id="ValorServicoLabel">Valor dos ServiÃ§os</label>
-                                <h:inputText id="ValorServicoText"  />
+                                <label id="ValorServicoLabel">Valor dos Serviços *</label>
+                                <p:inputText id="TotalServicosInput" maxlength="11" size="20" 
+                                             value="#{orcamentoController.current.valorServicos}" 
+                                             onkeypress="mascara(this, valor);"/>
                             </p:fieldset>
                             <p:fieldset id="TotalHorasField" style="width: 260px; float: left; margin-left: 19px;">
                                 <label id="TotalHorasLabel">Total de Horas</label>
-                                <h:inputText id="TotaHorasText"  />
+                                <p:inputMask id="TotaHorasText" mask="999?9.99" />
                             </p:fieldset>
                             <p:fieldset id="ValorTotalField" style="width: 260px;" >
                                 <label id="ValorTotalLabel">Valor Total</label>
-                                <h:inputText id="ValorTotalInput" />
+                                <p:inputText id="ValorTotalInput" maxlength="11" size="20" 
+                                             value="#{orcamentoController.current.valorTotal}" 
+                                             onkeypress="mascara(this, valor);"/>
                             </p:fieldset>
                             <p:fieldset id="AnexoField" >
-                                <label id="AnexoLabel">Anexo</label>
+                                <label id="AnexoLabel">Anexos</label>
                                 <h:inputText id="AnexoInput" />
                             </p:fieldset>
 
-                            <div class="spacer"></div>
-                            <div class="width_full_border">
-                                <header>
-                                    <h3 class="tabs_involved">Listagem dos ServiÃ§os</h3>
-                                </header>
-                                <div id="tabVeiculos">
-                                    <table class="tablesorter" cellspacing="0"> 
-                                        <thead> 
-                                            <tr> 
-                                                <th width="25px">AÃ§Ãµes</th>
-                                                <th>ServiÃ§o</th>
-                                                <th>Horas</th> 
-                                                <th>Valor Hora</th>
-                                                <th>Valor</th>
-                                            </tr> 
-                                        </thead> 
-                                        <tbody> 
-                                            <tr> 
-                                                <td width="25px"> 
-                                                    <h:graphicImage alt="Excluir" url="/images/icn_trash.png" />
-                                                </td>
-                                                <td>Pintura</td>
-                                                <td>10</td>
-                                                <td>R$ 300,00</td>
-                                                <td>R$ 3.000,00</td>
-                                            </tr> 
-                                        </tbody> 
-                                    </table>
-                                </div>
-                            </div>
-                        </h:form>
+                            <p:dataTable id="dataTableVeiculo" var="item" 
+                                         value="#{orcamentoController.servicos}" lazy="false"
+                                         editable="true" editMode="cell">  
+
+                                <p:column sortBy="#{item.tipoServico}" headerText="Tipo Serviço">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">
+                                            <h:outputText value="#{item.tipoServico}" />
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu value="#{item.tipoServico}" style="width:100%">  
+                                                <f:selectItems value="#{orcamentoController.tipoServicos}" var="tipo" 
+                                                               itemLabel="#{tipo}" itemValue="#{tipo}" />  
+                                            </h:selectOneMenu>  
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column>  
+                                
+                                <p:column sortBy="#{item.tipoServico}" headerText="Horas">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">
+                                            <h:outputText value="#{item.tipoServico}" />
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu value="#{item.tipoServico}" style="width:100%">  
+                                                <f:selectItems value="#{orcamentoController.tipoServicos}" var="tipo" 
+                                                               itemLabel="#{tipo}" itemValue="#{tipo}" />  
+                                            </h:selectOneMenu>  
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column> 
+                                <p:column sortBy="#{item.tipoServico}" headerText="Valor Hora">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">
+                                            <h:outputText value="#{item.tipoServico}" />
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu value="#{item.tipoServico}" style="width:100%">  
+                                                <f:selectItems value="#{orcamentoController.tipoServicos}" var="tipo" 
+                                                               itemLabel="#{tipo}" itemValue="#{tipo}" />  
+                                            </h:selectOneMenu>  
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column> 
+                                
+                                <p:column sortBy="#{item.tipoServico}" headerText="Total">  
+                                    <p:cellEditor>  
+                                        <f:facet name="output">
+                                            <h:outputText value="#{item.tipoServico}" />
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <h:selectOneMenu value="#{item.tipoServico}" style="width:100%">  
+                                                <f:selectItems value="#{orcamentoController.tipoServicos}" var="tipo" 
+                                                               itemLabel="#{tipo}" itemValue="#{tipo}" />  
+                                            </h:selectOneMenu>  
+                                        </f:facet>  
+                                    </p:cellEditor>  
+                                </p:column> 
+
+                            </p:dataTable>
+
+                        </h:panelGroup>
                     </p:tab>
 
                 </p:tabView>
-                <div class="spacer"></div>
-                <h:panelGrid columns="4">  
-                    <p:commandButton id="btnSalvar" value="Salvar" />  
-                    <p:commandButton id="btnCancelar" value="Cancelar" />  
-                </h:panelGrid>
+                <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
+                    <p:commandButton id="btnSalvar" 
+                                     oncomplete="validarFormDialog(xhr, status, args)"
+                                     actionListener="#{orcamentoController.salvar}" 
+                                     update=":growl, :frmPesquisa" value="Salvar"/>
+                    <p:commandButton id="btnCancelar" value="Cancelar" 
+                                     oncomplete="fecharFormDialog()" />  
+                </h:panelGroup>
             </h:form>
         </p:dialog>
 
-        <p:dialog widgetVar="modalPopupOS" modal="true" height="600" width="800" 
-                  header="Cadastro de Ordem de ServiÃ§o" >
+        <p:dialog widgetVar="modalPopupOS" modal="true" height="500" width="600" 
+                  header="Cadastro de Ordem de Serviço" >
             <h:form id="frmCadastroOS"> 
                 <p:fieldset id="NumeroOSField" style="width: 260px;">
                     <label id="NumeroOSLabel">Orçamento</label>
