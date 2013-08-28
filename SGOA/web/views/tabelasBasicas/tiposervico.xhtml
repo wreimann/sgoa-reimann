@@ -25,7 +25,7 @@
                 <p:inputText id="DescricaoInput" value="#{tipoServicoController.descFiltro}"/>
             </p:fieldset>
             <p:commandButton id="btnPesquisar" value="Pesquisar"  
-                            update=":frmPesquisa" title="Pesquisar"/>
+                             update=":frmPesquisa" title="Pesquisar"/>
             <p:commandButton id="btnLimparPesquisa" value="Limpar" update=":frmPesquisa"
                              action="#{tipoServicoController.limparCampos}" />
             <p:messages id="messages" autoUpdate="true" closable="true" />  
@@ -65,6 +65,12 @@
                     <h:outputText value="#{item.descricao}" />  
                 </p:column>  
 
+                <p:column sortBy="#{item.valorHoraPadrao}" headerText="Valor Padrão">  
+                    <h:outputText value="#{item.valorHoraPadrao}" >
+                        <f:convertNumber pattern="#,##0.00" minFractionDigits="2" type="currency" />
+                    </h:outputText> 
+                </p:column> 
+
                 <p:column sortBy="#{item.ativo}" headerText="Ativo"  width="40">  
                     <h:selectBooleanCheckbox value="#{item.ativo}" disabled="true" />
                 </p:column>  
@@ -84,7 +90,7 @@
 
         <p:dialog widgetVar="modalPopup" modal="true" width="600" resizable="false"
                   showEffect=" fade" header="Cadastro de Tipo de Serviço" id="dialog">
-            <p:messages id="growl" for="DescricaoText" />
+            <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmCadastro" prependId="false" > 
                 <p:focus context="frmCadastro"/> 
                 <p:fieldset id="Descricao">
@@ -92,6 +98,14 @@
                     <p:inputText id="DescricaoText" required="true" 
                                  requiredMessage="O campo 'Descrição' é obrigatório." 
                                  value="#{tipoServicoController.current.descricao}"  />                 
+                </p:fieldset>
+                <p:fieldset id="ValorPadrao">
+                    <label id="ValorLabel">Valor Padrão</label>
+                    <p:inputText id="ValorPadraoInput"  
+                                 value="#{tipoServicoController.current.valorHoraPadrao}"
+                                 onkeypress="mascara(this, valor);">
+                        <f:convertNumber pattern="#,##0.00" minFractionDigits="2" type="currency" />
+                    </p:inputText>
                 </p:fieldset>
                 <p:fieldset id="Ativo">
                     <h:selectBooleanCheckbox id="AtivoCheck" 
@@ -104,8 +118,7 @@
                                  actionListener="#{tipoServicoController.salvar}" 
                                  update=":growl, :frmPesquisa" value="Salvar"/>
                 <p:commandButton id="btnCancelar" value="Cancelar" 
-                                 oncomplete="fecharFormDialog()"
-                                 />  
+                                 oncomplete="fecharFormDialog()" />  
             </h:form>
         </p:dialog>
 

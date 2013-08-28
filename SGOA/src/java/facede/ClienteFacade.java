@@ -135,4 +135,18 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         List<Cliente> lista = c.list();
         return lista;
     }
+    
+    public List<Cliente> selecionarPorNomeAutoComplete(Session sessao, String query) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        //  busca o total de registro que atendam o filtro da pesquisa
+        Criteria c = sessao.createCriteria(Cliente.class, "Cliente");
+        if (query != null && !query.isEmpty()) {
+            c.createCriteria("pessoa", "pessoa");
+            c.add(Restrictions.like("pessoa.nome", query, MatchMode.ANYWHERE).ignoreCase());
+        }
+        List<Cliente> lista = c.list();
+        return lista;
+    }
 }
