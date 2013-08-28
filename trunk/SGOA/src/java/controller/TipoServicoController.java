@@ -24,6 +24,7 @@ public class TipoServicoController implements Serializable {
     private int pageSize = 10;
     private TipoServico current;
     private LazyDataModel<TipoServico> lazyModel;
+    private String valor;
     @EJB
     private facede.TipoServicoFacade ejbFacade;
     //propriedades para filtro da pesquisa
@@ -35,6 +36,14 @@ public class TipoServicoController implements Serializable {
 
     public void setDescFiltro(String descFiltro) {
         this.descFiltro = descFiltro;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
     }
 
     public TipoServicoController() {
@@ -74,7 +83,6 @@ public class TipoServicoController implements Serializable {
         return current;
     }
 
-    
     public void prepararEdicao(ActionEvent event) {
         current = (TipoServico) lazyModel.getRowData();
     }
@@ -126,5 +134,6 @@ public class TipoServicoController implements Serializable {
     public void limparCampos() {
         current = null;
         setDescFiltro(null);
+        valor = null;
     }
 }
