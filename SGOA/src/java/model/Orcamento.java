@@ -1,17 +1,23 @@
 package model;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import model.Base.BaseEntidade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "orcamento")
@@ -82,6 +88,17 @@ public class Orcamento extends BaseEntidade<Orcamento> {
         this.seguradora = seguradora;
     }
     
+    @Column(name = "terceiro")
+    private boolean terceiro;
+
+    public boolean getTerceiro() {
+        return terceiro;
+    }
+
+    public void setTerceiro(boolean terceiro) {
+        this.terceiro = terceiro;
+    }
+    
     @Size(max = 200)
     @Column(name = "Obs")
     private String obs;
@@ -105,7 +122,16 @@ public class Orcamento extends BaseEntidade<Orcamento> {
         this.situacao = situacao;
     }
     
-    
-  
-  
+    @OneToMany(cascade= CascadeType.ALL, orphanRemoval=true, fetch= FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
+    @JoinColumn(name="idorcamento")
+    private List<OrcamentoTipoServico> servicos;
+ 
+     public List<OrcamentoTipoServico> getServicos() {
+        return servicos;
+    }
+
+    public void setServicos(List<OrcamentoTipoServico> servicos) {
+        this.servicos = servicos;
+    }
 }
