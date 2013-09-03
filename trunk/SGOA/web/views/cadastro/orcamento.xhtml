@@ -34,8 +34,7 @@
                                 completeMethod="#{orcamentoController.selecionarClienteAutoComplete}"
                                 var="cliente" effect="fade"
                                 itemLabel="#{cliente.pessoa.nome}" itemValue="#{cliente}"
-                                converter="clienteConverter" forceSelection="true" 
-                                minQueryLength="3"/>
+                                converter="clienteConverter" forceSelection="true" />
             </p:fieldset>
             <p:fieldset id="PlacaPesquisaField" style="width: 190px; display: inline-block;" >
                 <p:outputLabel id="PlacaPesquisaLabel" value="Placa"/>
@@ -133,94 +132,110 @@
             </p:confirmDialog>
         </h:form>
 
-        <p:dialog  widgetVar="modalPopup" modal="true" width="700" height="550" resizable="false"
+        <p:dialog  widgetVar="modalPopup" modal="true" width="750" height="550" resizable="false"
                    showEffect="fade" header="Cadastro de Orçamento" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmCadastro" prependId="false" >
                 <p:tabView id="tabView">
                     <p:tab id="tab2" title="Dados básicos">
-                        <p:fieldset id="NumeroField" style="width: 265px;">
+                        <p:fieldset id="NumeroField" style="width: 180px; float: left;">
                             <p:outputLabel id="NumeroLabel" value="Número"/>
                             <p:inputMask id="NumeroInput"
                                          value="#{orcamentoController.current.numero}" mask="9999.9?999"
                                          disabled="true"/>
                         </p:fieldset>
-                        <p:fieldset id="DataEntradaField" style="width: 260px; float: left; margin-left: 19px; margin-right: 19px;" >
+                        <p:fieldset id="DataEntradaField" style="width: 180px; float: left; margin-left: 19px; margin-right: 19px;" >
                             <p:outputLabel id="DataCadastroLabel" value="Data Cadastro"/>
                             <p:calendar showButtonPanel="true" navigator="true" id="DataCadastroInput"
-                                        value="#{orcamentoController.current.dataCadastro}" pattern="dd/MM/yyyy" />
+                                        value="#{orcamentoController.current.dataCadastro}" pattern="dd/MM/yyyy" 
+                                        disabled="true"/>
                         </p:fieldset>
 
-                        <p:fieldset id="SituacaoField" style="width: 550px; display: inline-block; ">
+                        <p:fieldset id="SituacaoField" style="width: 195px; display: inline-block; ">
                             <label id="SituacaoLabel">Situação</label>
-                            <h:selectOneMenu id="SituacaoListBox" value="#{orcamentoController.current.situacao}">
+                            <h:selectOneMenu id="SituacaoListBox" disabled="true"
+                                             value="#{orcamentoController.current.situacao}">
                                 <f:selectItem itemLabel="Em Aberto" itemValue="1" />
                                 <f:selectItem itemLabel="Cancelado" itemValue="2" />
                                 <f:selectItem itemLabel="Aprovado" itemValue="3" />
                                 <f:selectItem itemLabel="Finalizado" itemValue="4" />
                             </h:selectOneMenu>
-                        </p:fieldset>
-                        <p:fieldset id="ClienteField">
+                        </p:fieldset>                       
+                        <p:fieldset id="ClienteField" style="width: 345px; float: left;margin-right: 19px;" >
                             <label id="ClienteLabel">Cliente *</label>
                             <p:autoComplete value="#{orcamentoController.current.cliente}" id="ClienteText"
                                             completeMethod="#{orcamentoController.selecionarClienteAutoComplete}"
-                                            var="cliente" itemLabel="#{cliente.pessoa.nome}"
-                                            itemValue="#{cliente}" converter="clienteConverter"
-                                            forceSelection="true" required="true"
-                                            requiredMessage="O campo 'Cliente' é obrigatório.">
-                                <p:ajax event="change" update="VeiculoPanel"  />
+                                            var="c" itemLabel="#{c.pessoa.nome}"
+                                            itemValue="#{c}" converter="clienteConverter"
+                                            forceSelection="true" effect="fade" 
+                                            immediate="true" >
+                                <p:ajax event="itemSelect" update="VeiculoPanel" 
+                                        listener="#{orcamentoController.changeCliente}" immediate="true" />
+
                             </p:autoComplete>
                         </p:fieldset>
-                        <h:panelGroup id="VeiculoPanel">
+                        <h:panelGroup id="VeiculoPanel" style="width: 260px; display: inline-block;" >
                             <p:fieldset id="VeiculoField" style="width: 260px;">
                                 <label id="VeiculoLabel">Veículo *</label>
-                                <p:selectOneMenu id="VeiculoListBox" required="true" styleClass="selectOneMenu"
+                                <h:selectOneMenu id="VeiculoListBox" required="true" 
                                                  requiredMessage="O campo 'Veículo' é obrigatório."
                                                  value="#{orcamentoController.current.veiculo}" >
                                     <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
                                     <f:selectItems value="#{orcamentoController.veiculos}" var="veiculo"
                                                    itemLabel="#{veiculo}" itemValue="#{veiculo}"/>
-                                </p:selectOneMenu>
+                                </h:selectOneMenu>
                             </p:fieldset>
                         </h:panelGroup>
-                        <p:fieldset id="SeguradoraField">
+                        <br />
+                        <p:fieldset id="SeguradoraField" >
                             <label id="SeguradoraLabel">Seguradora</label>
-                            <p:inputTextarea id="SeguradoraInput" value="#{orcamentoController.current.seguradora}" />
+                            <h:selectOneMenu id="SeguradoraFieldListBox" style="width: 480px!important;"
+                                             value="#{orcamentoController.current.seguradora}" >
+                                <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                                <f:selectItems value="#{orcamentoController.seguradoras}" var="seguradora"
+                                               itemLabel="#{seguradora}" itemValue="#{seguradora}"/>
+                            </h:selectOneMenu>
+
+                            <h:selectBooleanCheckbox  id="TerceiroCheckBox" title="Terceiro?" dir="RTL" style="margin-left: -90px;" 
+                                                      value="#{orcamentoController.current.terceiro}" >
+                                <span style="margin-left: 29px; font-weight: bold;" >Terceiro?</span> 
+                            </h:selectBooleanCheckbox>
                         </p:fieldset>
+
                         <p:fieldset id="ObsField">
                             <label id="ObsLabel">Observação</label>
                             <p:inputTextarea id="ObsInput" value="#{orcamentoController.current.obs}" />
                         </p:fieldset>
 
                     </p:tab>
-<!--                    <p:tab id="tab3" title="Serviços">
+                    <p:tab id="tab3" title="Serviços">
                         <h:panelGroup id="pnlGrupoServicos">
-                            <p:fieldset id="TotalPecasField" style="width: 260px;" >
-                                <label id="TotalPecasLabel">Valor de Peças *</label>
-                                <p:inputText id="TotalPecasInput" maxlength="11" size="20"
-                                             value="#{orcamentoController.current.valorPecas}"
-                                             onkeypress="mascara(this, valor);"/>
-                            </p:fieldset>
-                            <p:fieldset id="ValorServicoField" style="width: 260px; float: left;">
-                                <label id="ValorServicoLabel">Valor dos Serviços *</label>
-                                <p:inputText id="TotalServicosInput" maxlength="11" size="20"
-                                             value="#{orcamentoController.current.valorServicos}"
-                                             onkeypress="mascara(this, valor);"/>
-                            </p:fieldset>
-                            <p:fieldset id="TotalHorasField" style="width: 260px; float: left; margin-left: 19px;">
-                                <label id="TotalHorasLabel">Total de Horas</label>
-                                <p:inputMask id="TotaHorasText" mask="999?9.99" />
-                            </p:fieldset>
-                            <p:fieldset id="ValorTotalField" style="width: 260px;" >
-                                <label id="ValorTotalLabel">Valor Total</label>
-                                <p:inputText id="ValorTotalInput" maxlength="11" size="20"
-                                             value="#{orcamentoController.current.valorTotal}"
-                                             onkeypress="mascara(this, valor);"/>
-                            </p:fieldset>
-                            <p:fieldset id="AnexoField" >
-                                <label id="AnexoLabel">Anexos</label>
-                                <h:inputText id="AnexoInput" />
-                            </p:fieldset>
+                            <!--                            <p:fieldset id="TotalPecasField" style="width: 260px;" >
+                                                            <label id="TotalPecasLabel">Valor de Peças *</label>
+                                                            <p:inputText id="TotalPecasInput" maxlength="11" size="20"
+                                                                         value="#{orcamentoController.current.valorPecas}"
+                                                                         onkeypress="mascara(this, valor);"/>
+                                                        </p:fieldset>
+                                                        <p:fieldset id="ValorServicoField" style="width: 260px; float: left;">
+                                                            <label id="ValorServicoLabel">Valor dos Serviços *</label>
+                                                            <p:inputText id="TotalServicosInput" maxlength="11" size="20"
+                                                                         value="#{orcamentoController.current.valorServicos}"
+                                                                         onkeypress="mascara(this, valor);"/>
+                                                        </p:fieldset>
+                                                        <p:fieldset id="TotalHorasField" style="width: 260px; float: left; margin-left: 19px;">
+                                                            <label id="TotalHorasLabel">Total de Horas</label>
+                                                            <p:inputMask id="TotaHorasText" mask="999?9.99" />
+                                                        </p:fieldset>
+                                                        <p:fieldset id="ValorTotalField" style="width: 260px;" >
+                                                            <label id="ValorTotalLabel">Valor Total</label>
+                                                            <p:inputText id="ValorTotalInput" maxlength="11" size="20"
+                                                                         value="#{orcamentoController.current.valorTotal}"
+                                                                         onkeypress="mascara(this, valor);"/>
+                                                        </p:fieldset>
+                                                        <p:fieldset id="AnexoField" >
+                                                            <label id="AnexoLabel">Anexos</label>
+                                                            <h:inputText id="AnexoInput" />
+                                                        </p:fieldset>-->
 
                             <p:dataTable id="dataTableVeiculo" var="item"
                                          value="#{orcamentoController.servicos}" lazy="false"
@@ -284,8 +299,13 @@
                             </p:dataTable>
 
                         </h:panelGroup>
-                    </p:tab>-->
-
+                    </p:tab>
+                    <p:tab id="tab4" title="Valores">
+                        
+                    </p:tab>
+                    <p:tab  id="tab5" title="Anexo">
+                        
+                    </p:tab>
                 </p:tabView>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
                     <p:commandButton id="btnSalvar"

@@ -22,5 +22,6 @@
     <mapping class="model.Veiculo"/>
     <mapping class="model.Perfil"/>
     <mapping class="model.Funcionario"/>
+    <mapping class="model.OrcamentoTipoServico"/>
   </session-factory>
 </hibernate-configuration>

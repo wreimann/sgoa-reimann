@@ -114,4 +114,10 @@ public class Veiculo extends BaseEntidadeAtivo<Veiculo> {
         hash = 83 * hash + (this.placa != null ? this.placa.hashCode() : 0);
         return hash;
     }
+
+    @Override
+    public String toString() {
+        return getModelo().getMarca().toString() + " / " + getModelo().getDescricao() + " (" + getPlaca().toUpperCase() + ")" ;
+    }
+    
 }

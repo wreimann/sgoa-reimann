@@ -2,6 +2,7 @@ package controller;
 
 import facede.ClienteFacade;
 import facede.OrcamentoFacade;
+import facede.SeguradoraFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,9 +17,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import model.Cliente;
 import model.Orcamento;
+import model.Seguradora;
 import model.Veiculo;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import util.HibernateFactory;
@@ -90,9 +93,14 @@ public class OrcamentoController implements Serializable {
     }
     //propriedades cadastro
     private List<Veiculo> veiculos;
+    private List<Seguradora> seguradoras;
 
     public List<Veiculo> getVeiculos() {
         return veiculos;
+    }
+
+    public List<Seguradora> getSeguradoras() {
+        return seguradoras;
     }
 
     public OrcamentoController() {
@@ -178,12 +186,9 @@ public class OrcamentoController implements Serializable {
         }
     }
 
-    public void changeCliente() {
+    public void changeCliente(SelectEvent event) {
+        veiculos = ((Cliente) event.getObject()).getVeiculos();
         current.setVeiculo(null);
-        veiculos = new ArrayList<Veiculo>();
-        for (Veiculo veiculo : current.getCliente().getVeiculos()) {
-            getVeiculos().add(veiculo);
-        }
     }
 
     public void limparCampos() {
@@ -199,6 +204,7 @@ public class OrcamentoController implements Serializable {
 
     private void limparCamposCadastro() {
         veiculos = new ArrayList<Veiculo>();
+        seguradoras = montaListaSeguradoras();
 
     }
 
@@ -207,9 +213,23 @@ public class OrcamentoController implements Serializable {
         try {
             Session sessao = HibernateFactory.currentSession();
             ClienteFacade ebjCliente = new ClienteFacade();
-            resultado = ebjCliente.selecionarPorNomeAutoComplete(sessao, query);        
+            resultado = ebjCliente.selecionarPorNomeAutoComplete(sessao, query);
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de cores. ");
+        } finally {
+            HibernateFactory.closeSession();
+        }
+        return resultado;
+    }
+
+    public List<Seguradora> montaListaSeguradoras() {
+        List<Seguradora> resultado = new ArrayList<Seguradora>();
+        try {
+            Session sessao = HibernateFactory.currentSession();
+            SeguradoraFacade ebjSeguradora = new SeguradoraFacade();
+            resultado = ebjSeguradora.selecionarTodosAtivos(sessao);
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de seguradoras. ");
         } finally {
             HibernateFactory.closeSession();
         }
