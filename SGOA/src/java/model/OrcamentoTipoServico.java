@@ -11,7 +11,7 @@ import model.Base.BaseEntidade;
 @Table(name = "orcamento_tiposervico")
 public class OrcamentoTipoServico extends BaseEntidade<OrcamentoTipoServico> {
     
-    @JoinColumn(name = "idOrcamento")
+    @JoinColumn(name = "idorcamento")
     @ManyToOne(optional = false)
     private Orcamento orcamento;
 
@@ -23,7 +23,7 @@ public class OrcamentoTipoServico extends BaseEntidade<OrcamentoTipoServico> {
         this.orcamento = orcamento;
     }
     
-    @JoinColumn(name = "idTipoServico")
+    @JoinColumn(name = "idtiposervico")
     @ManyToOne(optional = false)
     private TipoServico tipoServico;
 
