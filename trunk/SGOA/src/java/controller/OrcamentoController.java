@@ -3,6 +3,7 @@ package controller;
 import facede.ClienteFacade;
 import facede.OrcamentoFacade;
 import facede.SeguradoraFacade;
+import facede.TipoServicoFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +15,9 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import model.Cliente;
 import model.Orcamento;
+import model.OrcamentoTipoServico;
 import model.Seguradora;
+import model.TipoServico;
 import model.Veiculo;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
@@ -33,7 +36,7 @@ public class OrcamentoController implements Serializable {
     private LazyDataModel<Orcamento> lazyModel;
     @EJB
     private facede.OrcamentoFacade ejbFacade;
-    //propriedades para filtro da pesquisa
+    // <editor-fold defaultstate="collapsed" desc="propriedades para filtro da pesquisa">
     private String numero;
     private Cliente clienteFiltro;
     private String placaFiltro;
@@ -88,9 +91,15 @@ public class OrcamentoController implements Serializable {
     public void setSituacaoFiltro(String situacaoFiltro) {
         this.situacaoFiltro = situacaoFiltro;
     }
-    //propriedades cadastro
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="propriedades cadastro">
     private List<Veiculo> veiculos;
     private List<Seguradora> seguradoras;
+    private List<OrcamentoTipoServico> servicos;
+    private List<TipoServico> tipoServicos;
+    private double totalHoras;
+    private double totalDescoto;
+    private double totalServico;
 
     public List<Veiculo> getVeiculos() {
         return veiculos;
@@ -99,6 +108,27 @@ public class OrcamentoController implements Serializable {
     public List<Seguradora> getSeguradoras() {
         return seguradoras;
     }
+
+    public List<OrcamentoTipoServico> getServicos() {
+        return servicos;
+    }
+
+    public List<TipoServico> getTipoServicos() {
+        return tipoServicos;
+    }
+
+    public double getTotalHoras() {
+        return totalHoras;
+    }
+
+    public double getTotalDescoto() {
+        return totalDescoto;
+    }
+
+    public double getTotalServico() {
+        return totalServico;
+    }
+    // </editor-fold>
 
     public OrcamentoController() {
         limparCampos();
@@ -202,7 +232,18 @@ public class OrcamentoController implements Serializable {
     private void limparCamposCadastro() {
         veiculos = new ArrayList<Veiculo>();
         seguradoras = montaListaSeguradoras();
-
+        tipoServicos = montaListaTipoServicos();
+        totalDescoto = 0;
+        totalHoras = 0;
+        totalServico = 0;
+        servicos = new ArrayList<OrcamentoTipoServico>();
+        for (TipoServico tipo : tipoServicos) {
+            OrcamentoTipoServico novo = new OrcamentoTipoServico();
+            novo.setTipoServico(tipo);
+            novo.setValorHora(tipo.getValorHoraPadrao());
+            novo.setOrcamento(current);
+            servicos.add(novo);
+        }
     }
 
     public List<Cliente> selecionarClienteAutoComplete(String query) {
@@ -231,5 +272,30 @@ public class OrcamentoController implements Serializable {
             HibernateFactory.closeSession();
         }
         return resultado;
+    }
+
+    public List<TipoServico> montaListaTipoServicos() {
+        List<TipoServico> resultado = new ArrayList<TipoServico>();
+        try {
+            Session sessao = HibernateFactory.currentSession();
+            TipoServicoFacade ebj = new TipoServicoFacade();
+            resultado = ebj.selecionarTodosAtivos(sessao);
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de seguradoras. ");
+        } finally {
+            HibernateFactory.closeSession();
+        }
+        return resultado;
+    }
+
+    public void changeTipoServico() {
+        //OrcamentoTipoServico = ((OrcamentoTipoServico) event.getObject()).getVeiculos();
+        for (OrcamentoTipoServico servico : servicos) {
+            totalDescoto += servico.getDesconto();
+            totalHoras += servico.getHoras();
+            servico.setTotal((servico.getValorHora() * servico.getHoras()) - servico.getDesconto());
+            totalServico += servico.getTotal();
+        }
+
     }
 }

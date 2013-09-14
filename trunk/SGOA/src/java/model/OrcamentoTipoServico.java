@@ -47,14 +47,14 @@ public class OrcamentoTipoServico extends BaseEntidade<OrcamentoTipoServico> {
     }
     
     @Column(name = "valorHora")
-    private double valorHoras;
+    private double valorHora;
 
-    public double getValorHoras() {
-        return valorHoras;
+    public double getValorHora() {
+        return valorHora;
     }
 
-    public void setValorHoras(double valorHoras) {
-        this.valorHoras = valorHoras;
+    public void setValorHora(double valorHora) {
+        this.valorHora = valorHora;
     }
     
     @Column(name = "desconto")
