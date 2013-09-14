@@ -208,103 +208,119 @@
                         </p:fieldset>
 
                     </p:tab>
-                    <p:tab id="tab3" title="Serviços">
-                        <h:panelGroup id="pnlGrupoServicos">
-                            <!--                            <p:fieldset id="TotalPecasField" style="width: 260px;" >
-                                                            <label id="TotalPecasLabel">Valor de Peças *</label>
-                                                            <p:inputText id="TotalPecasInput" maxlength="11" size="20"
-                                                                         value="#{orcamentoController.current.valorPecas}"
-                                                                         onkeypress="mascara(this, valor);"/>
-                                                        </p:fieldset>
-                                                        <p:fieldset id="ValorServicoField" style="width: 260px; float: left;">
-                                                            <label id="ValorServicoLabel">Valor dos Serviços *</label>
-                                                            <p:inputText id="TotalServicosInput" maxlength="11" size="20"
-                                                                         value="#{orcamentoController.current.valorServicos}"
-                                                                         onkeypress="mascara(this, valor);"/>
-                                                        </p:fieldset>
-                                                        <p:fieldset id="TotalHorasField" style="width: 260px; float: left; margin-left: 19px;">
-                                                            <label id="TotalHorasLabel">Total de Horas</label>
-                                                            <p:inputMask id="TotaHorasText" mask="999?9.99" />
-                                                        </p:fieldset>
-                                                        <p:fieldset id="ValorTotalField" style="width: 260px;" >
-                                                            <label id="ValorTotalLabel">Valor Total</label>
-                                                            <p:inputText id="ValorTotalInput" maxlength="11" size="20"
-                                                                         value="#{orcamentoController.current.valorTotal}"
-                                                                         onkeypress="mascara(this, valor);"/>
-                                                        </p:fieldset>
-                                                        <p:fieldset id="AnexoField" >
-                                                            <label id="AnexoLabel">Anexos</label>
-                                                            <h:inputText id="AnexoInput" />
-                                                        </p:fieldset>-->
+                    <p:tab id="tab3" title="Resumo do Orçamento">
+                        <p:dataTable id="dataTableTipoServico" var="item" 
+                                     value="#{orcamentoController.servicos}" lazy="false"
+                                     editable="true" editMode="cell">
+                            <f:facet name="header">  
+                                Mão-de-Obra  
+                            </f:facet>  
+                            <p:column sortBy="#{item.tipoServico.descricao}" headerText="Tipo Serviço">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.tipoServico}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText  value="#{item.tipoServico}"
+                                                      readonly="true" />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
 
-                            <p:dataTable id="dataTableVeiculo" var="item"
-                                         value="#{orcamentoController.servicos}" lazy="false"
-                                         editable="true" editMode="cell">
+                            <p:column sortBy="#{item.horas}" headerText="Horas">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.horas}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText maxlength="11" size="20"
+                                                     value="#{item.horas}"
+                                                     onkeypress="mascara(this, valor);">
+                                            <p:ajax event="change" update="dataTableTipoServico" 
+                                                    listener="#{orcamentoController.changeTipoServico}" immediate="true" />
+                                        </p:inputText>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column sortBy="#{item.valorHora}" headerText="Valor Hora">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.valorHora}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText maxlength="11" size="20"
+                                                     value="#{item.valorHora}"
+                                                     onkeypress="mascara(this, valor);"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column sortBy="#{item.desconto}" headerText="Desconto">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.desconto}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText maxlength="11" size="20"
+                                                     value="#{item.desconto}"
+                                                     onkeypress="mascara(this, valor);" />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column sortBy="#{item.total}" headerText="Total">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{item.total}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText maxlength="11" size="20"
+                                                     value="#{item.total}"
+                                                     readonly="true"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column footerText="Totais"  
+                                              style="text-align:right"  />  
+                                    <p:column footerText="#{orcamentoController.totalHoras}" />  
+                                    <p:column footerText="#{orcamentoController.totalHoras}" />  
+                                    <p:column footerText="#{orcamentoController.totalDescoto}" />  
+                                    <p:column footerText="#{orcamentoController.totalServico}" />  
+                                </p:row>  
+                            </p:columnGroup>
 
-                                <p:column sortBy="#{item.tipoServico}" headerText="Tipo Serviço">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{item.tipoServico}" />
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <h:selectOneMenu value="#{item.tipoServico}" style="width:100%">
-                                                <f:selectItems value="#{orcamentoController.tipoServicos}" var="tipo"
-                                                               itemLabel="#{tipo}" itemValue="#{tipo}" />
-                                            </h:selectOneMenu>
-                                        </f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-
-                                <p:column sortBy="#{item.tipoServico}" headerText="Horas">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{item.tipoServico}" />
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <h:selectOneMenu value="#{item.tipoServico}" style="width:100%">
-                                                <f:selectItems value="#{orcamentoController.tipoServicos}" var="tipo"
-                                                               itemLabel="#{tipo}" itemValue="#{tipo}" />
-                                            </h:selectOneMenu>
-                                        </f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-                                <p:column sortBy="#{item.tipoServico}" headerText="Valor Hora">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{item.tipoServico}" />
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <h:selectOneMenu value="#{item.tipoServico}" style="width:100%">
-                                                <f:selectItems value="#{orcamentoController.tipoServicos}" var="tipo"
-                                                               itemLabel="#{tipo}" itemValue="#{tipo}" />
-                                            </h:selectOneMenu>
-                                        </f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-
-                                <p:column sortBy="#{item.tipoServico}" headerText="Total">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{item.tipoServico}" />
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <h:selectOneMenu value="#{item.tipoServico}" style="width:100%">
-                                                <f:selectItems value="#{orcamentoController.tipoServicos}" var="tipo"
-                                                               itemLabel="#{tipo}" itemValue="#{tipo}" />
-                                            </h:selectOneMenu>
-                                        </f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-
-                            </p:dataTable>
-
-                        </h:panelGroup>
-                    </p:tab>
-                    <p:tab id="tab4" title="Valores">
-                        
+                        </p:dataTable>
+                        <h:panelGrid columns="2"  style="margin-top: 5px"  >
+                            <p:fieldset id="TotalPecasField" style="width: 260px;" >
+                                <label id="TotalPecasLabel">Valor Total de Peças *</label>
+                                <p:inputText id="TotalPecasInput" maxlength="11" size="20"
+                                             value="#{orcamentoController.current.valorPecas}"
+                                             onkeypress="mascara(this, valor);"/>
+                            </p:fieldset>
+                            <p:fieldset id="ValorAdicionalField" style="width: 260px; margin-left: 19px;" >
+                                <label id="ValorAdicionalLabel">Valor Adicional </label>
+                                <p:inputText id="ValorAdicionalInput" maxlength="11" size="20"
+                                             value="#{orcamentoController.current.valorAdicional}"
+                                             onkeypress="mascara(this, valor);"/>
+                            </p:fieldset>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2"  style="margin-top: 5px"  >
+                            <p:fieldset id="ValorDescontoField" style="width: 260px;" >
+                                <label id="ValorDescontoLabel">Valor de Desconto</label>
+                                <p:inputText id="ValorDescontoInput" maxlength="11" size="20"
+                                             value="#{orcamentoController.current.valorDesconto}"
+                                             onkeypress="mascara(this, valor);"/>
+                            </p:fieldset>
+                            <p:fieldset id="ValorTotalField" style="width: 260px;margin-left: 19px;" >
+                                <label id="ValorTotalLabel">Total Orçamento *</label>
+                                <p:inputText id="ValorTotalInput" maxlength="11" size="20"
+                                             value="#{orcamentoController.current.valorTotal}"
+                                             disabled="true"/>
+                            </p:fieldset>
+                        </h:panelGrid>
                     </p:tab>
                     <p:tab  id="tab5" title="Anexo">
-                        
+
                     </p:tab>
                 </p:tabView>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >

@@ -134,4 +134,48 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setServicos(List<OrcamentoTipoServico> servicos) {
         this.servicos = servicos;
     }
+    
+     @Column(name = "valorAdicional")
+    private double valorAdicional;
+
+    public double getValorAdicional() {
+        return valorAdicional;
+    }
+
+    public void setValorAdicional(double valorAdicional) {
+        this.valorAdicional = valorAdicional;
+    }
+    
+    @Column(name = "valorDesconto")
+    private double valorDesconto;
+
+    public double getValorDesconto() {
+        return valorDesconto;
+    }
+
+    public void setValorDesconto(double valorDesconto) {
+        this.valorDesconto = valorDesconto;
+    }
+    
+    @Column(name = "valorTotal")
+    private double valorTotal;
+
+    public double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+    
+    @Column(name = "valorPecas")
+    private double valorPecas;
+
+    public double getValorPecas() {
+        return valorPecas;
+    }
+
+    public void setValorPecas(double valorPecas) {
+        this.valorPecas = valorPecas;
+    }
 }
