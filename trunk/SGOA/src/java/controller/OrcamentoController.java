@@ -5,6 +5,7 @@ import facede.OrcamentoFacade;
 import facede.SeguradoraFacade;
 import facede.TipoServicoFacade;
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -100,7 +101,7 @@ public class OrcamentoController implements Serializable {
     private double totalHoras;
     private double totalDescoto;
     private double totalServico;
-
+    
     public List<Veiculo> getVeiculos() {
         return veiculos;
     }
@@ -127,6 +128,27 @@ public class OrcamentoController implements Serializable {
 
     public double getTotalServico() {
         return totalServico;
+    }
+
+    public String getTotalHorasString() {
+        NumberFormat formatter = NumberFormat.getNumberInstance();
+        formatter.setMaximumFractionDigits(1);
+        formatter.setMinimumFractionDigits(1);
+        return formatter.format(totalHoras);
+    }
+
+    public String getTotalDescotoString() {
+        NumberFormat formatter = NumberFormat.getNumberInstance();
+        formatter.setMaximumFractionDigits(2);
+        formatter.setMinimumFractionDigits(2);
+        return formatter.format(totalDescoto);
+    }
+
+    public String getTotalServicoString() {
+        NumberFormat formatter = NumberFormat.getNumberInstance();
+        formatter.setMaximumFractionDigits(2);
+        formatter.setMinimumFractionDigits(2);
+        return formatter.format(totalServico);
     }
     // </editor-fold>
 
@@ -289,13 +311,22 @@ public class OrcamentoController implements Serializable {
     }
 
     public void changeTipoServico() {
-        //OrcamentoTipoServico = ((OrcamentoTipoServico) event.getObject()).getVeiculos();
+        totalDescoto = 0;
+        totalHoras = 0;
+        totalServico = 0;
         for (OrcamentoTipoServico servico : servicos) {
             totalDescoto += servico.getDesconto();
             totalHoras += servico.getHoras();
             servico.setTotal((servico.getValorHora() * servico.getHoras()) - servico.getDesconto());
             totalServico += servico.getTotal();
         }
+        changeValorOrcamento();
 
+    }
+
+    public void changeValorOrcamento() {
+        if (current != null) {
+            current.setValorTotal((totalServico + current.getValorPecas() + current.getValorAdicional()) - current.getValorDesconto());
+        }
     }
 }
