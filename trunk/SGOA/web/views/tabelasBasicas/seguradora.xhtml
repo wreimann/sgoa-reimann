@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                template="./../../template/form.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="Navagador">
+        <a class="current">Tabelas Básicas</a>
+        <div class="breadcrumb_divider"></div> 
+        <a class="current">Seguradoras</a>
+    </ui:define>
+
+    <ui:define name="Titulo">
+        <h2>Seguradoras</h2>
+    </ui:define>
+
+    <ui:define name="Conteudo">
+        <h:form id="frmPesquisa" prependId="false">
+            <p:focus context="frmPesquisa"/> 
+            <p:fieldset id="DescricalPesquisaField">
+                <label id="DescricaoLabel">Descrição</label>
+                <p:inputText id="DescricaoInput" value="#{seguradoraController.descFiltro}"/>
+            </p:fieldset>
+            <p:commandButton id="btnPesquisar" value="Pesquisar"  
+                            update=":frmPesquisa" title="Pesquisar"/>
+            <p:commandButton id="btnLimparPesquisa" value="Limpar" update=":frmPesquisa"
+                             action="#{seguradoraController.limparCampos}" />
+            <p:messages id="messages" autoUpdate="true" closable="true" />  
+            <div class="spacer"></div>
+            <p:dataTable id="dataTable" var="item" 
+                         value="#{seguradoraController.lazyModel}" lazy="true" 
+                         paginator="true" paginatorPosition="bottom"  
+                         emptyMessage="Nenhum resultado encontrado."                   
+                         rows="#{seguradoraController.pageSize}"
+                         currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >  
+                <f:facet name="header">  
+                    <div class="tabs_involved">
+                        <h:outputLabel value="Listagem de Seguradora" styleClass="tabs_involved" />
+                        <p:commandLink id="btnNovo" title="Novo"  styleClass="btn_new" 
+                                       value="Novo" update=":frmCadastro, :growl" 
+                                       actionListener="#{seguradoraController.prepararInclusao}" 
+                                       oncomplete="modalPopup.show()"/>
+                    </div>
+                </f:facet>  
+                <p:column headerText="Ações" width="60">
+                    <p:commandButton actionListener="#{seguradoraController.prepararEdicao}" 
+                                     alt="Editar" title="Editar" icon="btn_editar"
+                                     style="margin-right: 10px; margin-left: 10px"
+                                     oncomplete="modalPopup.show()" update=":frmCadastro, :growl" />
+
+                    <p:commandButton actionListener="#{seguradoraController.prepararExclusao}"
+                                     title="Excluir" alt="Excluir"
+                                     icon="btn_excluir" 
+                                     oncomplete="confirmDialog.show()"  />
+                </p:column>
+                <p:column sortBy="#{item.id}" headerText="Código"  width="60" >  
+                    <h:outputText value="#{item.id}" />  
+                </p:column>  
+
+                <p:column sortBy="#{item.descricao}" headerText="Descrição">  
+                    <h:outputText value="#{item.descricao}" />  
+                </p:column>  
+
+                <p:column sortBy="#{item.ativo}" headerText="Ativo"  width="40">  
+                    <h:selectBooleanCheckbox value="#{item.ativo}" disabled="true" />
+                </p:column>  
+                
+            </p:dataTable>
+            <p:confirmDialog widgetVar="confirmDialog" 
+                             message="Confirma a exclusão da seguradora selecionada ?" 
+                             showEffect="slide" hideEffect="clip" severity="alert">  
+
+                <p:commandButton oncomplete="confirmDialog.hide()" update=":frmPesquisa"
+                                 actionListener="#{seguradoraController.excluir}" 
+                                 value="Sim"/> 
+                <p:commandButton value="Não" onclick="confirmDialog.hide()"/>    
+
+            </p:confirmDialog> 
+        </h:form>
+
+
+        <p:dialog widgetVar="modalPopup" modal="true" width="600" resizable="false"
+                  showEffect=" fade" header="Cadastro de Seguradora" id="dialog">
+            <p:messages id="growl" for="DescricaoText" />
+            <h:form id="frmCadastro" prependId="false" > 
+                <p:focus context="frmCadastro"/> 
+                <p:fieldset id="Descricao">
+                    <label id="DecricaoLabel">Descrição *</label>
+                    <p:inputText id="DescricaoText" required="true" 
+                                 requiredMessage="O campo 'Descrição' é obrigatório." 
+                                 value="#{seguradoraController.current.descricao}"  />                 
+                </p:fieldset>
+                <p:fieldset id="Ativo">
+                    <h:selectBooleanCheckbox id="AtivoCheck" 
+                                             value="#{seguradoraController.current.ativo}" /> <b>Ativo *</b>
+                </p:fieldset>
+                <div class="spacer"></div>
+
+                <p:commandButton id="btnSalvar" 
+                                 oncomplete="validarFormDialog(xhr, status, args)"
+                                 actionListener="#{seguradoraController.salvar}" 
+                                 update=":growl, :frmPesquisa" value="Salvar"/>
+                <p:commandButton id="btnCancelar" value="Cancelar" 
+                                 oncomplete="fecharFormDialog()"
+                                 />  
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+    <ui:define name="Rodape">
+    </ui:define>
+</ui:composition>
