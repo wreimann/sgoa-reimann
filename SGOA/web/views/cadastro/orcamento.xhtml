@@ -17,10 +17,12 @@
     <ui:define name="Conteudo">
         <h:form id="frmPesquisa" prependId="false">
             <script type="text/javascript">
-                  jQuery(function($) {
+                jQuery(function($) {
                       $("#DataInicioPesquisa_input").mask("99/99/9999");
                       $("#DataFinalPesquisa_input").mask("99/99/9999");
-                  });
+                });
+ 
+               
             </script>
             <p:focus context="frmPesquisa"/>
             <p:fieldset id="NumeroPesquisaField" style="width: 190px;">
@@ -136,7 +138,6 @@
                    showEffect="fade" header="Cadastro de Orçamento" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmCadastro" prependId="false" >
-      
                 <p:tabView id="tabView">
                     <p:tab id="tab2" title="Dados básicos">
                         <p:fieldset id="NumeroField" style="width: 180px; float: left;">
@@ -209,13 +210,12 @@
                         </p:fieldset>
 
                     </p:tab>
-                    <p:tab id="tab3" title="Valores">
+                    <p:tab id="tab3" title="Resumo">
                         <h:panelGroup id="PanelResumo">
-                            <p:focus context="PanelResumo"/>
                             <p:dataTable id="dataTableTipoServico" var="item" 
                                          value="#{orcamentoController.servicos}" lazy="false"
                                          editable="true" editMode="cell" widgetVar="dataTableTipoServico"
-                                         selectionMode="single" >
+                                         rowIndexVar="rowIndex">
                                 <f:facet name="header">  
                                     Mão-de-Obra  
                                 </f:facet>  
@@ -234,15 +234,14 @@
                                     <p:cellEditor>
                                         <f:facet name="output">
                                             <h:outputText value="#{item.valorHora}">
-                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" 
-                                                                 type="currency" />
+                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" type="currency" />
                                             </h:outputText>
                                         </f:facet>
                                         <f:facet name="input">
                                             <p:inputText value="#{item.valorHora}">
-                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2"  type="currency" />
+                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" type="currency" />
                                                 <p:ajax event="change" update=":frmCadastro:tabView:PanelResumo" 
-                                                        listener="#{orcamentoController.changeTipoServico}"  />
+                                                        listener="#{orcamentoController.changeTipoServico}"  immediate="true" />
                                             </p:inputText>
                                         </f:facet>
                                     </p:cellEditor>
@@ -252,16 +251,14 @@
                                     <p:cellEditor>
                                         <f:facet name="output">
                                             <h:outputText value="#{item.horas}">
-                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="1" maxFractionDigits="1" 
-                                                                 type="currency" />
+                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="1" maxFractionDigits="1" type="currency" />
                                             </h:outputText>
                                         </f:facet>
                                         <f:facet name="input">
                                             <p:inputText value="#{item.horas}">
-                                                <f:convertNumber pattern="#,##0.00" maxFractionDigits="1" minFractionDigits="1" 
-                                                                 type="currency" />
+                                                <f:convertNumber pattern="#,##0.00" maxFractionDigits="1" minFractionDigits="1" type="currency" />
                                                 <p:ajax event="change" update=":frmCadastro:tabView:PanelResumo" 
-                                                        listener="#{orcamentoController.changeTipoServico}" />
+                                                        listener="#{orcamentoController.changeTipoServico}" immediate="true" />
                                             </p:inputText>
                                         </f:facet>
                                     </p:cellEditor>
@@ -276,10 +273,9 @@
                                         </f:facet>
                                         <f:facet name="input">
                                             <p:inputText value="#{item.desconto}">
-                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" 
-                                                                 type="currency" />
+                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" type="currency" />
                                                 <p:ajax event="change" update=":frmCadastro:tabView:PanelResumo" 
-                                                        listener="#{orcamentoController.changeTipoServico}" />
+                                                        listener="#{orcamentoController.changeTipoServico}" immediate="true" />
                                             </p:inputText>
                                         </f:facet>
                                     </p:cellEditor>
@@ -287,13 +283,12 @@
                                 <p:column sortBy="#{item.total}" headerText="Total" style="text-align: right;">
                                     <p:cellEditor>
                                         <f:facet name="output">
-                                            <h:outputText value="#{item.total}">
-                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" 
-                                                                 type="currency" />
+                                            <h:outputText value="#{item.total}"  id="TotalLinhaSpan">
+                                                <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" type="currency" />
                                             </h:outputText>
                                         </f:facet>
                                         <f:facet name="input">
-                                            <p:inputText value="#{item.total}" readonly="true">
+                                            <p:inputText id="TotalLinhaInput" value="#{item.total}" readonly="true">
                                                 <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" type="currency" />
                                             </p:inputText>
                                         </f:facet>
@@ -315,7 +310,7 @@
                                     <p:inputText id="TotalPecasInput"
                                                  value="#{orcamentoController.current.valorPecas}">
                                         <f:convertNumber pattern="#,##0.00" minFractionDigits="2" type="currency" />
-                                        <p:ajax event="change" update=":frmCadastro:tabView:PanelResumo" 
+                                        <p:ajax event="change" update=":frmCadastro:tabView:ValorTotalInput,@this" 
                                                 listener="#{orcamentoController.changeValorOrcamento}"  />
                                     </p:inputText>
                                 </p:fieldset>
@@ -324,7 +319,7 @@
                                     <p:inputText id="ValorAdicionalInput"
                                                  value="#{orcamentoController.current.valorAdicional}">
                                         <f:convertNumber pattern="#,##0.00" minFractionDigits="2" type="currency" />
-                                        <p:ajax event="change" update=":frmCadastro:tabView:PanelResumo" 
+                                        <p:ajax event="change" update=":frmCadastro:tabView:ValorTotalInput,@this" 
                                                 listener="#{orcamentoController.changeValorOrcamento}"  />
                                     </p:inputText>
                                 </p:fieldset>
@@ -335,7 +330,7 @@
                                     <p:inputText id="ValorDescontoInput" 
                                                  value="#{orcamentoController.current.valorDesconto}">
                                         <f:convertNumber pattern="#,##0.00" minFractionDigits="2" type="currency" />
-                                        <p:ajax event="change" update=":frmCadastro:tabView:PanelResumo"
+                                        <p:ajax event="change" update=":frmCadastro:tabView:ValorTotalInput,@this"
                                                 listener="#{orcamentoController.changeValorOrcamento}"  />
                                     </p:inputText>
                                 </p:fieldset>

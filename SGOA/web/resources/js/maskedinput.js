@@ -482,3 +482,13 @@ function Area(v){
     return v
                 
 }
+
+function decimal(v) {
+    v = v.replace(/\D/g, "");  
+    v = v.replace(/[0-9]{15}/, "inválido");  
+    v = v.replace(/(\d{1})(\d{11})$/, "$1.$2"); // coloca ponto antes dos  
+    v = v.replace(/(\d{1})(\d{8})$/, "$1.$2"); // coloca ponto antes dos  
+    v = v.replace(/(\d{1})(\d{5})$/, "$1.$2"); // coloca ponto antes dos  
+    v = v.replace(/(\d{1})(\d{1,1})$/, "$1,$2"); // coloca virgula antes dos  
+    return v;   
+}
