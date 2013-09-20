@@ -192,7 +192,7 @@
                         <p:fieldset id="SeguradoraField" >
                             <label id="SeguradoraLabel">Seguradora</label>
                             <h:selectOneMenu id="SeguradoraFieldListBox" style="width: 480px!important;"
-                                             value="#{orcamentoController.current.seguradora}" >
+                                             value="#{orcamentoController.current.seguradora}" converter="seguradoraConverter" >
                                 <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
                                 <f:selectItems value="#{orcamentoController.seguradoras}" var="seguradora"
                                                itemLabel="#{seguradora}" itemValue="#{seguradora}"/>
@@ -304,7 +304,7 @@
                                 </p:columnGroup>
                             </p:dataTable>
 
-                            <h:panelGrid columns="2"  style="margin-top: 5px"  >
+                            <h:panelGrid columns="2"  style="margin-top: 5px">
                                 <p:fieldset id="TotalPecasField" style="width: 260px;" >
                                     <label id="TotalPecasLabel">Valor Total de Peças *</label>
                                     <p:inputText id="TotalPecasInput"
