@@ -25,5 +25,7 @@
     <mapping class="model.OrcamentoTipoServico"/>
     <mapping class="model.Orcamento"/>
     <mapping class="model.Seguradora"/>
+    <mapping class="model.Etapa"/>
+    <mapping class="model.ImagemEtapa"/>
   </session-factory>
 </hibernate-configuration>
