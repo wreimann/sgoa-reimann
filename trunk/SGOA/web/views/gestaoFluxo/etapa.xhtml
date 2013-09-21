@@ -7,7 +7,7 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="Navagador">
-        <a class="current">Gestão de Fluxo</a>
+        <a class="current">Gestão de Fluxos</a>
         <div class="breadcrumb_divider"></div> 
         <a class="current">Etapas</a>
     </ui:define>
@@ -83,18 +83,39 @@
 
 
         <p:dialog widgetVar="modalPopup" modal="true" width="600" resizable="false"
-                  showEffect=" fade" header="Cadastro de Etapa do Fluxo" id="dialog">
-            <p:messages id="growl" for="DescricaoText" />
+                  showEffect=" fade" header="Cadastro de Etapa" id="dialog">
+            <p:messages id="growl" autoUpdate="true" closable="true" />
             <h:form id="frmCadastro" prependId="false" > 
                 <p:focus context="frmCadastro"/> 
+
                 <p:fieldset id="Descricao">
                     <label id="DecricaoLabel">Descrição *</label>
                     <p:inputText id="DescricaoText" required="true" 
                                  requiredMessage="O campo 'Descrição' é obrigatório." 
                                  value="#{etapaController.current.descricao}"  />                 
                 </p:fieldset>
+                <p:fieldset id="Imagem">
+                    <label id="ImagemEtapaLabel">Imagem *</label>
+                    <br />
+                    <p:selectOneMenu value="#{etapaController.current.imagem}" styleClass="selectOneMenu"
+                                     converter="imagemEtapaConverter" effect="fade" 
+                                     var="p" required="true" filter="false"
+                                     requiredMessage="O campo 'Imagem' é obrigatório.">  
+                        
+                        <f:selectItems value="#{etapaController.imagens}" var="imagem" itemLabel="#{imagem.titulo}" 
+                                       itemValue="#{imagem}"/>  
+                        <p:column>  
+                            <p:graphicImage value="#{p.descricao}" width="50" height="50"/>  
+                        </p:column> 
+                        <p:column>  
+                            #{p.titulo}
+                        </p:column>
+
+                    </p:selectOneMenu>
+                </p:fieldset>
+
                 <h:panelGrid columns="2"  style="margin-top: 5px">
-                    <p:fieldset id="SetorField"  style="width: 260px;">
+                    <p:fieldset id="SetorField"  style="width: 245px;">
                         <label id="SetorLabel">Setor *</label>
                         <p:selectOneMenu id="SetorListBox" required="true" styleClass="selectOneMenu" 
                                          requiredMessage="O campo 'Setor' é obrigatório." 
@@ -104,31 +125,46 @@
                                            itemLabel="#{setor.descricao}" itemValue="#{setor}"/>  
                         </p:selectOneMenu> 
                     </p:fieldset>
-                    <p:fieldset id="TipoServicoField"  style="width: 260px;">
+                    <p:fieldset id="TipoServicoField"  style="width: 245px; margin-left: 19px;">
                         <label id="TipoServicoLabel">Tipo Serviço *</label>
                         <p:selectOneMenu id="TipoServicoListBox" required="true" styleClass="selectOneMenu" 
-                                         requiredMessage="O campo 'Tipo Servi;o' é obrigatório." 
+                                         requiredMessage="O campo 'Tipo Serviço' é obrigatório." 
                                          value="#{etapaController.current.tipoServico}" converter="tipoServicoConverter">  
                             <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                            <f:selectItems value="#{etapaController.tipoServicosAtivos}" var="tipo" 
+                            <f:selectItems value="#{etapaController.tiposServicosAtivos}" var="tipo" 
                                            itemLabel="#{tipo.descricao}" itemValue="#{tipo}"/>  
                         </p:selectOneMenu> 
                     </p:fieldset>
                 </h:panelGrid>
+                <h:panelGrid columns="2"  style="margin-top: 5px;">
+                    <p:fieldset style="width: 245px;">
+                        <h:selectBooleanCheckbox value="#{etapaController.current.ativo}" />Ativo
+                    </p:fieldset>
+                    <p:fieldset style="width: 245px; margin-left: 19px;">
+                        <h:selectBooleanCheckbox value="#{etapaController.current.automatica}" />Automática
+                    </p:fieldset>
+                    <p:fieldset style="width: 245px;">
+                        <h:selectBooleanCheckbox value="#{etapaController.current.decisao}"/>Decisão
+                    </p:fieldset>
+                    <p:fieldset style="width: 245px; margin-left: 19px;">
+                        <h:selectBooleanCheckbox value="#{etapaController.current.visivelWebSite}"/>Visível WebSite
+                    </p:fieldset>
+                    <p:fieldset style="width: 245px;">
+                        <h:selectBooleanCheckbox value="#{etapaController.current.enviaEmailInicio}"/>Notificar via e-mail ao iniciar
+                    </p:fieldset>
+                    <p:fieldset style="width: 245px; margin-left: 19px;">
+                        <h:selectBooleanCheckbox value="#{etapaController.current.enviaEmailFim}" />Notificar via e-mail ao concluir
+                    </p:fieldset>
+                </h:panelGrid>
 
-                <p:fieldset id="Ativo">
-                    <h:selectBooleanCheckbox id="AtivoCheck" 
-                                             value="#{corController.current.ativo}" /> <b>Ativo *</b>
-                </p:fieldset>
-                <div class="spacer"></div>
-
-                <p:commandButton id="btnSalvar" 
-                                 oncomplete="validarFormDialog(xhr, status, args)"
-                                 actionListener="#{etapaController.salvar}" 
-                                 update=":growl, :frmPesquisa" value="Salvar"/>
-                <p:commandButton id="btnCancelar" value="Cancelar" 
-                                 oncomplete="fecharFormDialog()"
-                                 />  
+                <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
+                    <p:commandButton id="btnSalvar" 
+                                     oncomplete="validarFormDialog(xhr, status, args)"
+                                     actionListener="#{etapaController.salvar}" 
+                                     update=":growl, :frmPesquisa" value="Salvar"/>
+                    <p:commandButton id="btnCancelar" value="Cancelar" 
+                                     oncomplete="fecharFormDialog()"/>  
+                </h:panelGroup>
             </h:form>
         </p:dialog>
 
