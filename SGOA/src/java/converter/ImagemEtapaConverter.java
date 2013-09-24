@@ -1,17 +1,17 @@
 package converter;
 
-import facede.TipoServicoFacade;
+import facede.ImagemEtapaFacade;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import model.TipoServico;
+import model.ImagemEtapa;
 import org.hibernate.Session;
 import util.HibernateFactory;
 
-@FacesConverter(value = "tipoServicoConverter", forClass = TipoServico.class)
+@FacesConverter(value = "imagemEtapaConverter", forClass = ImagemEtapa.class)
 public class ImagemEtapaConverter implements Converter {
 
     public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
@@ -25,8 +25,8 @@ public class ImagemEtapaConverter implements Converter {
         }
         try {
             Session sessao = HibernateFactory.currentSession();
-            TipoServicoFacade ebjTipoServico = new TipoServicoFacade();
-            return ebjTipoServico.obterPorId(sessao, getKey(value));
+            ImagemEtapaFacade ebjImagemEtapa = new ImagemEtapaFacade();
+            return ebjImagemEtapa.obterPorId(sessao, getKey(value));
         } catch (Exception ex) {
             Logger.getLogger(ImagemEtapaConverter.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -51,8 +51,8 @@ public class ImagemEtapaConverter implements Converter {
         if (object == null || object == "") {
             return null;
         }
-        if (object instanceof TipoServico) {
-            TipoServico o = (TipoServico) object;
+        if (object instanceof ImagemEtapa) {
+            ImagemEtapa o = (ImagemEtapa) object;
             return getStringKey(o.getId());
         } else {
             throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName()); 
