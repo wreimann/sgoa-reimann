@@ -1,18 +1,18 @@
 package converter;
 
-import facede.TipoServicoFacade;
+import facede.EtapaFacade;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import model.TipoServico;
+import model.Etapa;
 import org.hibernate.Session;
 import util.HibernateFactory;
 
-@FacesConverter(value = "tipoServicoConverter", forClass = TipoServico.class)
-public class TipoServicoConverter implements Converter {
+@FacesConverter(value = "etapaConverter", forClass = Etapa.class)
+public class EtapaConverter implements Converter {
 
     public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
         if (value == null || value.length() == 0) {
@@ -25,10 +25,10 @@ public class TipoServicoConverter implements Converter {
         }
         try {
             Session sessao = HibernateFactory.currentSession();
-            TipoServicoFacade ebjTipoServico = new TipoServicoFacade();
-            return ebjTipoServico.obterPorId(sessao, getKey(value));
+            EtapaFacade ebjEtapa = new EtapaFacade();
+            return ebjEtapa.obterPorId(sessao, getKey(value));
         } catch (Exception ex) {
-            Logger.getLogger(TipoServicoConverter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EtapaConverter.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         } finally {
             HibernateFactory.closeSession();
@@ -51,8 +51,8 @@ public class TipoServicoConverter implements Converter {
         if (object == null || object == "") {
             return null;
         }
-        if (object instanceof TipoServico) {
-            TipoServico o = (TipoServico) object;
+        if (object instanceof Etapa) {
+            Etapa o = (Etapa) object;
             return getStringKey(o.getId());
         } else {
             throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName()); 

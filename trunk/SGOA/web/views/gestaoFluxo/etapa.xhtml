@@ -74,7 +74,7 @@
                              showEffect="slide" hideEffect="clip" severity="alert">  
 
                 <p:commandButton oncomplete="confirmDialog.hide()" update=":frmPesquisa"
-                                 actionListener="#{corController.excluir}" 
+                                 actionListener="#{etapaController.excluir}" 
                                  value="Sim"/> 
                 <p:commandButton value="Não" onclick="confirmDialog.hide()"/>    
 
@@ -101,7 +101,7 @@
                                      converter="imagemEtapaConverter" effect="fade" 
                                      var="p" required="true" filter="false"
                                      requiredMessage="O campo 'Imagem' é obrigatório.">  
-                        
+
                         <f:selectItems value="#{etapaController.imagens}" var="imagem" itemLabel="#{imagem.titulo}" 
                                        itemValue="#{imagem}"/>  
                         <p:column>  
@@ -113,7 +113,6 @@
 
                     </p:selectOneMenu>
                 </p:fieldset>
-
                 <h:panelGrid columns="2"  style="margin-top: 5px">
                     <p:fieldset id="SetorField"  style="width: 245px;">
                         <label id="SetorLabel">Setor *</label>
