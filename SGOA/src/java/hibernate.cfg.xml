@@ -29,5 +29,6 @@
     <mapping class="model.ImagemEtapa"/>
     <mapping class="model.Fluxo"/>
     <mapping class="model.FluxoEtapa"/>
+    <mapping class="model.OrcamentoAnexo"/>
   </session-factory>
 </hibernate-configuration>
