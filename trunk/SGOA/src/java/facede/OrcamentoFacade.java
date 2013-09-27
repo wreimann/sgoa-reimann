@@ -11,6 +11,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import java.util.List;
 import model.Orcamento;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
@@ -119,6 +120,9 @@ public class OrcamentoFacade extends BaseFacade<Orcamento> {
         c.add(Subqueries.exists(veiculosCriteria.setProjection(Projections.property("veiculos.id"))));
         }*/
         List<Orcamento> lista = c.list();
+        for (Orcamento orcamento : lista) {
+            Hibernate.initialize(orcamento.getAnexos());
+        }
         return lista;
     }
 }
