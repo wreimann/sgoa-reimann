@@ -211,27 +211,23 @@ public class OrcamentoController implements Serializable {
 
     public void prepararEdicao(ActionEvent event) {
         current = (Orcamento) lazyModel.getRowData();
-//        try {
-//            HibernateFactory.currentSession();
-            Hibernate.initialize(current.getAnexos());
-            file = null;
-            if (current.getAnexos() != null && current.getAnexos().size() > 0) {
-                ByteArrayInputStream bais = null;
-                ObjectInputStream in = null;
-                this.fileDownload = null;
-                try {
-                    bais = new ByteArrayInputStream(current.getAnexos().get(0).getImagem());
-                    in = new ObjectInputStream(bais);
-                    this.fileDownload = (UploadedFile) in.readObject();
-                    in.close();
-                } catch (Exception ex) {
-                    JsfUtil.addErrorMessage(ex, "Erro ao carregar imagem para download.");
-                }
+        servicos = current.getServicos();
+        changeValorOrcamento();
+        file = null;
+        if (current.getAnexos() != null && current.getAnexos().size() > 0) {
+            ByteArrayInputStream bais = null;
+            ObjectInputStream in = null;
+            this.fileDownload = null;
+            try {
+                bais = new ByteArrayInputStream(current.getAnexos().get(0).getImagem());
+                in = new ObjectInputStream(bais);
+                this.fileDownload = (UploadedFile) in.readObject();
+                in.close();
+            } catch (Exception ex) {
+                JsfUtil.addErrorMessage(ex, "Erro ao carregar imagem para download.");
             }
-            HibernateFactory.closeSession();
-//        } catch (Exception e) {
-//            JsfUtil.addErrorMessage(e, "Erro ao salvar o registro. ");
-//        }
+        }
+
     }
 
     public void prepararExclusao(ActionEvent event) {
