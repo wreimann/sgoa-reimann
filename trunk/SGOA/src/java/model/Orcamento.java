@@ -24,9 +24,17 @@ import org.hibernate.annotations.FetchMode;
 public class Orcamento extends BaseEntidade<Orcamento> {
 
     public Orcamento() {
-       
     }
-     
+    @Column(name = "ano")
+    private int ano;
+
+    public int getAno() {
+        return ano;
+    }
+
+    public void setAno(int ano) {
+        this.ano = ano;
+    }
     @Column(name = "numero")
     private int numero;
 
@@ -37,13 +45,12 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setNumero(int numero) {
         this.numero = numero;
     }
-    
     @Basic(optional = false)
     @NotNull
     @Column(name = "DataCadastro")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataCadastro;
-    
+
     public Date getDataCadastro() {
         return dataCadastro;
     }
@@ -51,11 +58,10 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
-     
     @ManyToOne(optional = false)
     @JoinColumn(name = "idcliente")
     private Cliente cliente;
- 
+
     public Cliente getCliente() {
         return cliente;
     }
@@ -63,11 +69,10 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-    
     @ManyToOne(optional = false)
     @JoinColumn(name = "idveiculo")
     private Veiculo veiculo;
- 
+
     public Veiculo getVeiculo() {
         return veiculo;
     }
@@ -75,7 +80,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setVeiculo(Veiculo veiculo) {
         this.veiculo = veiculo;
     }
-    
     @JoinColumn(name = "idseguradora")
     @ManyToOne(optional = true)
     private Seguradora seguradora;
@@ -87,7 +91,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setSeguradora(Seguradora seguradora) {
         this.seguradora = seguradora;
     }
-    
     @Column(name = "terceiro")
     private boolean terceiro;
 
@@ -98,7 +101,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setTerceiro(boolean terceiro) {
         this.terceiro = terceiro;
     }
-    
     @Size(max = 200)
     @Column(name = "Obs")
     private String obs;
@@ -110,32 +112,29 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setObs(String obs) {
         this.obs = obs;
     }
-    
     @Column(name = "situacao")
-    private String situacao;
+    private char situacao;
 
-    public String getSituacao() {
+    public char getSituacao() {
         return situacao;
     }
 
-    public void setSituacao(String situacao) {
+    public void setSituacao(char situacao) {
         this.situacao = situacao;
     }
-    
-    @OneToMany(cascade= CascadeType.ALL, orphanRemoval=true, fetch= FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Fetch(FetchMode.JOIN)
-    @JoinColumn(name="idorcamento")
+    @JoinColumn(name = "idorcamento")
     private List<OrcamentoTipoServico> servicos;
- 
-     public List<OrcamentoTipoServico> getServicos() {
+
+    public List<OrcamentoTipoServico> getServicos() {
         return servicos;
     }
 
     public void setServicos(List<OrcamentoTipoServico> servicos) {
         this.servicos = servicos;
     }
-    
-     @Column(name = "valorAdicional")
+    @Column(name = "valorAdicional")
     private double valorAdicional;
 
     public double getValorAdicional() {
@@ -145,7 +144,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorAdicional(double valorAdicional) {
         this.valorAdicional = valorAdicional;
     }
-    
     @Column(name = "valorDesconto")
     private double valorDesconto;
 
@@ -156,7 +154,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorDesconto(double valorDesconto) {
         this.valorDesconto = valorDesconto;
     }
-    
     @Column(name = "valorTotal")
     private double valorTotal;
 
@@ -167,7 +164,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorTotal(double valorTotal) {
         this.valorTotal = valorTotal;
     }
-    
     @Column(name = "valorPecas")
     private double valorPecas;
 
@@ -177,5 +173,25 @@ public class Orcamento extends BaseEntidade<Orcamento> {
 
     public void setValorPecas(double valorPecas) {
         this.valorPecas = valorPecas;
+    }
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "idorcamento")
+    private List<OrcamentoAnexo> anexos;
+
+    public List<OrcamentoAnexo> getAnexos() {
+        return anexos;
+    }
+
+    public void setAnexos(List<OrcamentoAnexo> anexos) {
+        this.anexos = anexos;
+    }
+
+    @Override
+    public String toString() {
+        if (getAno() > 0) {
+            return getAno() + "." + String.format("%05d", getNumero());
+        } else {
+            return "";
+        }
     }
 }

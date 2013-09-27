@@ -5,7 +5,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core">
     <ui:define name="Navagador">
-        <a class="current">Cadastro</a>
+        <a class="current">Operacional</a>
         <div class="breadcrumb_divider"></div>
         <a class="current">Orçamentos</a>
     </ui:define>
@@ -95,20 +95,18 @@
                                      alt="Editar" title="Editar" icon="btn_editar"
                                      style="margin-right: 10px; margin-left: 10px"
                                      oncomplete="modalPopup.show()" update=":frmCadastro, :growl" />
-<!--                    <p:commandButton actionListener="#{orcamentoController.prepararOrdemServico}"
-                                     title="Inativar" alt="OrdemServico"
-                                     icon="btn_excluir"
-                                     oncomplete="modalOSPopup.show()" />-->
                     <p:commandButton actionListener="#{orcamentoController.prepararExclusao}"
                                      title="Inativar" alt="Cancelar"
                                      icon="btn_excluir"
                                      oncomplete="confirmCancelamentoDialog.show()" />
                 </p:column>
-                <p:column sortBy="#{item.numero}" headerText="Orçamento"  width="60" >
-                    <h:outputText value="#{item.numero}" />
+                <p:column sortBy="#{item}" headerText="Orçamento"  width="60" >
+                    <h:outputText value="#{item}" />
                 </p:column>
                 <p:column sortBy="#{item.dataCadastro}" headerText="Data Cadastro">
-                    <h:outputText value="#{item.dataCadastro}" />
+                    <h:outputText value="#{item.dataCadastro}" >
+                        <f:convertDateTime type="date" />
+                    </h:outputText>
                 </p:column>
                 <p:column sortBy="#{item.cliente}" headerText="Cliente">
                     <h:outputText value="#{item.cliente.pessoa.nome}" />
@@ -119,7 +117,10 @@
                 </p:column>
 
                 <p:column sortBy="#{item.situacao}" headerText="Situação">
-                    <h:outputText value="#{item.situacao}" />
+                    <p:outputLabel value="Em Aberto" rendered="#{item.situacao == 'A'}"   />  
+                    <p:outputLabel value="Cancelado" rendered="#{item.situacao == 'C'}"   />  
+                    <p:outputLabel value="Aprovado" rendered="#{item.situacao == 'P'}"   />  
+                    <p:outputLabel value="Finalizado" rendered="#{item.situacao == 'F'}"   />  
                 </p:column>
             </p:dataTable>
             <p:confirmDialog widgetVar="confirmCancelamentoDialog"
@@ -134,17 +135,15 @@
             </p:confirmDialog>
         </h:form>
 
-        <p:dialog  widgetVar="modalPopup" modal="true" width="750" height="550" resizable="false"
+        <p:dialog  widgetVar="modalPopup" modal="true" width="750" height="480" resizable="false"
                    showEffect="fade" header="Cadastro de Orçamento" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
-            <h:form id="frmCadastro" prependId="false" >
+            <h:form id="frmCadastro" prependId="false" enctype="multipart/form-data">
                 <p:tabView id="tabView">
                     <p:tab id="tab2" title="Dados básicos">
                         <p:fieldset id="NumeroField" style="width: 180px; float: left;">
                             <p:outputLabel id="NumeroLabel" value="Número"/>
-                            <p:inputMask id="NumeroInput"
-                                         value="#{orcamentoController.current.numero}" mask="9999.9?999"
-                                         disabled="true"/>
+                            <p:inputText id="NumeroInput" value="#{orcamentoController.current}" disabled="true"/>
                         </p:fieldset>
                         <p:fieldset id="DataEntradaField" style="width: 180px; float: left; margin-left: 19px; margin-right: 19px;" >
                             <p:outputLabel id="DataCadastroLabel" value="Data Cadastro"/>
@@ -157,10 +156,10 @@
                             <label id="SituacaoLabel">Situação</label>
                             <h:selectOneMenu id="SituacaoListBox" disabled="true"
                                              value="#{orcamentoController.current.situacao}">
-                                <f:selectItem itemLabel="Em Aberto" itemValue="1" />
-                                <f:selectItem itemLabel="Cancelado" itemValue="2" />
-                                <f:selectItem itemLabel="Aprovado" itemValue="3" />
-                                <f:selectItem itemLabel="Finalizado" itemValue="4" />
+                                <f:selectItem itemLabel="Em Aberto" itemValue="A" />
+                                <f:selectItem itemLabel="Cancelado" itemValue="C" />
+                                <f:selectItem itemLabel="Aprovado" itemValue="P" />
+                                <f:selectItem itemLabel="Finalizado" itemValue="F" />
                             </h:selectOneMenu>
                         </p:fieldset>                       
                         <p:fieldset id="ClienteField" style="width: 345px; float: left;margin-right: 19px;" >
@@ -181,7 +180,8 @@
                                 <label id="VeiculoLabel">Veículo *</label>
                                 <h:selectOneMenu id="VeiculoListBox" required="true" 
                                                  requiredMessage="O campo 'Veículo' é obrigatório."
-                                                 value="#{orcamentoController.current.veiculo}" >
+                                                 value="#{orcamentoController.current.veiculo}"
+                                                 converter="veiculoConverter">
                                     <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
                                     <f:selectItems value="#{orcamentoController.veiculos}" var="veiculo"
                                                    itemLabel="#{veiculo}" itemValue="#{veiculo}"/>
@@ -199,7 +199,7 @@
                             </h:selectOneMenu>
 
                             <h:selectBooleanCheckbox  id="TerceiroCheckBox" title="Terceiro?" dir="RTL" style="margin-left: -90px;" 
-                                                      value="#{orcamentoController.current.terceiro}" >
+                                                      value="#{orcamentoController.current.terceiro}"  >
                                 <span style="margin-left: 29px; font-weight: bold;" >Terceiro?</span> 
                             </h:selectBooleanCheckbox>
                         </p:fieldset>
@@ -347,7 +347,12 @@
                         </h:panelGroup>
                     </p:tab>
                     <p:tab  id="tab5" title="Anexo">
+                        <p:fileUpload value="#{orcamentoController.file}" mode="simple" multiple="false"/> 
 
+                        <p:commandButton id="downloadLink" value="Download Anexo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"   
+                                         icon="ui-icon-arrowthichk-s" rendered="#{orcamentoController.fileDownload != null}" >  
+                            <p:fileDownload value="#{orcamentoController.fileDownload}" />  
+                        </p:commandButton>
                     </p:tab>
                 </p:tabView>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
@@ -360,6 +365,18 @@
                 </h:panelGroup>
             </h:form>
         </p:dialog>
+        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">  
+            <p:graphicImage value="/images/ajax-loader.gif" />  
+        </p:dialog>  
+        <script type="text/javascript">  
+            function start() {  
+                PF('statusDialog').show();  
+            }  
+  
+            function stop() {  
+                PF('statusDialog').hide();  
+            }  
+        </script>  
     </ui:define>
 
     <ui:define name="Rodape">

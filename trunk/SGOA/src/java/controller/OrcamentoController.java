@@ -4,6 +4,8 @@ import facede.ClienteFacade;
 import facede.OrcamentoFacade;
 import facede.SeguradoraFacade;
 import facede.TipoServicoFacade;
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -16,10 +18,12 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import model.Cliente;
 import model.Orcamento;
+import model.OrcamentoAnexo;
 import model.OrcamentoTipoServico;
 import model.Seguradora;
 import model.TipoServico;
 import model.Veiculo;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.event.SelectEvent;
@@ -27,6 +31,7 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import util.HibernateFactory;
 import util.JsfUtil;
+import org.primefaces.model.UploadedFile;
 
 @ManagedBean
 @ViewScoped
@@ -101,7 +106,21 @@ public class OrcamentoController implements Serializable {
     private double totalHoras;
     private double totalDescoto;
     private double totalServico;
-    
+    private UploadedFile file;
+    private UploadedFile fileDownload;
+
+    public UploadedFile getFileDownload() {
+        return fileDownload;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
     public List<Veiculo> getVeiculos() {
         return veiculos;
     }
@@ -192,6 +211,27 @@ public class OrcamentoController implements Serializable {
 
     public void prepararEdicao(ActionEvent event) {
         current = (Orcamento) lazyModel.getRowData();
+//        try {
+//            HibernateFactory.currentSession();
+            Hibernate.initialize(current.getAnexos());
+            file = null;
+            if (current.getAnexos() != null && current.getAnexos().size() > 0) {
+                ByteArrayInputStream bais = null;
+                ObjectInputStream in = null;
+                this.fileDownload = null;
+                try {
+                    bais = new ByteArrayInputStream(current.getAnexos().get(0).getImagem());
+                    in = new ObjectInputStream(bais);
+                    this.fileDownload = (UploadedFile) in.readObject();
+                    in.close();
+                } catch (Exception ex) {
+                    JsfUtil.addErrorMessage(ex, "Erro ao carregar imagem para download.");
+                }
+            }
+            HibernateFactory.closeSession();
+//        } catch (Exception e) {
+//            JsfUtil.addErrorMessage(e, "Erro ao salvar o registro. ");
+//        }
     }
 
     public void prepararExclusao(ActionEvent event) {
@@ -207,6 +247,19 @@ public class OrcamentoController implements Serializable {
     public void salvar(ActionEvent actionEvent) {
         try {
             Session sessao = HibernateFactory.currentSession();
+            if (file != null) {
+                fileDownload = file;
+                if (current.getAnexos() != null && current.getAnexos().size() > 0) {
+                    current.getAnexos().get(0).setNomeArquivo(file.getFileName());
+                    current.getAnexos().get(0).setImagem(file.getContents());
+                } else {
+                    OrcamentoAnexo anexo = new OrcamentoAnexo();
+                    anexo.setOrcamento(current);
+                    anexo.setNomeArquivo(file.getFileName());
+                    anexo.setImagem(file.getContents());
+                    current.setAnexos(null);
+                }
+            }
             if (current.getId() != null) {
                 ejbFacade.alterar(sessao, current);
                 JsfUtil.addSuccessMessage("Orçamento alterado com sucesso!");
@@ -255,6 +308,8 @@ public class OrcamentoController implements Serializable {
         veiculos = new ArrayList<Veiculo>();
         seguradoras = montaListaSeguradoras();
         tipoServicos = montaListaTipoServicos();
+        file = null;
+        fileDownload = null;
         totalDescoto = 0;
         totalHoras = 0;
         totalServico = 0;
