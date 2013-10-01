@@ -194,6 +194,9 @@ public class FuncionarioController implements Serializable {
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Erro ao salvar o registro. ");
         }
+        finally {
+            HibernateFactory.closeSession();
+        }
     }
 
     public void excluir(ActionEvent actionEvent) {

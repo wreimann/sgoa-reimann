@@ -16,8 +16,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import model.Base.BaseEntidade;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "orcamento")
@@ -45,6 +43,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setNumero(int numero) {
         this.numero = numero;
     }
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "DataCadastro")
@@ -58,6 +57,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
+    
     @ManyToOne(optional = false)
     @JoinColumn(name = "idcliente")
     private Cliente cliente;
@@ -69,6 +69,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
+    
     @ManyToOne(optional = false)
     @JoinColumn(name = "idveiculo")
     private Veiculo veiculo;
@@ -80,6 +81,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setVeiculo(Veiculo veiculo) {
         this.veiculo = veiculo;
     }
+    
     @JoinColumn(name = "idseguradora")
     @ManyToOne(optional = true)
     private Seguradora seguradora;
@@ -91,6 +93,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setSeguradora(Seguradora seguradora) {
         this.seguradora = seguradora;
     }
+    
     @Column(name = "terceiro")
     private boolean terceiro;
 
@@ -101,6 +104,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setTerceiro(boolean terceiro) {
         this.terceiro = terceiro;
     }
+    
     @Size(max = 200)
     @Column(name = "Obs")
     private String obs;
@@ -122,8 +126,8 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setSituacao(char situacao) {
         this.situacao = situacao;
     }
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.JOIN)
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idorcamento")
     private List<OrcamentoTipoServico> servicos;
 
@@ -134,6 +138,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setServicos(List<OrcamentoTipoServico> servicos) {
         this.servicos = servicos;
     }
+    
     @Column(name = "valorAdicional")
     private double valorAdicional;
 
@@ -144,6 +149,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorAdicional(double valorAdicional) {
         this.valorAdicional = valorAdicional;
     }
+    
     @Column(name = "valorDesconto")
     private double valorDesconto;
 
@@ -154,6 +160,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorDesconto(double valorDesconto) {
         this.valorDesconto = valorDesconto;
     }
+    
     @Column(name = "valorTotal")
     private double valorTotal;
 
@@ -164,6 +171,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorTotal(double valorTotal) {
         this.valorTotal = valorTotal;
     }
+    
     @Column(name = "valorPecas")
     private double valorPecas;
 
@@ -174,7 +182,8 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorPecas(double valorPecas) {
         this.valorPecas = valorPecas;
     }
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idorcamento")
     private List<OrcamentoAnexo> anexos;
 
@@ -185,7 +194,78 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setAnexos(List<OrcamentoAnexo> anexos) {
         this.anexos = anexos;
     }
+    
+    @Column(name = "DataCancelamento")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataCancelamento;
 
+    public Date getDataCancelamento() {
+        return dataCancelamento;
+    }
+
+    public void setDataCancelamento(Date dataCancelamento) {
+        this.dataCancelamento = dataCancelamento;
+    }
+    
+    @Column(name = "DataAprovacao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataAprovacao;
+
+    public Date getDataAprovacao() {
+        return dataAprovacao;
+    }
+
+    public void setDataAprovacao(Date dataAprovacao) {
+        this.dataAprovacao = dataAprovacao;
+    }
+    
+    @JoinColumn(name = "idfuncionariocadastro")
+    @ManyToOne(optional = true)
+    private Funcionario funcionarioCadastro;
+
+    public Funcionario getFuncionarioCadastro() {
+        return funcionarioCadastro;
+    }
+
+    public void setFuncionarioCadastro(Funcionario funcionarioCadastro) {
+        this.funcionarioCadastro = funcionarioCadastro;
+    }
+    
+    @JoinColumn(name = "idfuncaprovacao")
+    @ManyToOne(optional = true)
+    private Funcionario funcionarioAprovacao;
+
+    public Funcionario getFuncionarioAprovacao() {
+        return funcionarioAprovacao;
+    }
+
+    public void setFuncionarioAprovacao(Funcionario funcionarioAprovacao) {
+        this.funcionarioAprovacao = funcionarioAprovacao;
+    }
+    
+    @JoinColumn(name = "idfunccancelamento")
+    @ManyToOne(optional = true)
+    private Funcionario funcionarioCancelamento;
+
+    public Funcionario getFuncionarioCancelamento() {
+        return funcionarioCancelamento;
+    }
+
+    public void setFuncionarioCancelamento(Funcionario funcionarioCancelamento) {
+        this.funcionarioCancelamento = funcionarioCancelamento;
+    }
+
+    @Column(name = "motivoCancelamento")
+    private String motivoCancelamento;
+
+    public String getMotivoCancelamento() {
+        return motivoCancelamento;
+    }
+
+    public void setMotivoCancelamento(String motivoCancelamento) {
+        this.motivoCancelamento = motivoCancelamento;
+    }
+    
     @Override
     public String toString() {
         if (getAno() > 0) {
