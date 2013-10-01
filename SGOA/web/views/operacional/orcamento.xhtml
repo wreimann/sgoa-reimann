@@ -15,7 +15,7 @@
     </ui:define>
 
     <ui:define name="Conteudo">
-        <h:form id="frmPesquisa" prependId="false">
+        <h:form id="frmPesquisa" prependId="false" enctype="multipart/form-data">
             <script type="text/javascript">
                 jQuery(function($) {
                       $("#DataInicioPesquisa_input").mask("99/99/9999");
@@ -25,49 +25,54 @@
                
             </script>
             <p:focus context="frmPesquisa"/>
-            <p:fieldset id="NumeroPesquisaField" style="width: 190px;">
-                <p:outputLabel id="NumeroPesquisaLabel" value="Número"/>
-                <p:inputMask id="NumeroPesquisaInput"
-                             value="#{orcamentoController.numero}" mask="9999.9?999" />
-            </p:fieldset>
-            <p:fieldset id="ClientePesquisaField" style="width: 600px; float: left; margin-right: 19px;">
-                <p:outputLabel id="ClientePesquisaLabel" value="Cliente"/>
-                <p:autoComplete value="#{orcamentoController.clienteFiltro}" id="ClientePesquisaInput"
-                                completeMethod="#{orcamentoController.selecionarClienteAutoComplete}"
-                                var="cliente" effect="fade"
-                                itemLabel="#{cliente.pessoa.nome}" itemValue="#{cliente}"
-                                converter="clienteConverter" forceSelection="true" />
-            </p:fieldset>
-            <p:fieldset id="PlacaPesquisaField" style="width: 190px; display: inline-block;" >
-                <p:outputLabel id="PlacaPesquisaLabel" value="Placa"/>
-                <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" value="#{orcamentoController.placaFiltro}"
-                             style="text-transform: uppercase;"/>
-            </p:fieldset>
-            <br />
-            <p:fieldset id="DataInicialPesquisa" style="width: 190px; float: left; margin-right: 19px;">
-                <p:outputLabel id="DataInicioPesquisaLabel" value="Data Inicial"/>
-                <p:calendar showButtonPanel="true" navigator="true" id="DataInicioPesquisa"
-                            value="#{orcamentoController.dataInicial}" converterMessage="Valor inválido!"
-                            pattern="dd/MM/yyyy" />
-            </p:fieldset>
+            <h:panelGrid columns="2">
+                <p:fieldset id="NumeroPesquisaField" style="width: 190px; margin-right: 19px;">
+                    <p:outputLabel id="NumeroPesquisaLabel" value="Número"/>
+                    <p:inputMask id="NumeroPesquisaInput"
+                                 value="#{orcamentoController.numero}" mask="9999.9?999" />
+                </p:fieldset>
+                <p:fieldset id="SituacaoPesquisaField" style="width: 195px;">
+                    <p:outputLabel id="SituacaoPesquisaLabel" value="Situação"/>
+                    <p:selectOneMenu id="SituacaoPesquisaListBox" styleClass="selectOneMenu"
+                                     value="#{orcamentoController.situacaoFiltro}" >
+                        <f:selectItem itemLabel="Selecione..." itemValue="" />
+                        <f:selectItem itemLabel="Em Aberto" itemValue="1" />
+                        <f:selectItem itemLabel="Cancelado" itemValue="2" />
+                        <f:selectItem itemLabel="Aprovado" itemValue="3" />
+                    </p:selectOneMenu>
+                </p:fieldset>
+            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <p:fieldset id="ClientePesquisaField" style="width: 500px; margin-right: 19px;">
+                    <p:outputLabel id="ClientePesquisaLabel" value="Cliente"/>
+                    <p:autoComplete value="#{orcamentoController.clienteFiltro}" id="ClientePesquisaInput"
+                                    completeMethod="#{orcamentoController.selecionarClienteAutoComplete}"
+                                    var="cliente" effect="fade"
+                                    itemLabel="#{cliente.pessoa.nome}" itemValue="#{cliente}"
+                                    converter="clienteConverter" forceSelection="true" />
+                </p:fieldset>
+                <p:fieldset id="PlacaPesquisaField" style="width: 190px;" >
+                    <p:outputLabel id="PlacaPesquisaLabel" value="Placa"/>
+                    <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" value="#{orcamentoController.placaFiltro}"
+                                 style="text-transform: uppercase;"/>
+                </p:fieldset>
+            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <p:fieldset id="DataInicialPesquisa" style="width: 190px;margin-right: 19px;">
+                    <p:outputLabel id="DataInicioPesquisaLabel" value="Data Inicial"/>
+                    <p:calendar showButtonPanel="true" navigator="true" id="DataInicioPesquisa"
+                                value="#{orcamentoController.dataInicial}" converterMessage="Valor inválido!"
+                                pattern="dd/MM/yyyy" />
+                </p:fieldset>
 
-            <p:fieldset id="DataFinalPesquisaField" style="width: 190px; margin-right: 19px; display: inline-block;">
-                <p:outputLabel id="DataFinalPesquisaLabel" value="Data Final"/>
-                <p:calendar showButtonPanel="true" navigator="true" id="DataFinalPesquisa"
-                            value="#{orcamentoController.dataFinal}" converterMessage="Valor inválido!"
-                            pattern="dd/MM/yyyy" />
-            </p:fieldset>
-            <br />
-            <p:fieldset id="SituacaoPesquisaField" style="width: 425px;">
-                <p:outputLabel id="SituacaoPesquisaLabel" value="Situação"/>
-                <p:selectOneMenu id="SituacaoPesquisaListBox" styleClass="selectOneMenu"
-                                 value="#{orcamentoController.situacaoFiltro}" >
-                    <f:selectItem itemLabel="Selecione..." itemValue="" />
-                    <f:selectItem itemLabel="Em Aberto" itemValue="1" />
-                    <f:selectItem itemLabel="Cancelado" itemValue="2" />
-                    <f:selectItem itemLabel="Aprovado" itemValue="3" />
-                </p:selectOneMenu>
-            </p:fieldset>
+                <p:fieldset id="DataFinalPesquisaField" style="width: 190px; margin-right: 19px; display: inline-block;">
+                    <p:outputLabel id="DataFinalPesquisaLabel" value="Data Final"/>
+                    <p:calendar showButtonPanel="true" navigator="true" id="DataFinalPesquisa"
+                                value="#{orcamentoController.dataFinal}" converterMessage="Valor inválido!"
+                                pattern="dd/MM/yyyy" />
+                </p:fieldset>
+            </h:panelGrid>
+
             <p:commandButton id="btnPesquisar" value="Pesquisar"
                              update="messages, :frmPesquisa" title="Pesquisar"/>
             <p:commandButton id="btnLimparPesquisa" value="Limpar" update=":frmPesquisa"
@@ -94,13 +99,15 @@
                     <p:commandButton actionListener="#{orcamentoController.prepararEdicao}"
                                      alt="Editar" title="Editar" icon="btn_editar"
                                      style="margin-right: 10px; margin-left: 10px"
-                                     oncomplete="modalPopup.show()" update=":frmCadastro, :growl" />
+                                     oncomplete="modalPopup.show()" update=":frmCadastro, :growl"
+                                     disabled="#{item.situacao != 'A'}"/>
                     <p:commandButton actionListener="#{orcamentoController.prepararExclusao}"
-                                     title="Inativar" alt="Cancelar"
+                                     title="Cancelar" alt="Cancelar"
                                      icon="btn_excluir"
-                                     oncomplete="confirmCancelamentoDialog.show()" />
+                                     oncomplete="confirmCancelamentoDialog.show()" 
+                                     disabled="#{item.situacao != 'A'}"/>
                 </p:column>
-                <p:column sortBy="#{item}" headerText="Orçamento"  width="60" >
+                <p:column sortBy="#{item.ano}" headerText="Orçamento"  width="60" >
                     <h:outputText value="#{item}" />
                 </p:column>
                 <p:column sortBy="#{item.dataCadastro}" headerText="Data Cadastro">
@@ -126,7 +133,10 @@
             <p:confirmDialog widgetVar="confirmCancelamentoDialog"
                              message="Confirma o cancelamento do orçamento selecionado ?"
                              showEffect="slide" hideEffect="clip" severity="alert">
-
+                <p:fieldset>
+                    <label>Motivo Cancelamento</label>
+                    <p:inputTextarea value="#{orcamentoController.motivoCancelamento}" />
+                </p:fieldset>
                 <p:commandButton oncomplete="confirmCancelamentoDialog.hide()" update=":frmPesquisa"
                                  actionListener="#{orcamentoController.cancelar}"
                                  value="Sim"/>
@@ -141,54 +151,58 @@
             <h:form id="frmCadastro" prependId="false" enctype="multipart/form-data">
                 <p:tabView id="tabView">
                     <p:tab id="tab2" title="Dados básicos">
-                        <p:fieldset id="NumeroField" style="width: 180px; float: left;">
-                            <p:outputLabel id="NumeroLabel" value="Número"/>
-                            <p:inputText id="NumeroInput" value="#{orcamentoController.current}" disabled="true"/>
-                        </p:fieldset>
-                        <p:fieldset id="DataEntradaField" style="width: 180px; float: left; margin-left: 19px; margin-right: 19px;" >
-                            <p:outputLabel id="DataCadastroLabel" value="Data Cadastro"/>
-                            <p:calendar showButtonPanel="true" navigator="true" id="DataCadastroInput"
-                                        value="#{orcamentoController.current.dataCadastro}" pattern="dd/MM/yyyy" 
-                                        disabled="true"/>
-                        </p:fieldset>
-
-                        <p:fieldset id="SituacaoField" style="width: 195px; display: inline-block; ">
-                            <label id="SituacaoLabel">Situação</label>
-                            <h:selectOneMenu id="SituacaoListBox" disabled="true"
-                                             value="#{orcamentoController.current.situacao}">
-                                <f:selectItem itemLabel="Em Aberto" itemValue="A" />
-                                <f:selectItem itemLabel="Cancelado" itemValue="C" />
-                                <f:selectItem itemLabel="Aprovado" itemValue="P" />
-                                <f:selectItem itemLabel="Finalizado" itemValue="F" />
-                            </h:selectOneMenu>
-                        </p:fieldset>                       
-                        <p:fieldset id="ClienteField" style="width: 345px; float: left;margin-right: 19px;" >
-                            <label id="ClienteLabel">Cliente *</label>
-                            <p:autoComplete value="#{orcamentoController.current.cliente}" id="ClienteText"
-                                            completeMethod="#{orcamentoController.selecionarClienteAutoComplete}"
-                                            var="c" itemLabel="#{c.pessoa.nome}"
-                                            itemValue="#{c}" converter="clienteConverter"
-                                            forceSelection="true" effect="fade" 
-                                            immediate="true" >
-                                <p:ajax event="itemSelect" update="VeiculoPanel" 
-                                        listener="#{orcamentoController.changeCliente}" immediate="true" />
-
-                            </p:autoComplete>
-                        </p:fieldset>
-                        <h:panelGroup id="VeiculoPanel" style="width: 260px; display: inline-block;" >
-                            <p:fieldset id="VeiculoField" style="width: 260px;">
-                                <label id="VeiculoLabel">Veículo *</label>
-                                <h:selectOneMenu id="VeiculoListBox" required="true" 
-                                                 requiredMessage="O campo 'Veículo' é obrigatório."
-                                                 value="#{orcamentoController.current.veiculo}"
-                                                 converter="veiculoConverter">
-                                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                                    <f:selectItems value="#{orcamentoController.veiculos}" var="veiculo"
-                                                   itemLabel="#{veiculo}" itemValue="#{veiculo}"/>
-                                </h:selectOneMenu>
+                        <h:panelGrid columns="3">
+                            <p:fieldset id="NumeroField" style="width: 180px;">
+                                <p:outputLabel id="NumeroLabel" value="Número"/>
+                                <p:inputText id="NumeroInput" value="#{orcamentoController.current}" disabled="true"/>
                             </p:fieldset>
-                        </h:panelGroup>
-                        <br />
+                            <p:fieldset id="DataEntradaField" style="width: 180px; margin-left: 19px;" >
+                                <p:outputLabel id="DataCadastroLabel" value="Data Cadastro"/>
+                                <p:calendar showButtonPanel="true" navigator="true" id="DataCadastroInput"
+                                            value="#{orcamentoController.current.dataCadastro}" pattern="dd/MM/yyyy" 
+                                            disabled="true"/>
+                            </p:fieldset>
+
+                            <p:fieldset id="SituacaoField" style="width: 185px; margin-left: 19px;">
+                                <label id="SituacaoLabel">Situação</label>
+                                <h:selectOneMenu id="SituacaoListBox" disabled="true"
+                                                 value="#{orcamentoController.current.situacao}">
+                                    <f:selectItem itemLabel="Em Aberto" itemValue="A" />
+                                    <f:selectItem itemLabel="Cancelado" itemValue="C" />
+                                    <f:selectItem itemLabel="Aprovado" itemValue="P" />
+                                    <f:selectItem itemLabel="Finalizado" itemValue="F" />
+                                </h:selectOneMenu>
+                            </p:fieldset>            
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <p:fieldset id="ClienteField" style="width: 335px; margin-right: 19px;" >
+                                <label id="ClienteLabel">Cliente *</label>
+                                <p:autoComplete value="#{orcamentoController.current.cliente}" id="ClienteText"
+                                                completeMethod="#{orcamentoController.selecionarClienteAutoComplete}"
+                                                var="c" itemLabel="#{c.pessoa.nome}"
+                                                itemValue="#{c}" converter="clienteConverter"
+                                                forceSelection="true" effect="fade" 
+                                                immediate="true" >
+                                    <p:ajax event="itemSelect" update="VeiculoPanel" 
+                                            listener="#{orcamentoController.changeCliente}" immediate="true" />
+
+                                </p:autoComplete>
+                            </p:fieldset>
+                            <h:panelGroup id="VeiculoPanel" style="width: 260px;" >
+                                <p:fieldset id="VeiculoField" style="width: 260px;">
+                                    <label id="VeiculoLabel">Veículo *</label>
+                                    <h:selectOneMenu id="VeiculoListBox" required="true" 
+                                                     requiredMessage="O campo 'Veículo' é obrigatório."
+                                                     value="#{orcamentoController.current.veiculo}"
+                                                     converter="veiculoConverter">
+                                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                                        <f:selectItems value="#{orcamentoController.veiculos}" var="veiculo"
+                                                       itemLabel="#{veiculo}" itemValue="#{veiculo}"/>
+                                    </h:selectOneMenu>
+                                </p:fieldset>
+                            </h:panelGroup>
+                        </h:panelGrid>
+
                         <p:fieldset id="SeguradoraField" >
                             <label id="SeguradoraLabel">Seguradora</label>
                             <h:selectOneMenu id="SeguradoraFieldListBox" style="width: 480px!important;"
@@ -347,11 +361,12 @@
                         </h:panelGroup>
                     </p:tab>
                     <p:tab  id="tab5" title="Anexo">
-                        <p:fileUpload value="#{orcamentoController.file}" mode="simple" multiple="false"/> 
-
-                        <p:commandButton id="downloadLink" value="Download Anexo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"   
-                                         icon="ui-icon-arrowthichk-s" rendered="#{orcamentoController.fileDownload != null}" >  
-                            <p:fileDownload value="#{orcamentoController.fileDownload}" />  
+                        <p:fileUpload fileUploadListener="#{orcamentoController.handleFileUpload}" 
+                          showButtons="false" label="Procurar..." auto="true"/>
+                        
+                        <p:commandButton id="downloadLink" value="Download Anexo" onclick="PrimeFaces.monitorDownload(start, stop)"   
+                                         icon="ui-icon-arrowthichk-s" >  
+                            <p:fileDownload value="#{orcamentoController.file}" />  
                         </p:commandButton>
                     </p:tab>
                 </p:tabView>

@@ -105,8 +105,14 @@ public class OrcamentoFacade extends BaseFacade<Orcamento> {
         if (sort != null) {
             if (order.equals(SortOrder.ASCENDING)) {
                 c.addOrder(Order.asc(sort));
+                if(sort.equals("ano")){
+                 c.addOrder(Order.asc("numero"));
+                }
             } else {
                 c.addOrder(Order.desc(sort));
+                if(sort.equals("ano")){
+                 c.addOrder(Order.asc("numero"));
+                }
             }
         }
         if (nomeFiltro != null && !nomeFiltro.isEmpty()) {
@@ -122,6 +128,7 @@ public class OrcamentoFacade extends BaseFacade<Orcamento> {
         List<Orcamento> lista = c.list();
         for (Orcamento orcamento : lista) {
             Hibernate.initialize(orcamento.getAnexos());
+            Hibernate.initialize(orcamento.getServicos());
         }
         return lista;
     }

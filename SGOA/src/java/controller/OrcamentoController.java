@@ -1,6 +1,7 @@
 package controller;
 
 import facede.ClienteFacade;
+import facede.FuncionarioFacade;
 import facede.OrcamentoFacade;
 import facede.SeguradoraFacade;
 import facede.TipoServicoFacade;
@@ -9,24 +10,30 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpSession;
 import model.Cliente;
+import model.Funcionario;
 import model.Orcamento;
 import model.OrcamentoAnexo;
 import model.OrcamentoTipoServico;
 import model.Seguradora;
 import model.TipoServico;
 import model.Veiculo;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.exception.ConstraintViolationException;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.DefaultUploadedFile;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import util.HibernateFactory;
@@ -107,10 +114,14 @@ public class OrcamentoController implements Serializable {
     private double totalDescoto;
     private double totalServico;
     private UploadedFile file;
-    private UploadedFile fileDownload;
+    private String motivoCancelamento;
 
-    public UploadedFile getFileDownload() {
-        return fileDownload;
+    public String getMotivoCancelamento() {
+        return motivoCancelamento;
+    }
+
+    public void setMotivoCancelamento(String motivoCancelamento) {
+        this.motivoCancelamento = motivoCancelamento;
     }
 
     public UploadedFile getFile() {
@@ -211,25 +222,10 @@ public class OrcamentoController implements Serializable {
 
     public void prepararEdicao(ActionEvent event) {
         current = (Orcamento) lazyModel.getRowData();
+        veiculos = current.getCliente().getVeiculos();
         servicos = current.getServicos();
-        changeValorOrcamento();
-        file = null;
-        if (current.getAnexos() != null && current.getAnexos().size() > 0) {
-            ByteArrayInputStream bais = null;
-            ObjectInputStream in = null;
-            this.fileDownload = null;
-            try {
-                bais = new ByteArrayInputStream(current.getAnexos().get(0).getImagem());
-                in = new ObjectInputStream(bais);
-                this.fileDownload = (UploadedFile) in.readObject();
-                in.close();
-            } catch (Exception ex) {
-                JsfUtil.addErrorMessage(ex, "Erro ao carregar imagem para download.");
-            }
-        }
-
+        changeTipoServico();       
     }
-
     public void prepararExclusao(ActionEvent event) {
         current = (Orcamento) lazyModel.getRowData();
     }
@@ -244,7 +240,6 @@ public class OrcamentoController implements Serializable {
         try {
             Session sessao = HibernateFactory.currentSession();
             if (file != null) {
-                fileDownload = file;
                 if (current.getAnexos() != null && current.getAnexos().size() > 0) {
                     current.getAnexos().get(0).setNomeArquivo(file.getFileName());
                     current.getAnexos().get(0).setImagem(file.getContents());
@@ -253,32 +248,50 @@ public class OrcamentoController implements Serializable {
                     anexo.setOrcamento(current);
                     anexo.setNomeArquivo(file.getFileName());
                     anexo.setImagem(file.getContents());
-                    current.setAnexos(null);
+                    current.getAnexos().add(anexo);
                 }
             }
+            current.setServicos(servicos);
             if (current.getId() != null) {
                 ejbFacade.alterar(sessao, current);
                 JsfUtil.addSuccessMessage("Orçamento alterado com sucesso!");
             } else {
+                HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+                Integer idUser = (Integer) session.getAttribute("usuario");
+                if (idUser != null && idUser > 0) {
+                    FuncionarioFacade ebjFuncionario = new FuncionarioFacade();
+                    Funcionario funcionario = ebjFuncionario.obterPorId(sessao, idUser);
+                    current.setFuncionarioCancelamento(funcionario);
+                }
                 ejbFacade.incluir(sessao, current);
                 JsfUtil.addSuccessMessage("Orçamento incluído com sucesso!");
             }
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Erro ao salvar o registro. ");
+        } finally {
+            HibernateFactory.closeSession();
         }
+
     }
 
-    public void excluir(ActionEvent actionEvent) {
+    public void cancelar(ActionEvent actionEvent) {
         try {
             Session sessao = HibernateFactory.currentSession();
-            ejbFacade.excluir(sessao, current);
-            JsfUtil.addSuccessMessage("Orçamento excluído com sucesso!");
-        } catch (Exception ex) {
-            if (ex.getCause() instanceof ConstraintViolationException) {
-                JsfUtil.addErrorMessage("Este registro esta associado a outros cadastros. Exclusão não permitida.");
-            } else {
-                JsfUtil.addErrorMessage(ex, "Erro ao excluir o registro. ");
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+            Integer idUser = (Integer) session.getAttribute("usuario");
+            if (idUser != null && idUser > 0) {
+                FuncionarioFacade ebjFuncionario = new FuncionarioFacade();
+                Funcionario funcionario = ebjFuncionario.obterPorId(sessao, idUser);
+                current.setFuncionarioCancelamento(funcionario);
             }
+            Calendar cal = Calendar.getInstance();
+            current.setDataCancelamento(cal.getTime());
+            current.setSituacao('C');
+            current.setMotivoCancelamento(motivoCancelamento);
+            ejbFacade.alterar(sessao, current);
+            JsfUtil.addSuccessMessage("Orçamento cancelado com sucesso!");
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage(ex, "Erro ao cancelar o orçamento. ");
         } finally {
             HibernateFactory.closeSession();
         }
@@ -305,7 +318,6 @@ public class OrcamentoController implements Serializable {
         seguradoras = montaListaSeguradoras();
         tipoServicos = montaListaTipoServicos();
         file = null;
-        fileDownload = null;
         totalDescoto = 0;
         totalHoras = 0;
         totalServico = 0;
@@ -379,5 +391,16 @@ public class OrcamentoController implements Serializable {
         if (current != null) {
             current.setValorTotal((totalServico + current.getValorPecas() + current.getValorAdicional()) - current.getValorDesconto());
         }
+    }
+
+    public void upload() {
+        if (file != null) {
+            FacesMessage msg = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        file = event.getFile();
     }
 }
