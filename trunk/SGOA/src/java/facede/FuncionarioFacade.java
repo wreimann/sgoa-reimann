@@ -71,7 +71,7 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
             c.add(Restrictions.like("pessoa.nome", nomeFiltro, MatchMode.ANYWHERE).ignoreCase());
         }
         super.setRowCount((Long) c.setProjection(Projections.rowCount()).uniqueResult());
-        c.setProjection(null).setResultTransformer(Criteria.ROOT_ENTITY);
+        c = sessao.createCriteria(Funcionario.class, "fun");
         c.setFirstResult(page).setMaxResults(maxPage);
         if (sort != null) {
             if (order.equals(SortOrder.ASCENDING)) {

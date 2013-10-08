@@ -6,7 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -116,6 +115,7 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setObs(String obs) {
         this.obs = obs;
     }
+    
     @Column(name = "situacao")
     private char situacao;
 
@@ -207,18 +207,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
         this.dataCancelamento = dataCancelamento;
     }
     
-    @Column(name = "DataAprovacao")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataAprovacao;
-
-    public Date getDataAprovacao() {
-        return dataAprovacao;
-    }
-
-    public void setDataAprovacao(Date dataAprovacao) {
-        this.dataAprovacao = dataAprovacao;
-    }
-    
     @JoinColumn(name = "idfuncionariocadastro")
     @ManyToOne(optional = true)
     private Funcionario funcionarioCadastro;
@@ -229,18 +217,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
 
     public void setFuncionarioCadastro(Funcionario funcionarioCadastro) {
         this.funcionarioCadastro = funcionarioCadastro;
-    }
-    
-    @JoinColumn(name = "idfuncaprovacao")
-    @ManyToOne(optional = true)
-    private Funcionario funcionarioAprovacao;
-
-    public Funcionario getFuncionarioAprovacao() {
-        return funcionarioAprovacao;
-    }
-
-    public void setFuncionarioAprovacao(Funcionario funcionarioAprovacao) {
-        this.funcionarioAprovacao = funcionarioAprovacao;
     }
     
     @JoinColumn(name = "idfunccancelamento")

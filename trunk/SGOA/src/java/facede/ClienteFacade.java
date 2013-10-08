@@ -4,7 +4,6 @@ import facede.base.BaseFacade;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import model.Pessoa;
 import org.primefaces.model.SortOrder;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -92,7 +91,7 @@ public class ClienteFacade extends BaseFacade<Cliente> {
             c.add(Subqueries.exists(veiculosCriteria.setProjection(Projections.property("veiculos.id"))));
         }
         super.setRowCount((Long) c.setProjection(Projections.rowCount()).uniqueResult());
-        c.setProjection(null).setResultTransformer(Criteria.ROOT_ENTITY);
+        c = sessao.createCriteria(Cliente.class, "cli");
         c.setFirstResult(page).setMaxResults(maxPage);
         if (sort != null) {
             if (order.equals(SortOrder.ASCENDING)) {

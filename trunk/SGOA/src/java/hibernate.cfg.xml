@@ -30,5 +30,6 @@
     <mapping class="model.Fluxo"/>
     <mapping class="model.FluxoEtapa"/>
     <mapping class="model.OrcamentoAnexo"/>
+    <mapping class="model.OrdemServico"/>
   </session-factory>
 </hibernate-configuration>
