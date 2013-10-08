@@ -41,7 +41,6 @@ public class EtapaFacade extends BaseFacade<Etapa> {
         super.setRowCount((Long) c.setProjection(Projections.rowCount()).uniqueResult());
         // realizar a pesquisa por demanda
         c = sessao.createCriteria(Etapa.class);
-        c.setProjection(null).setResultTransformer(Criteria.ROOT_ENTITY);
         c.setFirstResult(page).setMaxResults(maxPage);
         if (sort != null) {
             if (order.equals(SortOrder.ASCENDING)) {

@@ -1,18 +1,18 @@
 package converter;
 
-import facede.VeiculoFacade;
+import facede.FluxoFacade;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import model.Veiculo;
+import model.Fluxo;
 import org.hibernate.Session;
 import util.HibernateFactory;
 
-@FacesConverter(value = "veiculoConverter", forClass = Veiculo.class)
-public class veiculoConverter implements Converter {
+@FacesConverter(value = "fluxoConverter", forClass = Fluxo.class)
+public class FluxoConverter implements Converter {
 
     public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
         if (value == null || value.length() == 0) {
@@ -25,10 +25,10 @@ public class veiculoConverter implements Converter {
         }
         try {
             Session sessao = HibernateFactory.currentSession();
-            VeiculoFacade ebjVeiculo = new VeiculoFacade();
-            return ebjVeiculo.obterPorId(sessao, getKey(value));
+            FluxoFacade ebjFluxo = new FluxoFacade();
+            return ebjFluxo.obterPorId(sessao, getKey(value));
         } catch (Exception ex) {
-            Logger.getLogger(veiculoConverter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FluxoConverter.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         } finally {
             HibernateFactory.closeSession();
@@ -51,11 +51,11 @@ public class veiculoConverter implements Converter {
         if (object == null || object == "") {
             return null;
         }
-        if (object instanceof Veiculo) {
-            Veiculo o = (Veiculo) object;
+        if (object instanceof Fluxo) {
+            Fluxo o = (Fluxo) object;
             return getStringKey(o.getId());
         } else {
-            throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName());
+            throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName()); 
         }
     }
 }

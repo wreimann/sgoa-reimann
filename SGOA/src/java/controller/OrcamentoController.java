@@ -1,12 +1,12 @@
 package controller;
 
 import facede.ClienteFacade;
-import facede.FuncionarioFacade;
+import facede.FluxoFacade;
 import facede.OrcamentoFacade;
+import facede.OrdemServicoFacade;
 import facede.SeguradoraFacade;
 import facede.TipoServicoFacade;
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
+import filter.LoginFilter;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -15,25 +15,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import model.Cliente;
-import model.Funcionario;
+import model.Fluxo;
 import model.Orcamento;
 import model.OrcamentoAnexo;
 import model.OrcamentoTipoServico;
+import model.OrdemServico;
 import model.Seguradora;
 import model.TipoServico;
 import model.Veiculo;
 import org.hibernate.Session;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.DefaultUploadedFile;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import util.HibernateFactory;
@@ -110,11 +108,39 @@ public class OrcamentoController implements Serializable {
     private List<Seguradora> seguradoras;
     private List<OrcamentoTipoServico> servicos;
     private List<TipoServico> tipoServicos;
+    private List<Fluxo> fluxos;
+    private Fluxo fluxo;
     private double totalHoras;
     private double totalDescoto;
     private double totalServico;
     private UploadedFile file;
     private String motivoCancelamento;
+    private Boolean bloqueado;
+    private Boolean gerarOS;
+
+    public Fluxo getFluxo() {
+        return fluxo;
+    }
+
+    public void setFluxo(Fluxo fluxo) {
+        this.fluxo = fluxo;
+    }
+
+    public Boolean getBloqueado() {
+        bloqueado = false;
+        if (current != null) {
+            bloqueado = current.getSituacao() == 'C' || current.getSituacao() == 'P';
+        }
+        return bloqueado;
+    }
+
+    public Boolean getGerarOS() {
+        gerarOS = false;
+        if (current != null) {
+            gerarOS = current.getSituacao() == 'A';
+        }
+        return gerarOS;
+    }
 
     public String getMotivoCancelamento() {
         return motivoCancelamento;
@@ -130,6 +156,10 @@ public class OrcamentoController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public List<Fluxo> getFluxos() {
+        return fluxos;
     }
 
     public List<Veiculo> getVeiculos() {
@@ -191,7 +221,8 @@ public class OrcamentoController implements Serializable {
                 List<Orcamento> resultado = new ArrayList<Orcamento>();
                 try {
                     Session sessao = HibernateFactory.currentSession();
-                    resultado = ejbFacade.selecionarPorParametros(sessao, sortField, sortOrder, first, pageSize, "", "");
+                    resultado = ejbFacade.selecionarPorParametros(sessao, sortField, sortOrder, first, pageSize,
+                            getNumero(), getSituacaoFiltro(), getClienteFiltro(), getPlacaFiltro(), getDataInicial(), getDataFinal());
                 } catch (Exception ex) {
                     JsfUtil.addErrorMessage(ex, "Erro ao consultar dados. ");
                 } finally {
@@ -224,8 +255,9 @@ public class OrcamentoController implements Serializable {
         current = (Orcamento) lazyModel.getRowData();
         veiculos = current.getCliente().getVeiculos();
         servicos = current.getServicos();
-        changeTipoServico();       
+        changeTipoServico();
     }
+
     public void prepararExclusao(ActionEvent event) {
         current = (Orcamento) lazyModel.getRowData();
     }
@@ -248,6 +280,9 @@ public class OrcamentoController implements Serializable {
                     anexo.setOrcamento(current);
                     anexo.setNomeArquivo(file.getFileName());
                     anexo.setImagem(file.getContents());
+                    if (current.getAnexos() == null) {
+                        current.setAnexos(new ArrayList<OrcamentoAnexo>());
+                    }
                     current.getAnexos().add(anexo);
                 }
             }
@@ -257,12 +292,7 @@ public class OrcamentoController implements Serializable {
                 JsfUtil.addSuccessMessage("Orçamento alterado com sucesso!");
             } else {
                 HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-                Integer idUser = (Integer) session.getAttribute("usuario");
-                if (idUser != null && idUser > 0) {
-                    FuncionarioFacade ebjFuncionario = new FuncionarioFacade();
-                    Funcionario funcionario = ebjFuncionario.obterPorId(sessao, idUser);
-                    current.setFuncionarioCancelamento(funcionario);
-                }
+                current.setFuncionarioCancelamento(LoginFilter.usuarioLogado(sessao));
                 ejbFacade.incluir(sessao, current);
                 JsfUtil.addSuccessMessage("Orçamento incluído com sucesso!");
             }
@@ -277,14 +307,8 @@ public class OrcamentoController implements Serializable {
     public void cancelar(ActionEvent actionEvent) {
         try {
             Session sessao = HibernateFactory.currentSession();
-            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-            Integer idUser = (Integer) session.getAttribute("usuario");
-            if (idUser != null && idUser > 0) {
-                FuncionarioFacade ebjFuncionario = new FuncionarioFacade();
-                Funcionario funcionario = ebjFuncionario.obterPorId(sessao, idUser);
-                current.setFuncionarioCancelamento(funcionario);
-            }
             Calendar cal = Calendar.getInstance();
+            current.setFuncionarioCancelamento(LoginFilter.usuarioLogado(sessao));
             current.setDataCancelamento(cal.getTime());
             current.setSituacao('C');
             current.setMotivoCancelamento(motivoCancelamento);
@@ -292,6 +316,24 @@ public class OrcamentoController implements Serializable {
             JsfUtil.addSuccessMessage("Orçamento cancelado com sucesso!");
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao cancelar o orçamento. ");
+        } finally {
+            HibernateFactory.closeSession();
+        }
+    }
+
+    public void ordemServico(ActionEvent actionEvent) {
+        try {
+            Session sessao = HibernateFactory.currentSession();
+            OrdemServico os = new OrdemServico();
+            current.setSituacao('P');
+            os.setFuncionarioAprovacao(LoginFilter.usuarioLogado(sessao));
+            os.setOrcamento(current);
+            os.setFluxo(fluxo);
+            OrdemServicoFacade osFacade = new OrdemServicoFacade();
+            osFacade.incluir(sessao, os);
+            JsfUtil.addSuccessMessage("Ordem de Serviço gerada com sucesso!");
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage(ex, "Erro ao aprovar o orçamento tente novamente. ");
         } finally {
             HibernateFactory.closeSession();
         }
@@ -317,6 +359,7 @@ public class OrcamentoController implements Serializable {
         veiculos = new ArrayList<Veiculo>();
         seguradoras = montaListaSeguradoras();
         tipoServicos = montaListaTipoServicos();
+        fluxos = montaListaFluxos();
         file = null;
         totalDescoto = 0;
         totalHoras = 0;
@@ -372,6 +415,20 @@ public class OrcamentoController implements Serializable {
         }
         return resultado;
     }
+    
+    public List<Fluxo> montaListaFluxos() {
+        List<Fluxo> resultado = new ArrayList<Fluxo>();
+        try {
+            Session sessao = HibernateFactory.currentSession();
+            FluxoFacade ebj = new FluxoFacade();
+            resultado = ebj.selecionarTodosAtivos(sessao);
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de seguradoras. ");
+        } finally {
+            HibernateFactory.closeSession();
+        }
+        return resultado;
+    }
 
     public void changeTipoServico() {
         totalDescoto = 0;
@@ -390,13 +447,6 @@ public class OrcamentoController implements Serializable {
     public void changeValorOrcamento() {
         if (current != null) {
             current.setValorTotal((totalServico + current.getValorPecas() + current.getValorAdicional()) - current.getValorDesconto());
-        }
-    }
-
-    public void upload() {
-        if (file != null) {
-            FacesMessage msg = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
 
