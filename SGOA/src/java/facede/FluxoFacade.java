@@ -56,4 +56,10 @@ public class FluxoFacade extends BaseFacade<Fluxo> {
         return lista;
     }
 
+    public void iniciarFluxo(Session sessao) throws Exception {
+        continuarFluxo(sessao);
+    }
+    
+    public void continuarFluxo(Session sessao) throws Exception {
+    }
 }

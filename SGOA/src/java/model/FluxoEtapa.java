@@ -24,6 +24,7 @@ public class FluxoEtapa extends BaseEntidade<FluxoEtapa> {
     public void setFluxo(Fluxo fluxo) {
         this.fluxo = fluxo;
     }
+    
     @JoinColumn(name = "idetapa")
     @ManyToOne(optional = false)
     private Etapa etapa;
@@ -35,6 +36,7 @@ public class FluxoEtapa extends BaseEntidade<FluxoEtapa> {
     public void setEtapa(Etapa etapa) {
         this.etapa = etapa;
     }
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "enviaEmailCliente")

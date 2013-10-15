@@ -381,7 +381,7 @@ public class OrcamentoController implements Serializable {
             ClienteFacade ebjCliente = new ClienteFacade();
             resultado = ebjCliente.selecionarPorNomeAutoComplete(sessao, query);
         } catch (Exception ex) {
-            JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de cores. ");
+            JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de clientes. ");
         } finally {
             HibernateFactory.closeSession();
         }

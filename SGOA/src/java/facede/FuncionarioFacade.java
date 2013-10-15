@@ -100,4 +100,16 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
         List<Funcionario> lista = c.list();
         return lista;
     }
+
+    @Override
+    public List<Funcionario> selecionarTodosAtivos(Session sessao) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        Criteria c = sessao.createCriteria(Funcionario.class,"func").createCriteria("pessoa","pes");
+        c.add(Restrictions.eq("func.ativo", true));
+        c.addOrder(Order.asc("pes.nome"));
+        List<Funcionario> lista = c.list();
+        return lista;
+    }
 }
