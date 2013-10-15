@@ -1,13 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 template="./../../template/form.xhtml"
+                xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core" 
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="Navagador">
-        <a class="current">Cadastro</a>
+        <a class="current">Operacional</a>
         <div class="breadcrumb_divider"></div> 
         <a class="current">Controle de Serviços</a>
     </ui:define>
@@ -18,115 +17,90 @@
 
     <ui:define name="Conteudo">
         <h:form id="frmCadastro"> 
-            <h:commandLink id="btnDetalhe" styleClass="btn_new" onclick="modalPopup.show(); return false;" value="Detalhe" />
-            <p:fieldset id="PlacaField" style="width: 260px;">
-                <label id="PlacaLabel">Placa * </label>
-                <h:inputText id="PlacaInput" readonly="true" />
-
-            </p:fieldset>
-
-            <p:fieldset id="ClienteOSField" >
-                <label id="ClienteOSLabel">Cliente</label>
-                <h:inputText id="ClienteOSText" required="true" />
-            </p:fieldset>
-            <p:fieldset id="FluxoField" >
-                <label id="FluxoLabel">Fluxo de Trabalho</label>
-                <h:inputText id="FluxoInput" />
-                <p:commandButton id="btnRemoverFluxo" value="Remover" />  
-            </p:fieldset>
-            <p:fieldset id="EtapaAtualField" >
-                <label id="SituacaoLabel">Etapa Atual *</label>
-                <h:selectOneMenu id="EtapaAtualListBox" value="#{subscriptionController.subscriptions}">
-                    <f:selectItem itemLabel="Desmontar Veículo" itemValue="1" />
-                </h:selectOneMenu>
-            </p:fieldset>
-            <p:fieldset id="DataConclusaoField" style="width: 260px; float: left;" >
-                <label id="DataConclusaoLabel">Conclusão *</label>
-                <h:inputText id="DataConclusaoInput" readonly="true" />
-            </p:fieldset>
-            <p:fieldset id="HorasTrabalhadaField" style="width: 260px; float: left; margin-left: 19px;" >
-                <label id="HorasTrabalhadaLabel">Horas trabalhadas *</label>
-                <h:inputText id="HorasTrabalhadaText"  />
-            </p:fieldset>
-            <p:fieldset id="FuncionarioField" style="width: 552px; display: inline-block; margin-left: 19px;">
-                <label id="FuncionarioLabel">Funcionário *</label>
-                <h:selectOneMenu id="FuncionarioListBox" value="#{subscriptionController.subscriptions}">
-                    <f:selectItem itemLabel=" 1245 - Cesar Carlos Reimann" itemValue="1" />
-                </h:selectOneMenu>
-            </p:fieldset>
-            <p:fieldset id="ObsField" >
-                <label id="ObsLabel">Observação</label>
-                <h:inputTextarea id="ObsInput" />
-            </p:fieldset>
-            <p:fieldset id="FotosField" >
-                <p:fileUpload label="Imagem" mode="simple" />
-            </p:fieldset>
-            <p:fieldset id="DesenhoField">
-                <label id="DesenhoLabel">Andamento do Serviço</label>
-                <div class="spacer"></div>
-
-                <p:mindmap value="#{mindmapController.root}" style="width:1100px; height:300px;margin-left: 5px;margin-right: 5px; border:1px solid black;">  
-                    <p:ajax event="select" oncomplete="etapa.show()" />  
-                    <p:ajax event="dblselect" oncomplete="etapa.show()"/>  
-                </p:mindmap>  
-            </p:fieldset>
-
-
-            <div class="spacer"></div>
-            <h:panelGrid columns="4">  
-                <p:commandButton id="btnSalvar" value="Salvar" />  
-                <p:commandButton id="btnCancelar" value="Cancelar" />  
+            <p:messages id="messages" autoUpdate="true" closable="true"  />
+            <h:panelGrid columns="2">
+                <p:fieldset id="PlacaPesquisaField" style="width: 150px;" >
+                    <p:outputLabel id="PlacaPesquisaLabel" value="Placa *"/>
+                    <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" value="#{ordemServicoController.placa}"
+                                 style="text-transform: uppercase;">
+                        <p:ajax event="change" update=":frmCadastro" 
+                                listener="#{ordemServicoController.changePlaca}" immediate="true" />
+                    </p:inputMask>
+                    <p:commandButton id="btnLocalizarOS" value="Localizar" />
+                </p:fieldset>
+                <p:fieldset id="ClientePesquisaField" style="width: 500px; margin-right: 19px;">
+                    <p:outputLabel id="ClientePesquisaLabel" value="Cliente"/>
+                    <h:outputText value="#{ordemServicoController.cliente}"  />
+                </p:fieldset>
             </h:panelGrid>
+            <h:panelGrid columns="2">
+                <p:fieldset id="FluxoField" >
+                    <label id="FluxoLabel">Fluxo de Trabalho</label>
+                    <h:outputText value="#{ordemServicoController.fluxo}"  />
+                    <p:commandButton id="btnRemoverFluxo" value="Remover" />  
+                </p:fieldset>
+                <p:fieldset id="EtapaAtualField" >
+                    <label id="EtapaLabel">Etapa*</label>
+                    <h:selectOneMenu id="EtapaAtualListBox" style="width: 480px!important;"
+                                     value="#{ordemServicoController.current.etapa}" 
+                                     converter="etapaConverter" >
+                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                        <f:selectItems value="#{ordemServicoController.etapasAtivas}" var="etapa"
+                                       itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                    </h:selectOneMenu>
+                </p:fieldset>
+            </h:panelGrid>
+            <h:panelGrid columns="3">
+                <p:fieldset id="DataConclusaoField" style="width: 190px;margin-right: 19px;">
+                    <p:outputLabel id="DataConclusaoLabel" value="Data Conclusão*"/>
+                    <p:calendar showButtonPanel="true" navigator="true" id="DataConclusao"
+                                value="#{ordemServicoController.current.dataSaida}" 
+                                converterMessage="Valor inválido!"
+                                pattern="dd/MM/yyyy" />
+                </p:fieldset>
+                <p:fieldset id="HorasTrabalhadaField" style="width: 260px; float: left; margin-left: 19px;" >
+                    <label id="HorasTrabalhadaLabel">Horas trabalhadas *</label>
+                    <p:inputText id="HorasTrabalhadaText" value="#{ordemServicoController.current.horasTrabalhadas}" >
+                        <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" 
+                                         type="currency" />
+                    </p:inputText>
+                </p:fieldset>
+                <p:fieldset id="FuncionarioField" style="width: 552px; display: inline-block; margin-left: 19px;">
+                    <label id="FuncionarioLabel">Funcionário *</label>
+                    <h:selectOneMenu id="FuncionarioListBox" style="width: 480px!important;"
+                                     value="#{ordemServicoController.current.funcionario}" 
+                                     converter="funcionarioConverter" >
+                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                        <f:selectItems value="#{ordemServicoController.funcionariosAtivos}" var="funcionario"
+                                       itemLabel="#{funcionario}" itemValue="#{funcionario}"/>
+                    </h:selectOneMenu>
+                </p:fieldset>
+            </h:panelGrid>
+
+            <p:fieldset id="ObsField">
+                <label id="ObsLabel">Observação</label>
+                <p:inputTextarea id="ObsInput" value="#{ordemServicoController.current.obs}"/>
+            </p:fieldset>
+
+            <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}" 
+                          showButtons="false" label="Procurar..." auto="true" 
+                          sizeLimit="3000000" allowTypes="/(\.|\/)(pdf|doc?x)$/"
+                          update=":frmCadastro"
+                          dragDropSupport="false" mode="advanced" />
+
+
+
+            <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
+                <p:commandButton id="btnSalvar"
+                                 actionListener="#{ordemServicoController.salvar}"
+                                 update=":frmCadastro" value="Salvar" />
+                <p:commandButton id="btnCancelar" value="Cancelar"
+                                 actionListener="#{ordemServicoController.limparCampos}"
+                                 update=":frmCadastro" />
+            </h:panelGroup>
+
         </h:form>
 
-        <p:dialog widgetVar="modalPopup" modal="true" height="500" width="750" header="Detalhes da Etapa Percorrida" >
-            <h:form id="frmDetalheEtapa"> 
-                <p:tabView id="tabView">
-                    <p:tab id="tab2" title="Dados básicos">  
-                        <h:form>
-                            <p:fieldset id="EtapaField" >
-                                <label id="EtapaLabel">Etapa</label>
-                                <h:inputText id="EtapaText" />
-                            </p:fieldset>
-                            <p:fieldset id="SetorField" >
-                                <label id="SetorLabel">Setor</label>
-                                <h:inputText id="SetorText" />
-                            </p:fieldset>
-                            <p:fieldset id="DataEntradaField" style="width: 210px; float: left;" >
-                                <label id="DataEntradaLabel">Data Entrada</label>
-                                <h:inputText id="DataEntradaInput"  />
-                            </p:fieldset>
-                            <p:fieldset id="DataSaidaField" style="width: 210px; float: left; margin-left: 19px" >
-                                <label id="DataSaidaLabel">Data Saida</label>
-                                <h:inputText id="DataSaidaInput"  />
-                            </p:fieldset>
-                            <p:fieldset id="HorasField" style="width: 210px; float: left; display: inline-block; margin-left: 19px;" >
-                                <label id="HorasLabel">Horas trabalhadas</label>
-                                <h:inputText id="HorasText"  />
-                            </p:fieldset>
-
-                            <p:fieldset id="FuncionarioDetalheField">
-                                <label id="FuncionarioDetalheLabel">Funcionário</label>
-                                <h:inputText id="FuncionarioDetalheInput" />
-                            </p:fieldset>
-
-                            <p:fieldset id="ObsDetalheField">
-                                <label id="ObsDetalheLabel">Observação</label>
-                                <h:inputTextarea id="ObsDetalheInput" />
-                            </p:fieldset>
-                        </h:form>
-                    </p:tab>
-                    <p:tab id="tab3" title="Fotos">
-                        <h:form>
-                            <p:fieldset id="FotosDetalheField" >
-                                <p:fileUpload label="Imagem" mode="simple" />
-                            </p:fieldset>
-                        </h:form>
-                    </p:tab>
-
-                </p:tabView>
-            </h:form>
-        </p:dialog>
 
     </ui:define>
 
