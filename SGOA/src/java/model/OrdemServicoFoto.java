@@ -13,6 +13,18 @@ import model.Base.BaseEntidade;
 @Table(name = "ordemservico_foto")
 public class OrdemServicoFoto extends BaseEntidade<OrdemServicoFoto> {
 
+    @JoinColumn(name = "idordemservico")
+    @ManyToOne(optional = false)
+    private OrdemServico ordemServico;
+
+    public OrdemServico getOrdemServico() {
+        return ordemServico;
+    }
+
+    public void setOrdemServico(OrdemServico ordemServico) {
+        this.ordemServico = ordemServico;
+    }
+    
     @JoinColumn(name = "idordemservicoetapa")
     @ManyToOne(optional = false)
     private OrdemServicoEtapa etapa;
@@ -49,4 +61,6 @@ public class OrdemServicoFoto extends BaseEntidade<OrdemServicoFoto> {
     public void setImagem(byte[] imagem) {
         this.imagem = imagem;
     }
+    
+    
 }

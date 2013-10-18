@@ -18,81 +18,155 @@
     <ui:define name="Conteudo">
         <h:form id="frmCadastro"> 
             <p:messages id="messages" autoUpdate="true" closable="true"  />
-            <h:panelGrid columns="1" width="100%">
-                <p:fieldset id="PlacaPesquisaField" style="width: 230px;" >
-                    <p:outputLabel id="PlacaPesquisaLabel" value="Placa *"/>
+            <h:panelGrid>
+                <p:fieldset id="PlacaPesquisaField" style="width: 160px;" >
+                    <p:outputLabel id="PlacaPesquisaLabel" value="Placa*"/>
                     <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" 
                                  value="#{ordemServicoController.placa}"
                                  style="text-transform: uppercase; width: 105px;">
                         <p:ajax event="change" update=":frmCadastro" 
-                                listener="#{ordemServicoController.changePlaca}" immediate="true" />
+                                listener="#{ordemServicoController.changePlaca}"  />
                     </p:inputMask>
-                    <p:commandButton id="btnLocalizarOS" value="Localizar" style="margin-top: -5px;" />
-                </p:fieldset>
-
-            </h:panelGrid>
-            <p:fieldset id="EtapaAtualField" style="width: 350px;">
-                <label id="EtapaLabel">Etapa*</label>
-                <h:selectOneMenu id="EtapaAtualListBox" 
-                                 value="#{ordemServicoController.current.etapa}" 
-                                 converter="etapaConverter" >
-                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                    <f:selectItems value="#{ordemServicoController.etapasAtivas}" var="etapa"
-                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
-                </h:selectOneMenu>
-            </p:fieldset>
-            <h:panelGrid columns="3" width="100%">
-                <p:fieldset id="DataConclusaoField" style="width: 160px; margin-right: 19px;">
-                    <p:outputLabel id="DataConclusaoLabel" value="Data Conclusão*"/>
-                    <p:calendar showButtonPanel="true" navigator="true" id="DataConclusao"
-                                value="#{ordemServicoController.current.dataSaida}" 
-                                converterMessage="Valor inválido!"
-                                pattern="dd/MM/yyyy" />
-                </p:fieldset>
-                <p:fieldset id="HorasTrabalhadaField" style="width: 160px;" >
-                    <label id="HorasTrabalhadaLabel">Horas*</label>
-                    <p:inputText id="HorasTrabalhadaText" value="#{ordemServicoController.current.horasTrabalhadas}" >
-                        <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" 
-                                         type="currency" />
-                    </p:inputText>
-                </p:fieldset>
-                <p:fieldset id="FuncionarioField" >
-                    <label id="FuncionarioLabel">Funcionário *</label>
-                    <h:selectOneMenu id="FuncionarioListBox" 
-                                     value="#{ordemServicoController.current.funcionario}" 
-                                     converter="funcionarioConverter" >
-                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                        <f:selectItems value="#{ordemServicoController.funcionariosAtivos}" var="funcionario"
-                                       itemLabel="#{funcionario}" itemValue="#{funcionario}"/>
-                    </h:selectOneMenu>
+                    <p:commandButton id="btnLocalizarOS" icon="ui-icon-search" title="Localizar Veículo"
+                                     style="margin-top: -5px;" />
                 </p:fieldset>
             </h:panelGrid>
-            <h:panelGroup id="Tarefa">
-                <p:fieldset id="ObsField" >
-                    <label id="ObsLabel">Descrição do serviço</label>
-                    <p:inputTextarea id="ObsInput" value="#{ordemServicoController.current.obs}"/>
-                </p:fieldset>
 
+            <h:panelGroup id="AtividadePainel" rendered="#{ordemServicoController.current.id != 0}" >
+                <h:panelGrid columns="2">
+                    <p:fieldset id="VeiculoField" style="width: 220px; margin-right: 19px;">
+                        <label id="VeiculoLabel">Veículo</label>
+                        <p:inputText id="VeiculoText" disabled="true" value="#{ordemServicoController.veiculo}" />
+                    </p:fieldset>
+                    <p:fieldset id="ClienteField" style="width: 330px;">
+                        <label id="ClienteLabel">Cliente</label>
+                        <p:inputText id="VeiculoText" disabled="true" value="#{ordemServicoController.cliente}" />
+                    </p:fieldset>
+                </h:panelGrid>
+                <h:panelGrid columns="3">
+                    <p:fieldset id="EtapaAtualField" style="width: 250px; margin-right: 19px;">
+                        <label id="EtapaAtualLabel">Atividade Atual*</label>
+                        <p:inputText id="EtapaAtualText" disabled="true" 
+                                     value="#{ordemServicoController.current.etapa}"
+                                     converter="etapaConverter"/>
+                    </p:fieldset>
+                    <p:fieldset id="SituacaoField" style="width: 180px; margin-right: 19px;">
+                        <label id="SituacaoLabel">Situação</label>
+                        <h:selectOneMenu id="SituacaoListBox" disabled="true"
+                                         value="#{ordemServicoController.current.situacao}">
+                            <f:selectItem itemLabel="Em Execução" itemValue="E" />
+                            <f:selectItem itemLabel="Cancelado" itemValue="C" />
+                            <f:selectItem itemLabel="Parado" itemValue="P" />
+                            <f:selectItem itemLabel="Fila de espera" itemValue="F" />
+                            <f:selectItem itemLabel="Concluído" itemValue="F" />
+                        </h:selectOneMenu>
+                    </p:fieldset> 
+                    <p:commandButton id="btnEvento" value="Eventos" title="Adicionar Eventos"
+                                     icon="ui-icon-circle-plus"/>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+                    <p:fieldset id="DataEntradaField" style="width: 160px; margin-right: 19px;">
+                        <p:outputLabel id="DataEntradaLabel" value="Data Entrada*"/>
+                        <p:calendar showButtonPanel="true" navigator="true" id="DataEntrada"
+                                    value="#{ordemServicoController.current.dataEntrada}" 
+                                    converterMessage="Valor inválido!"
+                                    pattern="dd/MM/yyyy" />
+                    </p:fieldset>
+                    <p:fieldset id="FuncionarioField" style="width: 390px;" >
+                        <label id="FuncionarioLabel">Funcionário*</label>
+                        <h:selectOneMenu id="FuncionarioListBox" 
+                                         value="#{ordemServicoController.current.funcionario}" 
+                                         converter="funcionarioConverter" >
+                            <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                            <f:selectItems value="#{ordemServicoController.funcionariosAtivos}" var="funcionario"
+                                           itemLabel="#{funcionario}" itemValue="#{funcionario}"/>
+                        </h:selectOneMenu>
+                    </p:fieldset>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+                    <p:fieldset id="DataSaidaField" style="width: 160px; margin-right: 19px;">
+                        <p:outputLabel id="DataSaidaLabel" value="Data Saida"/>
+                        <p:calendar showButtonPanel="true" navigator="true" id="DataSaida"
+                                    value="#{ordemServicoController.current.dataSaida}" 
+                                    converterMessage="Valor inválido!"
+                                    pattern="dd/MM/yyyy" />
+                    </p:fieldset>
+                    <p:fieldset id="HorasTrabalhadaField" style="width: 160px;" >
+                        <label id="HorasTrabalhadaLabel">Horas Trab.</label>
+                        <p:inputText id="HorasTrabalhadaText" value="#{ordemServicoController.current.horasTrabalhadas}" >
+                            <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" 
+                                             type="currency" />
+                        </p:inputText>
+                    </p:fieldset>
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:fieldset id="ProximaEtapaField" style="width: 350px;">
+                        <label id="ProximaEtapaLabel">Próxima Atividade*</label>
+                        <h:selectOneMenu id="ProximaEtapaListBox" 
+                                         value="#{ordemServicoController.proximaEtapa}" 
+                                         converter="etapaConverter" >
+                            <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                            <f:selectItems value="#{ordemServicoController.etapasAtivas}" var="etapa"
+                                           itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                        </h:selectOneMenu>
+                    </p:fieldset>
+                    <h:selectBooleanCheckbox title="Início imediato?" 
+                                             value="#{ordemServicoController.inicioImediato}">Início imediato?
+                    </h:selectBooleanCheckbox>
+                </h:panelGrid>
+                <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
+                    <p:commandButton id="btnSalvar"
+                                     actionListener="#{ordemServicoController.salvar}"
+                                     update=":frmCadastro" value="Salvar" />
+                    <p:commandButton id="btnCancelar" value="Cancelar"
+                                     actionListener="#{ordemServicoController.limparCampos}"
+                                     update=":frmCadastro" />
+                </h:panelGroup>
+                <h:panelGroup layout="block" style="margin-top: 25px;">
+                    <p:dataTable id="dataTable" var="item" 
+                                 value="#{ordemServicoController.atividades}" lazy="false"
+                                 widgetVar="dataTable" rowIndexVar="rowIndex">
+                        <f:facet name="header">
+                            <div class="tabs_involved">
+                                <h:outputLabel value="Histórico de Atividades" styleClass="tabs_involved" />                               
+                            </div>
+                        </f:facet>
+                        <p:column headerText="Data Entrada" width="70">
+                            <h:outputText value="#{item.dataEntrada}" >
+                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Atividade">
+                            <h:outputText value="#{item.etapa}" />
+                        </p:column>
+                        <p:column headerText="Data Saída" width="70">
+                            <h:outputText value="#{item.dataSaida}">
+                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Situação" width="90">
+                            <p:outputLabel value="Em Execução" rendered="#{item.situacao == 'E'}"   />  
+                            <p:outputLabel value="Cancelado" rendered="#{item.situacao == 'C'}"   />  
+                            <p:outputLabel value="Parado" rendered="#{item.situacao == 'P'}"   />  
+                            <p:outputLabel value="Fila de espera" rendered="#{item.situacao == 'F'}"   />  
+                            <p:outputLabel value="Concluído" rendered="#{item.situacao == 'F'}"   /> 
+                        </p:column>
+
+                        <p:column headerText="Horas Trab." width="70">
+                            <h:outputText value="#{item.horasTrabalhadas}" />
+                        </p:column>
+                        <p:column headerText="Funcionário" width="180">
+                            <h:outputText value="#{item.funcionario}" />
+                        </p:column>
+                        <p:column headerText="Eventos" width="60">
+                            <p:commandButton alt="Eventos" title="Eventos" icon="btn_editar"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGroup>
             </h:panelGroup>
-            <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}" 
-                          showButtons="false" label="Procurar..." auto="true" 
-                          sizeLimit="3000000" allowTypes="/(\.|\/)(pdf|doc?x)$/"
-                          update=":frmCadastro"
-                          dragDropSupport="false" mode="advanced"  />
-
-
-
-            <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
-                <p:commandButton id="btnSalvar"
-                                 actionListener="#{ordemServicoController.salvar}"
-                                 update=":frmCadastro" value="Salvar" />
-                <p:commandButton id="btnCancelar" value="Cancelar"
-                                 actionListener="#{ordemServicoController.limparCampos}"
-                                 update=":frmCadastro" />
-            </h:panelGroup>
-
         </h:form>
-
 
     </ui:define>
 

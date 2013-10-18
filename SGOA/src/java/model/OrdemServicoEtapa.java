@@ -31,6 +31,20 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
         this.ordemservico = ordemservico;
     }
     
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "DataCadastro")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataCadastro;
+
+    public Date getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(Date dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+    
     @JoinColumn(name = "idetapa")
     @ManyToOne(optional = false)
     private Etapa etapa;
@@ -42,7 +56,6 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
     public void setEtapa(Etapa etapa) {
         this.etapa = etapa;
     }
-    
     @Basic(optional = false)
     @Column(name = "DataEntrada")
     @Temporal(TemporalType.TIMESTAMP)
@@ -55,7 +68,6 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
     public void setDataEntrada(Date dataEntrada) {
         this.dataEntrada = dataEntrada;
     }
-    
     @Column(name = "DataSaida")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataSaida;
@@ -67,7 +79,6 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
     public void setDataSaida(Date dataSaida) {
         this.dataSaida = dataSaida;
     }
-   
     @JoinColumn(name = "idfuncionario")
     @ManyToOne(optional = true)
     private Funcionario funcionario;
@@ -79,7 +90,6 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
     }
-    
     @Column(name = "horasTrabalhadas")
     private double horasTrabalhadas;
 
@@ -90,30 +100,25 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
     public void setHorasTrabalhadas(double horasTrabalhadas) {
         this.horasTrabalhadas = horasTrabalhadas;
     }
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "obs")
-    private String obs;
+    @Column(name = "situacao")
+    private char situacao;
 
-    public String getObs() {
-        return obs;
+    public char getSituacao() {
+        return situacao;
     }
 
-    public void setObs(String obs) {
-        this.obs = obs;
+    public void setSituacao(char situacao) {
+        this.situacao = situacao;
     }
-    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idordemservicoetapa")
-    private List<OrdemServicoFoto> fotos;
+    private List<OrdemServicoEvento> eventos;
 
-    public List<OrdemServicoFoto> getFotos() {
-        return fotos;
+    public List<OrdemServicoEvento> getEventos() {
+        return eventos;
     }
 
-    public void setFotos(List<OrdemServicoFoto> fotos) {
-        this.fotos = fotos;
+    public void setFotos(List<OrdemServicoEvento> eventos) {
+        this.eventos = eventos;
     }
-   
 }
