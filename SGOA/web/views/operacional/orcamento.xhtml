@@ -398,31 +398,20 @@
         <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">  
             <p:graphicImage value="/images/ajax-loader.gif" />  
         </p:dialog>  
-        <p:dialog widgetVar="confirmOSDialog" showEffect="slide" hideEffect="clip"
-                  header="Geração de Ordem de Serviço" closable="true" height="170" width="400"
-                  resizable="false" id="dialogOS" modal="true">
-            <p:messages id="grow2" autoUpdate="true" closable="true" />
+        <p:confirmDialog widgetVar="confirmOSDialog"
+                         message="Confirma a aprovação do Orçamento?" 
+                         showEffect="slide" hideEffect="clip" severity="alert">  
             <h:form prependId="false" id="frmOS">
-                <label style="margin-top: 19px;"><b>Confirma a aprovação do Orçamento?</b></label>
-                <p:fieldset id="FluxoField"  style="margin-top: 19px;" >
-                    <label id="FluxoLabel">Fluxo de Trabalho *</label>
-                    <h:selectOneMenu id="FluxoFieldListBox" required="true"
-                                     requiredMessage="O campo 'Fluxo' é obrigatório."
-                                     value="#{orcamentoController.fluxo}" converter="fluxoConverter" >
-                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                        <f:selectItems value="#{orcamentoController.fluxos}" var="fluxo"
-                                       itemLabel="#{fluxo.descricao}" itemValue="#{fluxo}"/>
-                    </h:selectOneMenu>
-                </p:fieldset>
                 <h:panelGroup layout="block" style="margin-top: 10px; float: right;" >
-                    <p:commandButton update=":frmOS,:frmCadastro,:frmPesquisa,:grow2"
+                    <p:commandButton update=":frmOS,:frmCadastro,:frmPesquisa"
                                      actionListener="#{orcamentoController.ordemServico}"
-                                     oncomplete="validarFormOS(xhr, status, args)" value="Sim"/>
-                    <p:commandButton value="Não" oncomplete="fecharFormOS(xhr, status, args)" />
+                                     value="Sim"
+                                     oncomplete="confirmOSDialog.hide()"/>
+                    <p:commandButton value="Não" onclick="confirmOSDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
-        </p:dialog>
-
+        </p:confirmDialog> 
+       
         <script type="text/javascript">  
             function start() {  
                 PF('statusDialog').show();  
@@ -432,22 +421,7 @@
                 PF('statusDialog').hide();  
             }  
             
-            function validarFormOS(xhr, status, args) { 
-                if(args.validationFailed || args.exceptionThrown) { 
-                    $('#dialogOS').effect("shake", { times:3 }, 100);
-                    $('#messages').hide();
-                    $('#grow1').hide();
-                } else {  
-                    confirmOSDialog.hide();  
-                    modalPopup.hide();
-                }  
-            }  
-            function fecharFormOS(xhr, status, args) {  
-              confirmOSDialog.hide();   
-              jQuery('#grow2').hide();
-              jQuery('#growl').hide();
-              jQuery('#messages').hide();
-            }  
+           
                             
         </script>  
     </ui:define>

@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                template="./../../template/form.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="Navagador">
+        <a class="current">Ferramentas</a>
+        <div class="breadcrumb_divider"></div> 
+        <a class="current">Configurações</a>
+    </ui:define>
+
+    <ui:define name="Titulo">
+        <h2>Configurações</h2>
+    </ui:define>
+
+    <ui:define name="Conteudo">
+        <h:form id="frmCadastro" prependId="false" > 
+            <p:messages id="growl" autoUpdate="true" closable="true" />
+            <p:focus context="frmCadastro"/> 
+            <p:fieldset style="width: 450px;">
+                <label>Ativ. Inicial*</label>
+                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaInicial}" 
+                                 converter="etapaConverter"  required="true" 
+                                 requiredMessage="O campo 'Ativ. Inicial' é obrigatório.">
+                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                </h:selectOneMenu>              
+            </p:fieldset>
+            <p:fieldset style="width: 450px;">
+                <label style="width: 250px">Ativ. Inicial Seguradora*</label>
+                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaInicialSeguradora}" 
+                                 converter="etapaConverter"  required="true" 
+                                 requiredMessage="O campo 'Ativ. Inicial Seguradora' é obrigatório.">
+                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                </h:selectOneMenu>              
+            </p:fieldset>
+            <p:fieldset style="width: 450px;">
+                <label style="width: 250px">Ativ. Fim Concerto*</label>
+                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaFimConcerto}" 
+                                 converter="etapaConverter"  required="true" 
+                                 requiredMessage="O campo 'Ativ. Fim Concerto' é obrigatório.">
+                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                </h:selectOneMenu>              
+            </p:fieldset>
+            <p:fieldset style="width: 450px;">
+                <label style="width: 250px">Ativ. Cancelamento Concerto*</label>
+                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaCancelamentoConcerto}" 
+                                 converter="etapaConverter"  required="true" 
+                                 requiredMessage="O campo 'Ativ. Cancelamento Concerto' é obrigatório.">
+                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                </h:selectOneMenu>              
+            </p:fieldset>
+            <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
+                <p:commandButton id="btnSalvar" update=":frmCadastro"
+                                 actionListener="#{configOrdemServicoController.salvar}" 
+                                 value="Salvar" ajax="false"/>
+
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+    <ui:define name="Rodape">
+    </ui:define>
+</ui:composition>

@@ -17,22 +17,33 @@
 
     <ui:define name="Conteudo">
         <h:form id="frmCadastro"> 
+            <script type="text/javascript">
+                jQuery(function($) {
+                      $("#DataEntrada").mask("99/99/9999 99:99");
+                      $("#DataSaida").mask("99/99/9999 99:99");
+                });
+ 
+               
+            </script>
+            <p:focus context="frmCadastro"/>
             <p:messages id="messages" autoUpdate="true" closable="true"  />
             <h:panelGrid>
                 <p:fieldset id="PlacaPesquisaField" style="width: 160px;" >
                     <p:outputLabel id="PlacaPesquisaLabel" value="Placa*"/>
                     <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" 
                                  value="#{ordemServicoController.placa}"
-                                 style="text-transform: uppercase; width: 105px;">
+                                 style="text-transform: uppercase; width: 105px;"
+                                 disabled="#{ordemServicoController.current.id > 0}">
                         <p:ajax event="change" update=":frmCadastro" 
                                 listener="#{ordemServicoController.changePlaca}"  />
                     </p:inputMask>
                     <p:commandButton id="btnLocalizarOS" icon="ui-icon-search" title="Localizar Veículo"
-                                     style="margin-top: -5px;" />
+                                     style="margin-top: -5px;" actionListener="#{ordemServicoController.changePlaca}"
+                                     update=":frmCadastro"/>
                 </p:fieldset>
             </h:panelGrid>
 
-            <h:panelGroup id="AtividadePainel" rendered="#{ordemServicoController.current.id != 0}" >
+            <h:panelGroup id="AtividadePainel" rendered="#{ordemServicoController.current.id > 0}" >
                 <h:panelGrid columns="2">
                     <p:fieldset id="VeiculoField" style="width: 220px; margin-right: 19px;">
                         <label id="VeiculoLabel">Veículo</label>
@@ -40,7 +51,7 @@
                     </p:fieldset>
                     <p:fieldset id="ClienteField" style="width: 330px;">
                         <label id="ClienteLabel">Cliente</label>
-                        <p:inputText id="VeiculoText" disabled="true" value="#{ordemServicoController.cliente}" />
+                        <p:inputText id="ClienteText" disabled="true" value="#{ordemServicoController.cliente}" />
                     </p:fieldset>
                 </h:panelGrid>
                 <h:panelGrid columns="3">
@@ -70,7 +81,8 @@
                         <p:calendar showButtonPanel="true" navigator="true" id="DataEntrada"
                                     value="#{ordemServicoController.current.dataEntrada}" 
                                     converterMessage="Valor inválido!"
-                                    pattern="dd/MM/yyyy" />
+                                    pattern="dd/MM/yyyy HH:mm"
+                                   timeZone="America/Sao_Paulo"/>
                     </p:fieldset>
                     <p:fieldset id="FuncionarioField" style="width: 390px;" >
                         <label id="FuncionarioLabel">Funcionário*</label>
@@ -88,10 +100,13 @@
                         <p:outputLabel id="DataSaidaLabel" value="Data Saida"/>
                         <p:calendar showButtonPanel="true" navigator="true" id="DataSaida"
                                     value="#{ordemServicoController.current.dataSaida}" 
-                                    converterMessage="Valor inválido!"
-                                    pattern="dd/MM/yyyy" />
+                                    converterMessage="Valor inválido!" 
+                                    pattern="dd/MM/yyyy HH:mm"
+                                    timeZone="America/Sao_Paulo">
+                            <p:ajax event="change" update=":frmCadastro" />
+                        </p:calendar>
                     </p:fieldset>
-                    <p:fieldset id="HorasTrabalhadaField" style="width: 160px;" >
+                    <p:fieldset id="HorasTrabalhadaField" style="width: 160px;"  >
                         <label id="HorasTrabalhadaLabel">Horas Trab.</label>
                         <p:inputText id="HorasTrabalhadaText" value="#{ordemServicoController.current.horasTrabalhadas}" >
                             <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" 
@@ -100,7 +115,7 @@
                     </p:fieldset>
                 </h:panelGrid>
 
-                <h:panelGrid columns="2">
+                <h:panelGrid columns="2" rendered="ordemServicoController.current.dataSaida != null">
                     <p:fieldset id="ProximaEtapaField" style="width: 350px;">
                         <label id="ProximaEtapaLabel">Próxima Atividade*</label>
                         <h:selectOneMenu id="ProximaEtapaListBox" 
