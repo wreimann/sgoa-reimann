@@ -77,18 +77,6 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
         return obs;
     }
     
-    @JoinColumn(name = "idfluxo")
-    @ManyToOne(optional = false)
-    private Fluxo fluxo;
-
-    public Fluxo getFluxo() {
-        return fluxo;
-    }
-
-    public void setFluxo(Fluxo fluxo) {
-        this.fluxo = fluxo;
-    }
-    
     @JoinColumn(name = "idEtapaAtual")
     @ManyToOne(optional = true)
     private OrdemServicoEtapa etapaAtual;

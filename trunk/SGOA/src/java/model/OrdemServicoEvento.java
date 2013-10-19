@@ -33,7 +33,7 @@ public class OrdemServicoEvento extends BaseEntidadeDescricao<OrdemServicoEvento
         this.etapa = etapa;
     }
    
-   @Basic(optional = false)
+    @Basic(optional = false)
     @NotNull
     @Column(name = "DataOcorrencia")
     @Temporal(TemporalType.TIMESTAMP)
