@@ -12,6 +12,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import model.Etapa;
 import model.Funcionario;
+import model.OrdemServico;
 import model.OrdemServicoEtapa;
 import org.hibernate.Session;
 import org.primefaces.event.FileUploadEvent;
@@ -39,11 +40,6 @@ public final class OrdemServicoController implements Serializable {
 
     public List<Etapa> getEtapasAtivas() {
         return etapasAtivas;
-    }
-    private boolean exibirDetalhes;
-
-    public boolean getExibirDetalhes() {
-        return exibirDetalhes;
     }
     private String placa;
 
@@ -150,9 +146,23 @@ public final class OrdemServicoController implements Serializable {
     }
 
     public void changePlaca() {
-        //current.setVeiculo(null);
-        setCliente("");
-        exibirDetalhes = true;
+        if(placa == null || placa.isEmpty())
+            return;
+        try {
+            OrdemServico resultado = null;
+            Session sessao = HibernateFactory.currentSession();
+            resultado = ejbFacade.ObterOrdemServicoPorPlaca(sessao, placa);
+            if(resultado != null){
+              setCliente(resultado.getOrcamento().getCliente().toString());
+              setVeiculo(resultado.getOrcamento().getVeiculo().toString());
+              current = resultado.getEtapaAtual();
+              atividades = resultado.getEtapas();
+            }
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage(ex, "Nenhuma ordem de serviço localiza para a placa informada.");
+        } finally {
+            HibernateFactory.closeSession();
+        }
     }
 
     public List<Funcionario> montaListaFuncionarios() {

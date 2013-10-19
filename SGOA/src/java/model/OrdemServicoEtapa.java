@@ -118,7 +118,7 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
         return eventos;
     }
 
-    public void setFotos(List<OrdemServicoEvento> eventos) {
+    public void setEventos(List<OrdemServicoEvento> eventos) {
         this.eventos = eventos;
     }
 }
