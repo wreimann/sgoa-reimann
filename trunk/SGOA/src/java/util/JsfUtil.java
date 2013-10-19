@@ -25,12 +25,12 @@ public class JsfUtil {
     }
 
     public static void addErrorMessage(Exception ex, String defaultMsg) {
-        String msg = ex.getLocalizedMessage();
+        /*String msg = ex.getLocalizedMessage();
         if (msg != null && msg.length() > 0) {
             addErrorMessage(msg);
-        } else {
+        } else {*/
             addErrorMessage(defaultMsg);
-        }
+        //}
         RequestContext.getCurrentInstance().addCallbackParam("exceptionThrown", ex);   
     }
 

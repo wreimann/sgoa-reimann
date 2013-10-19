@@ -69,7 +69,7 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
         this.funcionarioAprovacao = funcionarioAprovacao;
     }
     
-    @Size(max = 200)
+    @Size(max = 250)
     @Column(name = "Obs")
     private String obs;
 
@@ -89,10 +89,22 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
         this.fluxo = fluxo;
     }
     
+    @JoinColumn(name = "idEtapaAtual")
+    @ManyToOne(optional = true)
+    private OrdemServicoEtapa etapaAtual;
+
+    public OrdemServicoEtapa getEtapaAtual() {
+        return etapaAtual;
+    }
+
+    public void setEtapaAtual(OrdemServicoEtapa etapaAtual) {
+        this.etapaAtual = etapaAtual;
+    }
+    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idordemservico")
+    //@OrderBy(clause="dataEntrada desc")
     private List<OrdemServicoEtapa> etapas;
-
     public List<OrdemServicoEtapa> getEtapas() {
         return etapas;
     }

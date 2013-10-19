@@ -322,18 +322,18 @@ public class OrcamentoController implements Serializable {
     }
 
     public void ordemServico(ActionEvent actionEvent) {
+        char situacaoAnterior = current.getSituacao();
         try {
             Session sessao = HibernateFactory.currentSession();
             OrdemServico os = new OrdemServico();
-            current.setSituacao('P');
             os.setFuncionarioAprovacao(LoginFilter.usuarioLogado(sessao));
             os.setOrcamento(current);
-            os.setFluxo(fluxo);
             OrdemServicoFacade osFacade = new OrdemServicoFacade();
             osFacade.incluir(sessao, os);
             JsfUtil.addSuccessMessage("Ordem de Serviço gerada com sucesso!");
         } catch (Exception ex) {
-            JsfUtil.addErrorMessage(ex, "Erro ao aprovar o orçamento tente novamente. ");
+            JsfUtil.addErrorMessage(ex, "Erro ao aprovar o orçamento tente novamente.");
+            current.setSituacao(situacaoAnterior);
         } finally {
             HibernateFactory.closeSession();
         }

@@ -48,7 +48,7 @@ public class OrdemServicoEvento extends BaseEntidadeDescricao<OrdemServicoEvento
     }
    
     @Column(name = "tipoevento", nullable = false)  
-    @Enumerated(EnumType.STRING)  
+    @Enumerated(EnumType.ORDINAL)  
     private TipoEvento tipoEvento;
 
     public TipoEvento getTipoEvento() {
