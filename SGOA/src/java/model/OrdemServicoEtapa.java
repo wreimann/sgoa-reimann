@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -14,13 +15,21 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import model.Base.BaseEntidade;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "ordemservico_etapa")
 public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
 
+    public OrdemServicoEtapa() {
+        if (eventos == null) {
+            eventos = new ArrayList<OrdemServicoEvento>();
+        }
+    }
+    
     @JoinColumn(name = "idordemservico")
     @ManyToOne(optional = false)
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private OrdemServico ordemservico;
 
     public OrdemServico getOrdemServico() {
@@ -30,7 +39,6 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
     public void setOrdemServico(OrdemServico ordemservico) {
         this.ordemservico = ordemservico;
     }
-    
     @Basic(optional = false)
     @NotNull
     @Column(name = "DataCadastro")
@@ -44,7 +52,6 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
-    
     @JoinColumn(name = "idetapa")
     @ManyToOne(optional = false)
     private Etapa etapa;
@@ -56,7 +63,7 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
     public void setEtapa(Etapa etapa) {
         this.etapa = etapa;
     }
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "DataEntrada")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataEntrada;

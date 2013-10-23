@@ -51,6 +51,16 @@
                 </h:selectOneMenu>              
             </p:fieldset>
             <p:fieldset style="width: 450px;">
+                <label style="width: 250px">Ativ. Conclusão da Ordem Serviço*</label>
+                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaConclusaoOrdemServico}" 
+                                 converter="etapaConverter"  required="true" 
+                                 requiredMessage="O campo 'Ativ. Conclusão da Ordem de Serviço' é obrigatório.">
+                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                </h:selectOneMenu>              
+            </p:fieldset>
+            <p:fieldset style="width: 450px;">
                 <label style="width: 250px">Ativ. Cancelamento Concerto*</label>
                 <h:selectOneMenu value="#{configOrdemServicoController.current.etapaCancelamentoConcerto}" 
                                  converter="etapaConverter"  required="true" 

@@ -16,11 +16,11 @@
     </ui:define>
 
     <ui:define name="Conteudo">
-        <h:form id="frmCadastro"> 
+        <h:form id="frmCadastro" prependId="false" > 
             <script type="text/javascript">
                 jQuery(function($) {
-                      $("#DataEntrada").mask("99/99/9999 99:99");
-                      $("#DataSaida").mask("99/99/9999 99:99");
+                      $("#DataEntrada_input").mask("99/99/9999 99:99");
+                      $("#DataSaida_input").mask("99/99/9999 99:99");
                 });
  
                
@@ -34,7 +34,7 @@
                                  value="#{ordemServicoController.placa}"
                                  style="text-transform: uppercase; width: 105px;"
                                  disabled="#{ordemServicoController.current.id > 0}">
-                        <p:ajax event="change" update=":frmCadastro" 
+                        <p:ajax event="change" update=":frmCadastro,:ajaxStatusMaster"
                                 listener="#{ordemServicoController.changePlaca}"  />
                     </p:inputMask>
                     <p:commandButton id="btnLocalizarOS" icon="ui-icon-search" title="Localizar Veículo"
@@ -58,18 +58,17 @@
                     <p:fieldset id="EtapaAtualField" style="width: 250px; margin-right: 19px;">
                         <label id="EtapaAtualLabel">Atividade Atual*</label>
                         <p:inputText id="EtapaAtualText" disabled="true" 
-                                     value="#{ordemServicoController.current.etapa}"
-                                     converter="etapaConverter"/>
+                                     value="#{ordemServicoController.current.etapa}"/>
                     </p:fieldset>
                     <p:fieldset id="SituacaoField" style="width: 180px; margin-right: 19px;">
                         <label id="SituacaoLabel">Situação</label>
                         <h:selectOneMenu id="SituacaoListBox" disabled="true"
                                          value="#{ordemServicoController.current.situacao}">
                             <f:selectItem itemLabel="Em Execução" itemValue="E" />
-                            <f:selectItem itemLabel="Cancelado" itemValue="C" />
+                            <f:selectItem itemLabel="Cancelado" itemValue="A" />
                             <f:selectItem itemLabel="Parado" itemValue="P" />
                             <f:selectItem itemLabel="Fila de espera" itemValue="F" />
-                            <f:selectItem itemLabel="Concluído" itemValue="F" />
+                            <f:selectItem itemLabel="Concluído" itemValue="C" />
                         </h:selectOneMenu>
                     </p:fieldset> 
                     <p:commandButton id="btnEvento" value="Eventos" title="Adicionar Eventos"
@@ -81,14 +80,17 @@
                         <p:calendar showButtonPanel="true" navigator="true" id="DataEntrada"
                                     value="#{ordemServicoController.current.dataEntrada}" 
                                     converterMessage="Valor inválido!"
-                                    pattern="dd/MM/yyyy HH:mm"
-                                   timeZone="America/Sao_Paulo"/>
+                                    pattern="dd/MM/yyyy HH:mm" locale="pt"
+                                    timeZone="America/Sao_Paulo"
+                                    required="true" requiredMessage="O campo 'Data Entrada' é obrigatório."
+                                    disabled="#{ordemServicoController.current.situacao != 'F'}"/>
                     </p:fieldset>
                     <p:fieldset id="FuncionarioField" style="width: 390px;" >
-                        <label id="FuncionarioLabel">Funcionário*</label>
-                        <h:selectOneMenu id="FuncionarioListBox" 
+                        <label id="FuncionarioLabel">Func. Executor*</label>
+                        <h:selectOneMenu id="FuncionarioListBox" required="true"
+                                         required="true" requiredMessage="O campo 'Func. Executor' é obrigatório."
                                          value="#{ordemServicoController.current.funcionario}" 
-                                         converter="funcionarioConverter" >
+                                         converter="funcionarioConverter">
                             <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
                             <f:selectItems value="#{ordemServicoController.funcionariosAtivos}" var="funcionario"
                                            itemLabel="#{funcionario}" itemValue="#{funcionario}"/>
@@ -101,10 +103,8 @@
                         <p:calendar showButtonPanel="true" navigator="true" id="DataSaida"
                                     value="#{ordemServicoController.current.dataSaida}" 
                                     converterMessage="Valor inválido!" 
-                                    pattern="dd/MM/yyyy HH:mm"
-                                    timeZone="America/Sao_Paulo">
-                            <p:ajax event="change" update=":frmCadastro" />
-                        </p:calendar>
+                                    pattern="dd/MM/yyyy HH:mm" locale="pt"
+                                    timeZone="America/Sao_Paulo"/>
                     </p:fieldset>
                     <p:fieldset id="HorasTrabalhadaField" style="width: 160px;"  >
                         <label id="HorasTrabalhadaLabel">Horas Trab.</label>
@@ -115,7 +115,7 @@
                     </p:fieldset>
                 </h:panelGrid>
 
-                <h:panelGrid columns="2" rendered="ordemServicoController.current.dataSaida != null">
+                <h:panelGrid columns="2">
                     <p:fieldset id="ProximaEtapaField" style="width: 350px;">
                         <label id="ProximaEtapaLabel">Próxima Atividade*</label>
                         <h:selectOneMenu id="ProximaEtapaListBox" 
@@ -130,13 +130,13 @@
                                              value="#{ordemServicoController.inicioImediato}">Início imediato?
                     </h:selectBooleanCheckbox>
                 </h:panelGrid>
-                <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
+                <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px;" >
                     <p:commandButton id="btnSalvar"
                                      actionListener="#{ordemServicoController.salvar}"
-                                     update=":frmCadastro" value="Salvar" />
+                                     update=":frmCadastro" value="Salvar" ajax="false" />
                     <p:commandButton id="btnCancelar" value="Cancelar"
                                      actionListener="#{ordemServicoController.limparCampos}"
-                                     update=":frmCadastro" />
+                                     update=":frmCadastro" ajax="false" />
                 </h:panelGroup>
                 <h:panelGroup layout="block" style="margin-top: 25px;">
                     <p:dataTable id="dataTable" var="item" 
@@ -162,10 +162,10 @@
                         </p:column>
                         <p:column headerText="Situação" width="90">
                             <p:outputLabel value="Em Execução" rendered="#{item.situacao == 'E'}"   />  
-                            <p:outputLabel value="Cancelado" rendered="#{item.situacao == 'C'}"   />  
+                            <p:outputLabel value="Cancelado" rendered="#{item.situacao == 'A'}"   />  
                             <p:outputLabel value="Parado" rendered="#{item.situacao == 'P'}"   />  
                             <p:outputLabel value="Fila de espera" rendered="#{item.situacao == 'F'}"   />  
-                            <p:outputLabel value="Concluído" rendered="#{item.situacao == 'F'}"   /> 
+                            <p:outputLabel value="Concluído" rendered="#{item.situacao == 'C'}"   /> 
                         </p:column>
 
                         <p:column headerText="Horas Trab." width="70">
