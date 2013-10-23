@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -19,7 +20,12 @@ import org.hibernate.annotations.Cascade;
 @Entity
 @Table(name = "ordemservico")
 public class OrdemServico extends BaseEntidade<OrdemServico> {
-    
+
+    public OrdemServico() {
+        if (etapas == null) {
+            etapas = new ArrayList<OrdemServicoEtapa>();
+        }
+    }
     @JoinColumn(name = "idorcamento")
     @ManyToOne(optional = false)
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
@@ -32,7 +38,6 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
     public void setOrcamento(Orcamento orcamento) {
         this.orcamento = orcamento;
     }
-    
     @Column(name = "situacao")
     private char situacao;
 
@@ -43,7 +48,6 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
     public void setSituacao(char situacao) {
         this.situacao = situacao;
     }
-    
     @Basic(optional = false)
     @Column(name = "DataAprovacao")
     @Temporal(TemporalType.TIMESTAMP)
@@ -56,7 +60,6 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
     public void setDataAprovacao(Date dataAprovacao) {
         this.dataAprovacao = dataAprovacao;
     }
-    
     @JoinColumn(name = "idfuncAprovacao")
     @ManyToOne(optional = true)
     private Funcionario funcionarioAprovacao;
@@ -68,7 +71,6 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
     public void setFuncionarioAprovacao(Funcionario funcionarioAprovacao) {
         this.funcionarioAprovacao = funcionarioAprovacao;
     }
-    
     @Size(max = 250)
     @Column(name = "Obs")
     private String obs;
@@ -76,7 +78,6 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
     public String getObs() {
         return obs;
     }
-    
     @JoinColumn(name = "idEtapaAtual")
     @ManyToOne(optional = true)
     private OrdemServicoEtapa etapaAtual;
@@ -88,11 +89,11 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
     public void setEtapaAtual(OrdemServicoEtapa etapaAtual) {
         this.etapaAtual = etapaAtual;
     }
-    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idordemservico")
     //@OrderBy(clause="dataEntrada desc")
     private List<OrdemServicoEtapa> etapas;
+
     public List<OrdemServicoEtapa> getEtapas() {
         return etapas;
     }

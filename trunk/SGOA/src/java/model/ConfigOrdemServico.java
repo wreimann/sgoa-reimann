@@ -58,4 +58,16 @@ public class ConfigOrdemServico extends BaseEntidade<ConfigOrdemServico> {
         this.etapaCancelamentoConcerto = etapaCancelamentoConcerto;
     }
     
+    @JoinColumn(name = "idEtapaConclusaoOrdemServico")
+    @ManyToOne(optional = true)
+    private Etapa etapaConclusaoOrdemServico;
+
+    public Etapa getEtapaConclusaoOrdemServico() {
+        return etapaConclusaoOrdemServico;
+    }
+
+    public void setEtapaConclusaoOrdemServico(Etapa etapaConclusaoOrdemServico) {
+        this.etapaConclusaoOrdemServico = etapaConclusaoOrdemServico;
+    }
+    
 }

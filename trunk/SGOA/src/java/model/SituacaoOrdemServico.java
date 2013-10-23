@@ -1,9 +1,9 @@
 package model;
 
 public enum SituacaoOrdemServico {
-    EmExecucao("A"),
+    EmExecucao("E"),
     Cancelado("C"),
-    AguardandoPagamento("P"),
+    FimReparo("R"),
     Finalizado("F");
     
     private String value;
