@@ -34,7 +34,7 @@
                                  value="#{ordemServicoController.placa}"
                                  style="text-transform: uppercase; width: 105px;"
                                  disabled="#{ordemServicoController.current.id > 0}">
-                        <p:ajax event="change" update=":frmCadastro,:ajaxStatusMaster"
+                        <p:ajax event="change" update=":frmCadastro,:frmHistorico,:ajaxStatusMaster"
                                 listener="#{ordemServicoController.changePlaca}"  />
                     </p:inputMask>
                     <p:commandButton id="btnLocalizarOS" icon="ui-icon-search" title="Localizar Veículo"
@@ -140,7 +140,7 @@
             </h:panelGroup>
         </h:form>
         <h:form id="frmHistorico" prependId="false" > 
-            <h:panelGroup layout="block" style="margin-top: 25px;" >
+            <h:panelGroup layout="block" style="margin-top: 25px;" rendered="#{ordemServicoController.current.id > 0}">
                 <p:dataTable id="dataTable" var="item" 
                              value="#{ordemServicoController.atividades}" lazy="false"
                              widgetVar="dataTable" rowIndexVar="rowIndex">
