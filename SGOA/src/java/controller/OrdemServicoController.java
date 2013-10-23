@@ -110,7 +110,7 @@ public final class OrdemServicoController implements Serializable {
 
     }
 
-    public void salvar(ActionEvent actionEvent) {
+    public void salvar(ActionEvent evt) {
         if (current.getDataEntrada() != null && current.getDataSaida() != null) {
             if (current.getDataEntrada().after(current.getDataSaida())) {
                 JsfUtil.addErrorMessage(null, "A data de saída deve ser maior que a data de entrada na atividade.");
@@ -166,6 +166,7 @@ public final class OrdemServicoController implements Serializable {
 
     public void changePlaca() {
         if (placa == null || placa.isEmpty()) {
+            JsfUtil.addErrorMessage(null, "Informe a placa.");
             return;
         }
         try {
@@ -177,6 +178,8 @@ public final class OrdemServicoController implements Serializable {
                 setVeiculo(resultado.getOrcamento().getVeiculo().toString());
                 current = resultado.getEtapaAtual();
                 atividades = resultado.getEtapas();
+            } else {
+                JsfUtil.addErrorMessage(null, "Nenhuma ordem de serviço localiza para a placa informada.");
             }
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Nenhuma ordem de serviço localiza para a placa informada.");

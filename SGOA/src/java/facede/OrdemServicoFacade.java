@@ -156,7 +156,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             throw new Exception("Sessão não iniciada.");
         }
         Criteria c = sessao.createCriteria(OrdemServico.class, "os");
-        c.add(Restrictions.eq("os.situacao", 'A'));
+        c.add(Restrictions.eq("os.situacao", 'E'));//em execução
         c.createCriteria("orcamento", "orc").createCriteria("veiculo", "v");
         c.add(Restrictions.like("v.placa", placa, MatchMode.EXACT).ignoreCase());
         OrdemServico resultado = ((OrdemServico) c.uniqueResult());

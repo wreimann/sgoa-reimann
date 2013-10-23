@@ -16,6 +16,7 @@
     </ui:define>
 
     <ui:define name="Conteudo">
+        <p:messages id="messages" autoUpdate="true" closable="true"  />
         <h:form id="frmCadastro" prependId="false" > 
             <script type="text/javascript">
                 jQuery(function($) {
@@ -26,7 +27,6 @@
                
             </script>
             <p:focus context="frmCadastro"/>
-            <p:messages id="messages" autoUpdate="true" closable="true"  />
             <h:panelGrid>
                 <p:fieldset id="PlacaPesquisaField" style="width: 160px;" >
                     <p:outputLabel id="PlacaPesquisaLabel" value="Placa*"/>
@@ -79,16 +79,16 @@
                         <p:outputLabel id="DataEntradaLabel" value="Data Entrada*"/>
                         <p:calendar showButtonPanel="true" navigator="true" id="DataEntrada"
                                     value="#{ordemServicoController.current.dataEntrada}" 
+                                    required="true" requiredMessage="O campo 'Data Entrada' é obrigatório."
                                     converterMessage="Valor inválido!"
                                     pattern="dd/MM/yyyy HH:mm" locale="pt"
                                     timeZone="America/Sao_Paulo"
-                                    required="true" requiredMessage="O campo 'Data Entrada' é obrigatório."
                                     disabled="#{ordemServicoController.current.situacao != 'F'}"/>
                     </p:fieldset>
                     <p:fieldset id="FuncionarioField" style="width: 390px;" >
-                        <label id="FuncionarioLabel">Func. Executor*</label>
+                        <label id="FuncionarioLabel">Funcionário Executor*</label>
                         <h:selectOneMenu id="FuncionarioListBox" required="true"
-                                         required="true" requiredMessage="O campo 'Func. Executor' é obrigatório."
+                                         requiredMessage="O campo 'Funcionário Executor' é obrigatório."
                                          value="#{ordemServicoController.current.funcionario}" 
                                          converter="funcionarioConverter">
                             <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
@@ -133,7 +133,7 @@
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px;" >
                     <p:commandButton id="btnSalvar"
                                      actionListener="#{ordemServicoController.salvar}"
-                                     update=":frmCadastro" value="Salvar" ajax="false" />
+                                     update=":frmCadastro,:messages" value="Salvar"  />
                     <p:commandButton id="btnCancelar" value="Cancelar"
                                      actionListener="#{ordemServicoController.limparCampos}"
                                      update=":frmCadastro" ajax="false" />
