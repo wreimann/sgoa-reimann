@@ -131,58 +131,58 @@
                     </h:selectBooleanCheckbox>
                 </h:panelGrid>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px;" >
-                    <p:commandButton id="btnSalvar"
-                                     actionListener="#{ordemServicoController.salvar}"
-                                     update=":frmCadastro,:messages" value="Salvar"  />
+                    <p:commandButton id="btnSalvar" actionListener="#{ordemServicoController.atualizar}"
+                                     update=":frmCadastro" value="Salvar" />
                     <p:commandButton id="btnCancelar" value="Cancelar"
                                      actionListener="#{ordemServicoController.limparCampos}"
                                      update=":frmCadastro" ajax="false" />
-                </h:panelGroup>
-                <h:panelGroup layout="block" style="margin-top: 25px;">
-                    <p:dataTable id="dataTable" var="item" 
-                                 value="#{ordemServicoController.atividades}" lazy="false"
-                                 widgetVar="dataTable" rowIndexVar="rowIndex">
-                        <f:facet name="header">
-                            <div class="tabs_involved">
-                                <h:outputLabel value="Histórico de Atividades" styleClass="tabs_involved" />                               
-                            </div>
-                        </f:facet>
-                        <p:column headerText="Data Entrada" width="70">
-                            <h:outputText value="#{item.dataEntrada}" >
-                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="Atividade">
-                            <h:outputText value="#{item.etapa}" />
-                        </p:column>
-                        <p:column headerText="Data Saída" width="70">
-                            <h:outputText value="#{item.dataSaida}">
-                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="Situação" width="90">
-                            <p:outputLabel value="Em Execução" rendered="#{item.situacao == 'E'}"   />  
-                            <p:outputLabel value="Cancelado" rendered="#{item.situacao == 'A'}"   />  
-                            <p:outputLabel value="Parado" rendered="#{item.situacao == 'P'}"   />  
-                            <p:outputLabel value="Fila de espera" rendered="#{item.situacao == 'F'}"   />  
-                            <p:outputLabel value="Concluído" rendered="#{item.situacao == 'C'}"   /> 
-                        </p:column>
-
-                        <p:column headerText="Horas Trab." width="70">
-                            <h:outputText value="#{item.horasTrabalhadas}" />
-                        </p:column>
-                        <p:column headerText="Funcionário" width="180">
-                            <h:outputText value="#{item.funcionario}" />
-                        </p:column>
-                        <p:column headerText="Eventos" width="60">
-                            <p:commandButton alt="Eventos" title="Eventos" icon="btn_editar"/>
-                        </p:column>
-
-                    </p:dataTable>
-                </h:panelGroup>
+                </h:panelGroup>                
             </h:panelGroup>
         </h:form>
+        <h:form id="frmHistorico" prependId="false" > 
+            <h:panelGroup layout="block" style="margin-top: 25px;" >
+                <p:dataTable id="dataTable" var="item" 
+                             value="#{ordemServicoController.atividades}" lazy="false"
+                             widgetVar="dataTable" rowIndexVar="rowIndex">
+                    <f:facet name="header">
+                        <div class="tabs_involved">
+                            <h:outputLabel value="Histórico de Atividades" styleClass="tabs_involved" />                               
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Data Entrada" width="70">
+                        <h:outputText value="#{item.dataEntrada}" >
+                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Atividade">
+                        <h:outputText value="#{item.etapa}" />
+                    </p:column>
+                    <p:column headerText="Data Saída" width="70">
+                        <h:outputText value="#{item.dataSaida}">
+                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Situação" width="90">
+                        <p:outputLabel value="Em Execução" rendered="#{item.situacao == 'E'}"   />  
+                        <p:outputLabel value="Cancelado" rendered="#{item.situacao == 'A'}"   />  
+                        <p:outputLabel value="Parado" rendered="#{item.situacao == 'P'}"   />  
+                        <p:outputLabel value="Fila de espera" rendered="#{item.situacao == 'F'}"   />  
+                        <p:outputLabel value="Concluído" rendered="#{item.situacao == 'C'}"   /> 
+                    </p:column>
 
+                    <p:column headerText="Horas Trab." width="70">
+                        <h:outputText value="#{item.horasTrabalhadas}" />
+                    </p:column>
+                    <p:column headerText="Funcionário" width="180">
+                        <h:outputText value="#{item.funcionario}" />
+                    </p:column>
+                    <p:column headerText="Eventos" width="60">
+                        <p:commandButton alt="Eventos" title="Eventos" icon="btn_editar"/>
+                    </p:column>
+
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
     </ui:define>
 
     <ui:define name="Rodape">

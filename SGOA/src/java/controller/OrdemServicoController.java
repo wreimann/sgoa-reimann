@@ -110,7 +110,7 @@ public final class OrdemServicoController implements Serializable {
 
     }
 
-    public void salvar(ActionEvent evt) {
+    public void atualizar(ActionEvent event) {
         if (current.getDataEntrada() != null && current.getDataSaida() != null) {
             if (current.getDataEntrada().after(current.getDataSaida())) {
                 JsfUtil.addErrorMessage(null, "A data de saída deve ser maior que a data de entrada na atividade.");
@@ -166,7 +166,7 @@ public final class OrdemServicoController implements Serializable {
 
     public void changePlaca() {
         if (placa == null || placa.isEmpty()) {
-            JsfUtil.addErrorMessage(null, "Informe a placa.");
+            //JsfUtil.addErrorMessage(null, "Informe a placa.");
             return;
         }
         try {

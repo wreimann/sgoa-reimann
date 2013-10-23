@@ -54,7 +54,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
                 break;
             case FimAtividade:
                 descricao = "Conclusão da atividade.";
-                break;                
+                break;
         }
         evento.setDescricao(descricao);
         return evento;
@@ -143,7 +143,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
                     item.getOrdemServico().setSituacao('F'); // OS finalizada
                 }
             }
-            sessao.save(item);
+            sessao.saveOrUpdate(item);
             HibernateFactory.commitTransaction();
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
@@ -165,6 +165,9 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             for (OrdemServicoEtapa item : resultado.getEtapas()) {
                 Hibernate.initialize(item);
                 Hibernate.initialize(item.getEtapa());
+                for (OrdemServicoEvento evento : item.getEventos()) {
+                    Hibernate.initialize(evento);
+                }
             }
         }
         return resultado;
