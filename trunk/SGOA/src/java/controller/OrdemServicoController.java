@@ -106,6 +106,7 @@ public final class OrdemServicoController implements Serializable {
     }
 
     public OrdemServicoController() {
+        atividades = new ArrayList<OrdemServicoEtapa>();
         limparCampos();
 
     }
@@ -116,22 +117,35 @@ public final class OrdemServicoController implements Serializable {
                 JsfUtil.addErrorMessage(null, "A data de saída deve ser maior que a data de entrada na atividade.");
                 return;
             }
-        } else if (current.getDataSaida() != null && proximaEtapa == null) {
+        }
+        if (current.getDataSaida() != null && proximaEtapa == null) {
             JsfUtil.addErrorMessage(null, "Informe a próxima atividade.");
             return;
-        } else if (current.getDataSaida() != null && current.getFuncionario() == null) {
+        }
+        if (current.getDataSaida() != null && current.getFuncionario() == null) {
             JsfUtil.addErrorMessage(null, "Informe o funcionário executor da atividade.");
             return;
-        } else if (current.getDataSaida() != null && current.getHorasTrabalhadas() == 0) {
-            JsfUtil.addErrorMessage(null, "Informe um valor de horas de trabalho.");
+        }
+        if (current.getDataSaida() != null && current.getHorasTrabalhadas() == 0) {
+            JsfUtil.addErrorMessage(null, "Informe as horas de trabalho.");
             return;
         }
-
         try {
             Session sessao = HibernateFactory.currentSession();
             ejbFacade.atualizarServico(sessao, LoginFilter.usuarioLogado(sessao), current, proximaEtapa, inicioImediato, funcProximaEtapa);
+            JsfUtil.addSuccessMessage("Atividade atualizada com sucesso!");
+            setProximaEtapa(null);
+            setInicioImediato(false);
+            setFuncProximaEtapa(null);
+            OrdemServico resultado = ejbFacade.ObterOrdemServicoPorPlaca(sessao, placa);
+            if (resultado != null) {
+                setCliente(resultado.getOrcamento().getCliente().toString());
+                setVeiculo(resultado.getOrcamento().getVeiculo().toString());
+                current = resultado.getEtapaAtual();
+                atividades = resultado.getEtapas();
+            }
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, "Erro ao salvar o registro. ");
+            JsfUtil.addErrorMessage(e, "Erro ao salvar o registro.");
         } finally {
             HibernateFactory.closeSession();
         }

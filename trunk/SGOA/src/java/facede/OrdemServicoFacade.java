@@ -69,6 +69,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         etapa.setDataCadastro(cal.getTime());
         etapa.setEtapa(tarefa);
         etapa.setOrdemServico(os);
+        os.setEtapaAtual(etapa);
         if (inicioImediato) {
             etapa.setDataEntrada(cal.getTime());
             etapa.setFuncionario(funcProximaEtapa);
