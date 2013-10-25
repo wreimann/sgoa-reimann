@@ -16,7 +16,7 @@
     </ui:define>
 
     <ui:define name="Conteudo">
-        <p:messages id="messages" autoUpdate="true" closable="true"  />
+        <p:messages id="messages" autoUpdate="true" closable="true" showDetail="true" />
         <h:form id="frmCadastro" prependId="false" > 
             <script type="text/javascript">
                 jQuery(function($) {
@@ -26,7 +26,7 @@
  
                
             </script>
-            <p:focus context="frmCadastro"/>
+            <p:focus context="frmCadastro" />
             <h:panelGrid>
                 <p:fieldset id="PlacaPesquisaField" style="width: 160px;" >
                     <p:outputLabel id="PlacaPesquisaLabel" value="Placa*"/>
@@ -34,12 +34,12 @@
                                  value="#{ordemServicoController.placa}"
                                  style="text-transform: uppercase; width: 105px;"
                                  disabled="#{ordemServicoController.current.id > 0}">
-                        <p:ajax event="change" update=":frmCadastro,:frmHistorico,:ajaxStatusMaster"
+                        <p:ajax event="change" update=":frmCadastro,:ajaxStatusMaster"
                                 listener="#{ordemServicoController.changePlaca}"  />
                     </p:inputMask>
                     <p:commandButton id="btnLocalizarOS" icon="ui-icon-search" title="Localizar Veículo"
                                      style="margin-top: -5px;" actionListener="#{ordemServicoController.changePlaca}"
-                                     update=":frmCadastro"/>
+                                     update=":frmCadastro" disabled="#{ordemServicoController.current.id > 0}"/>
                 </p:fieldset>
             </h:panelGrid>
 
@@ -132,55 +132,60 @@
                 </h:panelGrid>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px;" >
                     <p:commandButton id="btnSalvar" actionListener="#{ordemServicoController.atualizar}"
-                                     update=":frmCadastro" value="Salvar" />
-                    <p:commandButton id="btnCancelar" value="Cancelar"
+                                     update=":frmCadastro" value="Salvar" process="@form" >
+
+                    </p:commandButton>
+                    <p:commandButton id="btnCancelar" value="Cancelar" 
                                      actionListener="#{ordemServicoController.limparCampos}"
-                                     update=":frmCadastro" ajax="false" />
-                </h:panelGroup>                
-            </h:panelGroup>
-        </h:form>
-        <h:form id="frmHistorico" prependId="false" > 
-            <h:panelGroup layout="block" style="margin-top: 25px;" rendered="#{ordemServicoController.current.id > 0}">
-                <p:dataTable id="dataTable" var="item" 
-                             value="#{ordemServicoController.atividades}" lazy="false"
-                             widgetVar="dataTable" rowIndexVar="rowIndex">
-                    <f:facet name="header">
-                        <div class="tabs_involved">
-                            <h:outputLabel value="Histórico de Atividades" styleClass="tabs_involved" />                               
-                        </div>
-                    </f:facet>
-                    <p:column headerText="Data Entrada" width="70">
-                        <h:outputText value="#{item.dataEntrada}" >
-                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
-                        </h:outputText>
-                    </p:column>
-                    <p:column headerText="Atividade">
-                        <h:outputText value="#{item.etapa}" />
-                    </p:column>
-                    <p:column headerText="Data Saída" width="70">
-                        <h:outputText value="#{item.dataSaida}">
-                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
-                        </h:outputText>
-                    </p:column>
-                    <p:column headerText="Situação" width="90">
-                        <p:outputLabel value="Em Execução" rendered="#{item.situacao == 'E'}"   />  
-                        <p:outputLabel value="Cancelado" rendered="#{item.situacao == 'A'}"   />  
-                        <p:outputLabel value="Parado" rendered="#{item.situacao == 'P'}"   />  
-                        <p:outputLabel value="Fila de espera" rendered="#{item.situacao == 'F'}"   />  
-                        <p:outputLabel value="Concluído" rendered="#{item.situacao == 'C'}"   /> 
-                    </p:column>
+                                     update=":frmCadastro" ajax="false" immediate="true"/>
+                </h:panelGroup> 
 
-                    <p:column headerText="Horas Trab." width="70">
-                        <h:outputText value="#{item.horasTrabalhadas}" />
-                    </p:column>
-                    <p:column headerText="Funcionário" width="180">
-                        <h:outputText value="#{item.funcionario}" />
-                    </p:column>
-                    <p:column headerText="Eventos" width="60">
-                        <p:commandButton alt="Eventos" title="Eventos" icon="btn_editar"/>
-                    </p:column>
+                <h:panelGroup layout="block" style="margin-top: 25px;" rendered="#{ordemServicoController.current.id > 0}">
+                    <p:dataTable var="atividade" 
+                                 value="#{ordemServicoController.atividades}" lazy="false"
+                                 widgetVar="dataTableAtividade" rowIndexVar="rowIx"
+                                 paginatorPosition="bottom"  
+                                 emptyMessage="Nenhum resultado encontrado."                   
+                                 rows="10"
+                                 currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                        <f:facet name="header">
+                            <div class="tabs_involved">
+                                <h:outputLabel value="Histórico de Atividades" styleClass="tabs_involved" />                               
+                            </div>
+                        </f:facet>
+                        <p:column headerText="Data Entrada" width="70">
+                            <h:outputText value="#{atividade.dataEntrada}" >
+                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Atividade">
+                            <h:outputText value="#{atividade.etapa}" />
+                        </p:column>
+                        <p:column headerText="Data Saída" width="70">
+                            <h:outputText value="#{atividade.dataSaida}">
+                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Situação" width="90">
+                            <p:outputLabel value="Em Execução" rendered="#{atividade.situacao == 'E'}"   />  
+                            <p:outputLabel value="Cancelado" rendered="#{atividade.situacao == 'A'}"   />  
+                            <p:outputLabel value="Parado" rendered="#{atividade.situacao == 'P'}"   />  
+                            <p:outputLabel value="Fila de espera" rendered="#{atividade.situacao == 'F'}"   />  
+                            <p:outputLabel value="Concluído" rendered="#{atividade.situacao == 'C'}"   /> 
+                        </p:column>
 
-                </p:dataTable>
+                        <p:column headerText="Horas Trab." width="70">
+                            <h:outputText value="#{atividade.horasTrabalhadas}" />
+                        </p:column>
+                        <p:column headerText="Funcionário" width="180">
+                            <h:outputText value="#{atividade.funcionario}" />
+                        </p:column>
+                        <p:column headerText="Eventos" width="60">
+                            <p:commandButton alt="Eventos" title="Eventos" icon="ui-icon-search"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
             </h:panelGroup>
         </h:form>
     </ui:define>
