@@ -72,7 +72,9 @@
                         </h:selectOneMenu>
                     </p:fieldset> 
                     <p:commandButton id="btnEvento" value="Eventos" title="Adicionar Eventos"
-                                     icon="ui-icon-circle-plus"/>
+                                     icon="ui-icon-circle-plus" oncomplete="modalPopup.show()"
+                                     update=":frmEvento"/>
+
                 </h:panelGrid>
                 <h:panelGrid columns="2">
                     <p:fieldset id="DataEntradaField" style="width: 160px; margin-right: 19px;">
@@ -182,12 +184,97 @@
                             <h:outputText value="#{atividade.funcionario}" />
                         </p:column>
                         <p:column headerText="Eventos" width="60">
-                            <p:commandButton alt="Eventos" title="Eventos" icon="ui-icon-search"/>
+                            <p:commandButton alt="Eventos" title="Eventos" icon="ui-icon-search"
+                                             oncomplete="modalHistoricoPopup.show()" 
+                                             action="#{ordemServicoController.prepararEvento}"
+                                             update=":frmHistoricoEvento">
+                                <f:setPropertyActionListener value="#{atividade}" target="#{ordemServicoController.atividade}" />
+                            </p:commandButton>
                         </p:column>
                     </p:dataTable>
                 </h:panelGroup>
             </h:panelGroup>
         </h:form>
+
+        <p:dialog  widgetVar="modalPopup" modal="true" width="700" height="300" resizable="false"
+                   showEffect="fade" header="Cadastro de Eventos" id="dialog" >
+            <p:messages id="growl" autoUpdate="true" closable="true"  />
+            <h:form id="frmEvento" prependId="false" enctype="multipart/form-data">
+
+                <p:fieldset style="width: 250px;">
+                    <label>Tipo Evento*</label>
+                    <h:selectOneMenu value="#{ordemServicoController.tipoEvento}" required="true"
+                                     requiredMessage="O campo 'Tipo Evento' é obrigatório.">
+                        <f:selectItems value="#{ordemServicoController.tiposEvento}" var="tipo"
+                                       itemLabel="#{tipo.name()}" itemValue="#{tipo}"/>
+                    </h:selectOneMenu>                   
+                </p:fieldset>
+
+
+                <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}" 
+                              showButtons="false" label="Procurar..." auto="true" 
+                              sizeLimit="3000000" allowTypes="/(\.|\/)(pdf|doc?x)$/"
+                              update=":frmEvento" 
+                              dragDropSupport="false" mode="advanced" />
+
+                <p:fieldset>
+                    <label id="ObsLabel">Descrição</label>
+                    <p:inputTextarea value="#{ordemServicoController.descEvento}"/>
+                </p:fieldset>
+                <p:fieldset style="width: 350px;" rendered="#{ordemServicoController.exibirData}" >
+                    <p:outputLabel value="Data"/>
+                    <p:calendar showButtonPanel="true" navigator="true" 
+                                value="#{ordemServicoController.dataInicioParada}" 
+                                converterMessage="Valor inválido!" 
+                                pattern="dd/MM/yyyy HH:mm" locale="pt"
+                                timeZone="America/Sao_Paulo" />
+                </p:fieldset>
+                <h:panelGroup layout="block" style="margin-top: 10px" >
+                    <p:commandButton id="btnSalvarEvento"
+                                     actionListener="#{ordemServicoController.adicionarEvento}"
+                                     update=":frmEvento" value="Salvar"/>
+                    <p:commandButton value="Sair" oncomplete="fecharFormDialog()" />
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+        <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="750" height="200" resizable="false"
+                   showEffect="fade" header="Histórico de Eventos" id="dialogHistorico" >
+            <h:form id="frmHistoricoEvento" prependId="false">
+                <p:dataTable var="evento" value="#{ordemServicoController.eventos}" lazy="false"
+                             widgetVar="dataTableEventos" rowIndexVar="rowIx"
+                             paginatorPosition="bottom"  
+                             emptyMessage="Nenhum resultado encontrado."                   
+                             rows="10"
+                             currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                    <p:column headerText="Ocorrência" width="70">
+                        <h:outputText value="#{evento.dataOcorrencia}" >
+                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Funcionário" width="150">
+                        <h:outputText value="#{evento.funcionario}" />
+                    </p:column>
+                    <p:column headerText="Evento">
+                        <h:outputText value="#{evento.tipoEvento}" />
+                    </p:column>
+                    <p:column headerText="Descrição">
+                        <h:outputText value="#{evento.descricao}" />
+                    </p:column>
+                    <p:column headerText="Data" width="70">
+                        <h:outputText value="#{evento.dataInicioParada}">
+                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Fotos" width="60">
+                        <p:commandButton alt="Fotos" title="Fotos" icon="ui-icon-search"/>
+                    </p:column>
+                </p:dataTable>
+                <h:panelGroup layout="block" style="margin-top: 30px;" >
+                    <p:commandButton value="Sair" oncomplete="modalHistoricoPopup.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
     </ui:define>
 
     <ui:define name="Rodape">

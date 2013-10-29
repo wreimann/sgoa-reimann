@@ -4,8 +4,9 @@ public enum TipoEvento {
     InicioAtividade("I"),
     FimAtividade("F"),
     Cancelamento("C"),
-    InterrupcaoAtividade("I"),
-    RetomadaAtividade("R");
+    InterrupcaoAtividade("T"),
+    RetomadaAtividade("R"),
+    Informacao("N");
     
     private String value;
 

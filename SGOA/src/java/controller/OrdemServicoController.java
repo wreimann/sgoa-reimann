@@ -7,16 +7,21 @@ import filter.LoginFilter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import model.Etapa;
 import model.Funcionario;
 import model.OrdemServico;
 import model.OrdemServicoEtapa;
+import model.OrdemServicoEvento;
+import model.TipoEvento;
 import org.hibernate.Session;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 import util.HibernateFactory;
 import util.JsfUtil;
 
@@ -28,6 +33,58 @@ public final class OrdemServicoController implements Serializable {
     @EJB
     private OrdemServicoFacade ejbFacade;
     private List<OrdemServicoEtapa> atividades;
+    private TipoEvento tipoEvento;
+    private List<TipoEvento> tiposEvento;
+    private List<OrdemServicoEvento> eventos;
+    private UploadedFile file;
+    private String descEvento;
+    private boolean exibirData;
+    private OrdemServicoEtapa atividade;
+
+    public OrdemServicoEtapa getAtividade() {
+        return atividade;
+    }
+
+    public void setAtividade(OrdemServicoEtapa atividade) {
+        this.atividade = atividade;
+    }
+
+    public List<OrdemServicoEvento> getEventos() {
+        return eventos;
+    }
+
+    public boolean isExibirData() {
+        return (tipoEvento == TipoEvento.InterrupcaoAtividade
+                || tipoEvento == TipoEvento.RetomadaAtividade);
+    }
+
+    public String getDescEvento() {
+        return descEvento;
+    }
+
+    public void setDescEvento(String descEvento) {
+        this.descEvento = descEvento;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    public List<TipoEvento> getTiposEvento() {
+        return tiposEvento;
+    }
+
+    public TipoEvento getTipoEvento() {
+        return tipoEvento;
+    }
+
+    public void setTipoEvento(TipoEvento tipoEvento) {
+        this.tipoEvento = tipoEvento;
+    }
 
     public List<OrdemServicoEtapa> getAtividades() {
         return atividades;
@@ -156,12 +213,32 @@ public final class OrdemServicoController implements Serializable {
         setPlaca(null);
         setCliente(null);
         setVeiculo(null);
+        setTipoEvento(null);
+        setDescEvento(null);
+        setAtividade(null);
         funcionariosAtivos = montaListaFuncionarios();
         etapasAtivas = montaListaEtapas();
+        montaListaTiposEvento();
+    }
+
+    public void prepararEvento() {
+        eventos = atividade.getEventos();
+    }
+
+    public void adicionarEvento(ActionEvent event) {
+        try {
+            Session sessao = HibernateFactory.currentSession();
+            ejbFacade.incluirEvento(sessao, current, LoginFilter.usuarioLogado(sessao), getTipoEvento(), getDescEvento());
+            JsfUtil.addSuccessMessage("Evento incluído com sucesso!");
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, "Erro ao salvar o evento.");
+        } finally {
+            HibernateFactory.closeSession();
+        }
     }
 
     public void handleFileUpload(FileUploadEvent event) {
-        //file = event.getFile();
+        file = event.getFile();
     }
 
     public List<Etapa> montaListaEtapas() {
@@ -180,7 +257,6 @@ public final class OrdemServicoController implements Serializable {
 
     public void changePlaca() {
         if (placa == null || placa.isEmpty()) {
-            //JsfUtil.addErrorMessage(null, "Informe a placa.");
             return;
         }
         try {
@@ -214,5 +290,12 @@ public final class OrdemServicoController implements Serializable {
             HibernateFactory.closeSession();
         }
         return resultado;
+    }
+
+    public void montaListaTiposEvento() {
+        tiposEvento = new ArrayList<TipoEvento>();
+        tiposEvento.add(TipoEvento.Informacao);
+        tiposEvento.add(TipoEvento.InterrupcaoAtividade);
+        tiposEvento.add(TipoEvento.RetomadaAtividade);
     }
 }
