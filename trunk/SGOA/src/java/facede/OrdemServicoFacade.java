@@ -1,10 +1,8 @@
 package facede;
 
 import facede.base.BaseFacade;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -35,6 +33,25 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
 
     public OrdemServicoFacade() {
         super(OrdemServico.class);
+    }
+
+    public void incluirEvento(Session sessao, OrdemServicoEtapa etapa, Funcionario funcionario,
+            TipoEvento tipo, String descricao) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        try {
+            HibernateFactory.beginTransaction();
+            OrdemServicoEvento evento = adicionarEvento(etapa, funcionario, tipo);
+            etapa.getEventos().add(evento);
+            evento.setDescricao(descricao);
+            //evento.setFotos(null);
+            sessao.update(etapa);
+            HibernateFactory.commitTransaction();
+        } catch (Exception e) {
+            HibernateFactory.rollbackTransaction();
+            throw e;
+        }
     }
 
     private OrdemServicoEvento adicionarEvento(OrdemServicoEtapa etapa, Funcionario funcionario, TipoEvento tipo) {

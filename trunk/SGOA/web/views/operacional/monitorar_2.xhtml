@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">  
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                template="./../../template/form.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="Navagador">
+        <a class="current">Cadastro</a>
+        <div class="breadcrumb_divider"></div> 
+        <a class="current">Monitorar pátio</a>
+    </ui:define>
+
+    <ui:define name="Titulo">
+        <h2>Monitorar pátio</h2>
+    </ui:define>
+
+    <ui:define name="Conteudo">
+        <h:form id="frmPesquisa">
+            <p:fieldset id="NumeroOSField" style="width: 260px;">
+                <label id="NumeroOSLabel">Orçamento</label>
+                <h:inputText id="NumeroOSInput" />
+            </p:fieldset>
+            <p:fieldset id="ClientePesquisaField">
+                <label id="ClientePesquisaLabel">Cliente</label>
+                <p:autoComplete id="ClientePesquisaInput" />
+            </p:fieldset>
+            <p:fieldset id="PlacaPesquisaField" style="width: 260px;" >
+                <label id="PlacaPesquisaLabel">Placa</label>
+                <h:inputText id="PlacaPesquisaInput" />
+            </p:fieldset>
+            <p:fieldset id="SetorField">
+                <label id="SetorLabel">Setor</label>
+                <h:inputText id="SetorInput" />
+            </p:fieldset>
+            <p:commandButton id="btnPesquisar" value="Pesquisar" type="button" />
+            <p:commandButton id="btnLimparPesquisa" value="Limpar" type="button" />
+        </h:form>
+        <div class="spacer"></div>
+        <div class="width_full_border">
+            <header>
+                <h3 class="tabs_involved">Monitorar pátio</h3>              
+            </header>
+            <div id="tab1" class="tab_content">
+                <table class="tablesorter" cellspacing="0"> 
+                    <thead> 
+                        <tr> 
+                            <th width="50px">Ações</th>
+                            <th>Cliente</th>
+                            <th>Veículo</th> 
+                            <th>Data Entrada</th>
+                            <th>Fluxo</th>
+                            <th>Etapa Atual</th>
+                            <th>Setor</th>
+                            <th>Funcionário</th>
+                        </tr> 
+                    </thead> 
+                    <tbody> 
+                        <tr> 
+                            <td width="50px"> 
+                                <h:graphicImage alt="Editar" url="/images/icn_edit.png" style="margin-right: 10px;" />
+                            </td>
+                            <td>Reimann</td> 
+                            <td>ATO-3804 - Pálio</td> 
+                            <td>12/11/2012</td>
+                            <td>Serviço rápido</td>
+                            <td>Preparação de Pintura</td>
+                            <td>Setor de Pintura</td>
+                            <td>João</td>
+                        </tr>                         
+                    </tbody> 
+                </table>
+            </div>
+        </div>
+
+
+    </ui:define>
+
+    <ui:define name="Rodape">
+    </ui:define>
+
+</ui:composition>

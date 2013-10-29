@@ -71,6 +71,18 @@ public class OrdemServicoEvento extends BaseEntidadeDescricao<OrdemServicoEvento
         this.funcionario = funcionario;
     }
     
+    @Basic(optional = true)
+    @Column(name = "DataInicioParada")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataInicioParada;
+    public Date getDataInicioParada() {
+        return dataInicioParada;
+    }
+
+    public void setDataInicioParada(Date dataInicioParada) {
+        this.dataInicioParada = dataInicioParada;
+    }
+    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idordemservicoetapa")
     private List<OrdemServicoFoto> fotos;
