@@ -32,7 +32,7 @@ public class OrdemServicoEvento extends BaseEntidadeDescricao<OrdemServicoEvento
     public void setEtapa(OrdemServicoEtapa etapa) {
         this.etapa = etapa;
     }
-   
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "DataOcorrencia")

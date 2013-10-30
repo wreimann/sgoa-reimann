@@ -73,7 +73,7 @@
                     </p:fieldset> 
                     <p:commandButton id="btnEvento" value="Eventos" title="Adicionar Eventos"
                                      icon="ui-icon-circle-plus" oncomplete="modalPopup.show()"
-                                     update=":frmEvento"/>
+                                     update=":frmEvento" action="#{ordemServicoController.changeTipoEvento}"/>
 
                 </h:panelGrid>
                 <h:panelGrid columns="2">
@@ -88,9 +88,8 @@
                                     disabled="#{ordemServicoController.current.situacao != 'F'}"/>
                     </p:fieldset>
                     <p:fieldset id="FuncionarioField" style="width: 390px;" >
-                        <label id="FuncionarioLabel">Funcionário Executor*</label>
-                        <h:selectOneMenu id="FuncionarioListBox" required="true"
-                                         requiredMessage="O campo 'Funcionário Executor' é obrigatório."
+                        <label id="FuncionarioLabel">Funcionário Executor</label>
+                        <h:selectOneMenu id="FuncionarioListBox" 
                                          value="#{ordemServicoController.current.funcionario}" 
                                          converter="funcionarioConverter">
                             <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
@@ -173,7 +172,7 @@
                             <p:outputLabel value="Em Execução" rendered="#{atividade.situacao == 'E'}"   />  
                             <p:outputLabel value="Cancelado" rendered="#{atividade.situacao == 'A'}"   />  
                             <p:outputLabel value="Parado" rendered="#{atividade.situacao == 'P'}"   />  
-                            <p:outputLabel value="Fila de espera" rendered="#{atividade.situacao == 'F'}"   />  
+                            <p:outputLabel value="Fila de Espera" rendered="#{atividade.situacao == 'F'}"   />  
                             <p:outputLabel value="Concluído" rendered="#{atividade.situacao == 'C'}"   /> 
                         </p:column>
 
@@ -196,33 +195,35 @@
             </h:panelGroup>
         </h:form>
 
-        <p:dialog  widgetVar="modalPopup" modal="true" width="700" height="300" resizable="false"
+        <p:dialog  widgetVar="modalPopup" modal="true" width="600" height="400" resizable="false"
                    showEffect="fade" header="Cadastro de Eventos" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmEvento" prependId="false" enctype="multipart/form-data">
 
-                <p:fieldset style="width: 250px;">
+                <p:fieldset style="width: 180px;">
                     <label>Tipo Evento*</label>
                     <h:selectOneMenu value="#{ordemServicoController.tipoEvento}" required="true"
                                      requiredMessage="O campo 'Tipo Evento' é obrigatório.">
                         <f:selectItems value="#{ordemServicoController.tiposEvento}" var="tipo"
-                                       itemLabel="#{tipo.name()}" itemValue="#{tipo}"/>
+                                       itemLabel="#{tipo}" itemValue="#{tipo}" /> 
+                        
+                         <p:ajax event="change" update=":frmEvento,:ajaxStatusMaster"/>
                     </h:selectOneMenu>                   
                 </p:fieldset>
 
 
                 <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}" 
-                              showButtons="false" label="Procurar..." auto="true" 
+                              showButtons="false" label="Adicionar fotos" auto="true" 
                               sizeLimit="3000000" allowTypes="/(\.|\/)(pdf|doc?x)$/"
                               update=":frmEvento" 
-                              dragDropSupport="false" mode="advanced" />
+                              dragDropSupport="false" mode="advanced"  />
 
                 <p:fieldset>
-                    <label id="ObsLabel">Descrição</label>
+                    <label>Descrição</label>
                     <p:inputTextarea value="#{ordemServicoController.descEvento}"/>
                 </p:fieldset>
-                <p:fieldset style="width: 350px;" rendered="#{ordemServicoController.exibirData}" >
-                    <p:outputLabel value="Data"/>
+                <p:fieldset style="width: 180px;" rendered="#{ordemServicoController.exibirData}" >
+                    <p:outputLabel value="Data Evento"/>
                     <p:calendar showButtonPanel="true" navigator="true" 
                                 value="#{ordemServicoController.dataInicioParada}" 
                                 converterMessage="Valor inválido!" 
@@ -237,17 +238,17 @@
                 </h:panelGroup>
             </h:form>
         </p:dialog>
-        <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="750" height="200" resizable="false"
-                   showEffect="fade" header="Histórico de Eventos" id="dialogHistorico" >
+        <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="700" height="340" resizable="false"
+                   showEffect="fade" header="Listagem de Eventos" id="dialogHistorico" >
             <h:form id="frmHistoricoEvento" prependId="false">
                 <p:dataTable var="evento" value="#{ordemServicoController.eventos}" lazy="false"
                              widgetVar="dataTableEventos" rowIndexVar="rowIx"
                              paginatorPosition="bottom"  
                              emptyMessage="Nenhum resultado encontrado."                   
-                             rows="10"
+                             rows="5" sortBy="dataOcorrencia" paginator="true"
                              currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
-                    <p:column headerText="Ocorrência" width="70">
+                    <p:column headerText="Ocorrência" width="140">
                         <h:outputText value="#{evento.dataOcorrencia}" >
                             <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                         </h:outputText>
@@ -255,13 +256,13 @@
                     <p:column headerText="Funcionário" width="150">
                         <h:outputText value="#{evento.funcionario}" />
                     </p:column>
-                    <p:column headerText="Evento">
+                    <p:column headerText="Evento" width="100">
                         <h:outputText value="#{evento.tipoEvento}" />
                     </p:column>
                     <p:column headerText="Descrição">
                         <h:outputText value="#{evento.descricao}" />
                     </p:column>
-                    <p:column headerText="Data" width="70">
+                    <p:column headerText="Data" width="140">
                         <h:outputText value="#{evento.dataInicioParada}">
                             <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                         </h:outputText>
@@ -270,8 +271,8 @@
                         <p:commandButton alt="Fotos" title="Fotos" icon="ui-icon-search"/>
                     </p:column>
                 </p:dataTable>
-                <h:panelGroup layout="block" style="margin-top: 30px;" >
-                    <p:commandButton value="Sair" oncomplete="modalHistoricoPopup.hide()"/>
+                <h:panelGroup layout="block" style="margin-top: 15px; float: right;" >
+                    <p:commandButton value="Sair" oncomplete="modalHistoricoPopup.hide()" />
                 </h:panelGroup>
             </h:form>
         </p:dialog>

@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -119,6 +120,7 @@ public class OrdemServicoEtapa extends BaseEntidade<OrdemServicoEtapa> {
     }
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idordemservicoetapa")
+    @OrderBy("dataOcorrencia DESC")
     private List<OrdemServicoEvento> eventos;
 
     public List<OrdemServicoEvento> getEventos() {

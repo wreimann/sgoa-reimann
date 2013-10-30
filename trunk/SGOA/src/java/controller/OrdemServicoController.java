@@ -6,6 +6,7 @@ import facede.OrdemServicoFacade;
 import filter.LoginFilter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -38,9 +39,17 @@ public final class OrdemServicoController implements Serializable {
     private List<OrdemServicoEvento> eventos;
     private UploadedFile file;
     private String descEvento;
+    private Date dataInicioParada;
     private boolean exibirData;
     private OrdemServicoEtapa atividade;
 
+    public Date getDataInicioParada() {
+        return dataInicioParada;
+    }
+
+    public void setDataInicioParada(Date dataInicioParada) {
+        this.dataInicioParada = dataInicioParada;
+    } 
     public OrdemServicoEtapa getAtividade() {
         return atividade;
     }
@@ -187,6 +196,10 @@ public final class OrdemServicoController implements Serializable {
             JsfUtil.addErrorMessage(null, "Informe as horas de trabalho.");
             return;
         }
+        if (atividades.indexOf(current) > 0) {
+            JsfUtil.addErrorMessage(null, "O campo 'Funcionário Executor' é obrigatório.");
+            return;
+        }
         try {
             Session sessao = HibernateFactory.currentSession();
             ejbFacade.atualizarServico(sessao, LoginFilter.usuarioLogado(sessao), current, proximaEtapa, inicioImediato, funcProximaEtapa);
@@ -215,6 +228,8 @@ public final class OrdemServicoController implements Serializable {
         setVeiculo(null);
         setTipoEvento(null);
         setDescEvento(null);
+        setDataInicioParada(null);
+        file = null;
         setAtividade(null);
         funcionariosAtivos = montaListaFuncionarios();
         etapasAtivas = montaListaEtapas();
@@ -223,12 +238,17 @@ public final class OrdemServicoController implements Serializable {
 
     public void prepararEvento() {
         eventos = atividade.getEventos();
+       
+    }
+    
+    public void changeTipoEvento() {
+      setDataInicioParada(null);
     }
 
     public void adicionarEvento(ActionEvent event) {
         try {
             Session sessao = HibernateFactory.currentSession();
-            ejbFacade.incluirEvento(sessao, current, LoginFilter.usuarioLogado(sessao), getTipoEvento(), getDescEvento());
+            ejbFacade.incluirEvento(sessao, current, LoginFilter.usuarioLogado(sessao), getTipoEvento(), getDescEvento(), getDataInicioParada());
             JsfUtil.addSuccessMessage("Evento incluído com sucesso!");
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Erro ao salvar o evento.");
@@ -298,4 +318,6 @@ public final class OrdemServicoController implements Serializable {
         tiposEvento.add(TipoEvento.InterrupcaoAtividade);
         tiposEvento.add(TipoEvento.RetomadaAtividade);
     }
+
+    
 }
