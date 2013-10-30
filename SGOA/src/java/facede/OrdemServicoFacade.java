@@ -36,15 +36,16 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
     }
 
     public void incluirEvento(Session sessao, OrdemServicoEtapa etapa, Funcionario funcionario,
-            TipoEvento tipo, String descricao) throws Exception {
+            TipoEvento tipo, String descricao, Date dataInicioParada) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
         try {
             HibernateFactory.beginTransaction();
             OrdemServicoEvento evento = adicionarEvento(etapa, funcionario, tipo);
-            etapa.getEventos().add(evento);
+            etapa.getEventos().add(0,evento);
             evento.setDescricao(descricao);
+            evento.setDataInicioParada(dataInicioParada);
             //evento.setFotos(null);
             sessao.update(etapa);
             HibernateFactory.commitTransaction();
