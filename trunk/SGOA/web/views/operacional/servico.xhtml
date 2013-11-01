@@ -195,7 +195,7 @@
             </h:panelGroup>
         </h:form>
 
-        <p:dialog  widgetVar="modalPopup" modal="true" width="600" height="300" resizable="false"
+        <p:dialog  widgetVar="modalPopup" modal="true" width="580" height="350" resizable="false"
                    showEffect="fade" header="Cadastro de Eventos" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmEvento" prependId="false" enctype="multipart/form-data">
@@ -231,11 +231,11 @@
                                      requiredMessage="O campo 'Descrição' é obrigatório."/>
                 </p:fieldset>
 
-                <h:panelGroup layout="block" style="margin-top: 10px" >
+                <h:panelGroup layout="block" style="margin-top: 10px; float: right;" >
                     <p:commandButton id="btnSalvarEvento"
                                      actionListener="#{ordemServicoController.adicionarEvento}"
-                                     update=":frmEvento" value="Salvar"/>
-                    <p:commandButton value="Sair" oncomplete="fecharFormDialog()" />
+                                     update=":frmEvento" value="Salvar" oncomplete="validarFormDialog(xhr, status, args)" />
+                    <p:commandButton value="Sair" oncomplete="modalPopup.hide()" immediate="true" />
                 </h:panelGroup>
             </h:form>
         </p:dialog>
