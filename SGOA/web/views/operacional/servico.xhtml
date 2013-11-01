@@ -16,7 +16,7 @@
     </ui:define>
 
     <ui:define name="Conteudo">
-        <p:messages id="messages" autoUpdate="true" closable="true" showDetail="true" />
+        <p:messages id="messages" autoUpdate="true" closable="true" />
         <h:form id="frmCadastro" prependId="false" > 
             <script type="text/javascript">
                 jQuery(function($) {
@@ -195,23 +195,30 @@
             </h:panelGroup>
         </h:form>
 
-        <p:dialog  widgetVar="modalPopup" modal="true" width="600" height="400" resizable="false"
+        <p:dialog  widgetVar="modalPopup" modal="true" width="600" height="300" resizable="false"
                    showEffect="fade" header="Cadastro de Eventos" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmEvento" prependId="false" enctype="multipart/form-data">
+                <h:panelGrid columns="2">
+                    <p:fieldset style="width: 180px;">
+                        <label>Tipo Evento*</label>
+                        <h:selectOneMenu value="#{ordemServicoController.tipoEvento}" required="true"
+                                         requiredMessage="O campo 'Tipo Evento' é obrigatório.">
+                            <f:selectItems value="#{ordemServicoController.tiposEvento}" var="tipo"
+                                           itemLabel="#{tipo}" itemValue="#{tipo}" /> 
 
-                <p:fieldset style="width: 180px;">
-                    <label>Tipo Evento*</label>
-                    <h:selectOneMenu value="#{ordemServicoController.tipoEvento}" required="true"
-                                     requiredMessage="O campo 'Tipo Evento' é obrigatório.">
-                        <f:selectItems value="#{ordemServicoController.tiposEvento}" var="tipo"
-                                       itemLabel="#{tipo}" itemValue="#{tipo}" /> 
-                        
-                         <p:ajax event="change" update=":frmEvento,:ajaxStatusMaster"/>
-                    </h:selectOneMenu>                   
-                </p:fieldset>
-
-
+                            <p:ajax event="change" update=":frmEvento,:ajaxStatusMaster"/>
+                        </h:selectOneMenu>                   
+                    </p:fieldset>
+                    <p:fieldset style="width: 180px; margin-left: 19px;" rendered="#{ordemServicoController.exibirData}" >
+                        <p:outputLabel value="Data Evento"/>
+                        <p:calendar showButtonPanel="true" navigator="true" 
+                                    value="#{ordemServicoController.dataInicioParada}" 
+                                    converterMessage="Valor inválido!" 
+                                    pattern="dd/MM/yyyy HH:mm" locale="pt"
+                                    timeZone="America/Sao_Paulo" />
+                    </p:fieldset>
+                </h:panelGrid>
                 <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}" 
                               showButtons="false" label="Adicionar fotos" auto="true" 
                               sizeLimit="3000000" allowTypes="/(\.|\/)(pdf|doc?x)$/"
@@ -219,17 +226,11 @@
                               dragDropSupport="false" mode="advanced"  />
 
                 <p:fieldset>
-                    <label>Descrição</label>
-                    <p:inputTextarea value="#{ordemServicoController.descEvento}"/>
+                    <label>Descrição*</label>
+                    <p:inputTextarea value="#{ordemServicoController.descEvento}" required="true"
+                                     requiredMessage="O campo 'Descrição' é obrigatório."/>
                 </p:fieldset>
-                <p:fieldset style="width: 180px;" rendered="#{ordemServicoController.exibirData}" >
-                    <p:outputLabel value="Data Evento"/>
-                    <p:calendar showButtonPanel="true" navigator="true" 
-                                value="#{ordemServicoController.dataInicioParada}" 
-                                converterMessage="Valor inválido!" 
-                                pattern="dd/MM/yyyy HH:mm" locale="pt"
-                                timeZone="America/Sao_Paulo" />
-                </p:fieldset>
+
                 <h:panelGroup layout="block" style="margin-top: 10px" >
                     <p:commandButton id="btnSalvarEvento"
                                      actionListener="#{ordemServicoController.adicionarEvento}"
@@ -239,7 +240,7 @@
             </h:form>
         </p:dialog>
         <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="700" height="340" resizable="false"
-                   showEffect="fade" header="Listagem de Eventos" id="dialogHistorico" >
+                   showEffect="fade" header="Histórico de Eventos" id="dialogHistorico" >
             <h:form id="frmHistoricoEvento" prependId="false">
                 <p:dataTable var="evento" value="#{ordemServicoController.eventos}" lazy="false"
                              widgetVar="dataTableEventos" rowIndexVar="rowIx"
@@ -257,7 +258,7 @@
                         <h:outputText value="#{evento.funcionario}" />
                     </p:column>
                     <p:column headerText="Evento" width="100">
-                        <h:outputText value="#{evento.tipoEvento}" />
+                        <h:outputText value="#{evento.tipoEvento.toString()}" />
                     </p:column>
                     <p:column headerText="Descrição">
                         <h:outputText value="#{evento.descricao}" />
