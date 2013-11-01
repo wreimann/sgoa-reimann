@@ -49,7 +49,8 @@ public final class OrdemServicoController implements Serializable {
 
     public void setDataInicioParada(Date dataInicioParada) {
         this.dataInicioParada = dataInicioParada;
-    } 
+    }
+
     public OrdemServicoEtapa getAtividade() {
         return atividade;
     }
@@ -64,7 +65,7 @@ public final class OrdemServicoController implements Serializable {
 
     public boolean isExibirData() {
         return (tipoEvento == TipoEvento.InterrupcaoAtividade
-                || tipoEvento == TipoEvento.RetomadaAtividade);
+                || tipoEvento == TipoEvento.ReinicioAtividade);
     }
 
     public String getDescEvento() {
@@ -196,7 +197,7 @@ public final class OrdemServicoController implements Serializable {
             JsfUtil.addErrorMessage(null, "Informe as horas de trabalho.");
             return;
         }
-        if (atividades.indexOf(current) > 0) {
+        if (atividades.size() > 1) {
             JsfUtil.addErrorMessage(null, "O campo 'Funcionário Executor' é obrigatório.");
             return;
         }
@@ -238,11 +239,19 @@ public final class OrdemServicoController implements Serializable {
 
     public void prepararEvento() {
         eventos = atividade.getEventos();
-       
+
     }
-    
+
     public void changeTipoEvento() {
-      setDataInicioParada(null);
+        montaListaTiposEvento();
+        if (current.getSituacao() == 'P') {
+            tiposEvento.add(TipoEvento.ReinicioAtividade);
+        } else if (current.getSituacao() == 'E') {
+            tiposEvento.add(TipoEvento.InterrupcaoAtividade);
+        }
+        setDataInicioParada(null);
+        setDescEvento(null);
+        setTipoEvento(TipoEvento.Informacao);
     }
 
     public void adicionarEvento(ActionEvent event) {
@@ -316,8 +325,6 @@ public final class OrdemServicoController implements Serializable {
         tiposEvento = new ArrayList<TipoEvento>();
         tiposEvento.add(TipoEvento.Informacao);
         tiposEvento.add(TipoEvento.InterrupcaoAtividade);
-        tiposEvento.add(TipoEvento.RetomadaAtividade);
-    }
 
-    
+    }
 }
