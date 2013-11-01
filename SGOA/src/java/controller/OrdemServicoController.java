@@ -324,7 +324,5 @@ public final class OrdemServicoController implements Serializable {
     public void montaListaTiposEvento() {
         tiposEvento = new ArrayList<TipoEvento>();
         tiposEvento.add(TipoEvento.Informacao);
-        tiposEvento.add(TipoEvento.InterrupcaoAtividade);
-
     }
 }
