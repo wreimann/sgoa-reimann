@@ -4,24 +4,32 @@ import facede.EtapaFacade;
 import facede.FuncionarioFacade;
 import facede.OrdemServicoFacade;
 import filter.LoginFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.ServletContext;
 import model.Etapa;
 import model.Funcionario;
 import model.OrdemServico;
 import model.OrdemServicoEtapa;
 import model.OrdemServicoEvento;
+import model.OrdemServicoFoto;
 import model.TipoEvento;
 import org.hibernate.Session;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import util.HibernateFactory;
 import util.JsfUtil;
@@ -30,18 +38,26 @@ import util.JsfUtil;
 @ViewScoped
 public final class OrdemServicoController implements Serializable {
 
-    private OrdemServicoEtapa current;
+    @EJB
+    private FuncionarioFacade funcionarioFacade;
+    @EJB
+    private EtapaFacade etapaFacade;
     @EJB
     private OrdemServicoFacade ejbFacade;
+
+    private OrdemServicoEtapa current;
     private List<OrdemServicoEtapa> atividades;
     private TipoEvento tipoEvento;
     private List<TipoEvento> tiposEvento;
     private List<OrdemServicoEvento> eventos;
-    private UploadedFile file;
+    //private StreamedContent imagem;
+    private List<OrdemServicoFoto> fotosAux;
     private String descEvento;
     private Date dataInicioParada;
     private boolean exibirData;
     private OrdemServicoEtapa atividade;
+    private OrdemServicoEvento evento;
+    private List<OrdemServicoFoto> fotos;
 
     public Date getDataInicioParada() {
         return dataInicioParada;
@@ -49,6 +65,14 @@ public final class OrdemServicoController implements Serializable {
 
     public void setDataInicioParada(Date dataInicioParada) {
         this.dataInicioParada = dataInicioParada;
+    }
+
+    public OrdemServicoEvento getEvento() {
+        return evento;
+    }
+
+    public void setEvento(OrdemServicoEvento evento) {
+        this.evento = evento;
     }
 
     public OrdemServicoEtapa getAtividade() {
@@ -76,14 +100,6 @@ public final class OrdemServicoController implements Serializable {
         this.descEvento = descEvento;
     }
 
-    public UploadedFile getFile() {
-        return file;
-    }
-
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
-
     public List<TipoEvento> getTiposEvento() {
         return tiposEvento;
     }
@@ -94,6 +110,14 @@ public final class OrdemServicoController implements Serializable {
 
     public void setTipoEvento(TipoEvento tipoEvento) {
         this.tipoEvento = tipoEvento;
+    }
+
+    public List<OrdemServicoFoto> getFotos() {
+        return fotos;
+    }
+
+    public void setFotos(List<OrdemServicoFoto> fotos) {
+        this.fotos = fotos;
     }
 
     public List<OrdemServicoEtapa> getAtividades() {
@@ -174,6 +198,7 @@ public final class OrdemServicoController implements Serializable {
 
     public OrdemServicoController() {
         atividades = new ArrayList<OrdemServicoEtapa>();
+        //imagem = new DefaultStreamedContent();
         limparCampos();
 
     }
@@ -198,8 +223,15 @@ public final class OrdemServicoController implements Serializable {
             return;
         }
         if (atividades.size() > 1) {
-            JsfUtil.addErrorMessage(null, "O campo 'Funcionário Executor' é obrigatório.");
-            return;
+            if (current.getFuncionario() == null) {
+                JsfUtil.addErrorMessage(null, "O campo 'Funcionário Executor' é obrigatório.");
+                return;
+            }
+            //atividades ordenadas por maior data de cadastro
+            if (atividades.get(0).getDataSaida().after(current.getDataEntrada())) {
+                JsfUtil.addErrorMessage(null, "A data de entrada deve ser maior que a data de saída da atividade anterior.");
+                return;
+            }
         }
         try {
             Session sessao = HibernateFactory.currentSession();
@@ -230,11 +262,12 @@ public final class OrdemServicoController implements Serializable {
         setTipoEvento(null);
         setDescEvento(null);
         setDataInicioParada(null);
-        file = null;
         setAtividade(null);
         funcionariosAtivos = montaListaFuncionarios();
         etapasAtivas = montaListaEtapas();
         montaListaTiposEvento();
+        fotosAux = new ArrayList<OrdemServicoFoto>();
+        
     }
 
     public void prepararEvento() {
@@ -255,10 +288,29 @@ public final class OrdemServicoController implements Serializable {
     }
 
     public void adicionarEvento(ActionEvent event) {
+        if (getTipoEvento() == TipoEvento.InterrupcaoAtividade
+                && current.getDataEntrada().after(getDataInicioParada())) {
+            JsfUtil.addErrorMessage(null, "A data da interrupção da atividade deve ser maior que a data de início da atividade.");
+            return;
+        }
+        if (getTipoEvento() == TipoEvento.ReinicioAtividade) {
+            Date dataInterrupcao = null;
+            for (OrdemServicoEvento item : current.getEventos()) {
+                if (item.getTipoEvento() == TipoEvento.InterrupcaoAtividade) {
+                    dataInterrupcao = item.getDataInicioParada();
+                    break;
+                }
+            }
+            if (dataInterrupcao != null && dataInterrupcao.after(getDataInicioParada())) {
+                JsfUtil.addErrorMessage(null, "A data de reinício da atividade deve ser maior que a data de interrupção.");
+                return;
+            }
+        }
         try {
             Session sessao = HibernateFactory.currentSession();
-            ejbFacade.incluirEvento(sessao, current, LoginFilter.usuarioLogado(sessao), getTipoEvento(), getDescEvento(), getDataInicioParada());
+            ejbFacade.incluirEvento(sessao, current, LoginFilter.usuarioLogado(sessao), getTipoEvento(), getDescEvento(), getDataInicioParada(), fotosAux);
             JsfUtil.addSuccessMessage("Evento incluído com sucesso!");
+            fotosAux = new ArrayList<OrdemServicoFoto>();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Erro ao salvar o evento.");
         } finally {
@@ -267,15 +319,25 @@ public final class OrdemServicoController implements Serializable {
     }
 
     public void handleFileUpload(FileUploadEvent event) {
-        file = event.getFile();
+        try {
+            // imagem = new DefaultStreamedContent(event.getFile().getInputstream());
+            OrdemServicoFoto foto = new OrdemServicoFoto();
+            foto.setEtapa(current);
+            foto.setNomeArquivo(event.getFile().getFileName());
+            foto.setOrdemServico(current.getOrdemServico());
+            foto.setImagem(event.getFile().getContents());
+            fotosAux.add(foto);
+        } catch (Exception ex) {
+            Logger.getLogger(OrdemServicoController.class.getName()).log(Level.SEVERE, null, ex);
+            JsfUtil.addErrorMessage(ex, "Erro ao fazer upload da foto. Tente novamente");
+        }
     }
 
     public List<Etapa> montaListaEtapas() {
         List<Etapa> resultado = new ArrayList<Etapa>();
         try {
             Session sessao = HibernateFactory.currentSession();
-            EtapaFacade ebj = new EtapaFacade();
-            resultado = ebj.selecionarTodosAtivos(sessao);
+            resultado = etapaFacade.selecionarTodosAtivos(sessao);
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de etapas. ");
         } finally {
@@ -289,7 +351,7 @@ public final class OrdemServicoController implements Serializable {
             return;
         }
         try {
-            OrdemServico resultado = null;
+            OrdemServico resultado;
             Session sessao = HibernateFactory.currentSession();
             resultado = ejbFacade.ObterOrdemServicoPorPlaca(sessao, placa);
             if (resultado != null) {
@@ -311,8 +373,7 @@ public final class OrdemServicoController implements Serializable {
         List<Funcionario> resultado = new ArrayList<Funcionario>();
         try {
             Session sessao = HibernateFactory.currentSession();
-            FuncionarioFacade ebj = new FuncionarioFacade();
-            resultado = ebj.selecionarTodosAtivos(sessao);
+            resultado = funcionarioFacade.selecionarTodosAtivos(sessao);
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de funcionarios. ");
         } finally {
@@ -325,4 +386,34 @@ public final class OrdemServicoController implements Serializable {
         tiposEvento = new ArrayList<TipoEvento>();
         tiposEvento.add(TipoEvento.Informacao);
     }
+
+    private void criaArquivo(byte[] bytes, String arquivo) {
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(arquivo);
+            fos.write(bytes);
+            fos.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(OrdemServicoController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(OrdemServicoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void changeTipoFoto() {
+        try {
+            setFotos(evento.getFotos());
+            for (OrdemServicoFoto f : getFotos()) {
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                ServletContext scontext = (ServletContext) facesContext.getExternalContext().getContext();
+                String nomeArquivo = f.getId().toString() + ".jpg";
+                String arquivo = scontext.getRealPath("/fotos/" + nomeArquivo);
+                criaArquivo(f.getImagem(), arquivo);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(OrdemServicoController.class.getName()).log(Level.SEVERE, null, ex);
+            JsfUtil.addErrorMessage(ex, "Erro ao carregar as fotos. Tente novamente");
+        }
+    }
+
 }

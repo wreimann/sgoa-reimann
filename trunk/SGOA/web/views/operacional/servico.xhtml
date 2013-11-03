@@ -20,11 +20,11 @@
         <h:form id="frmCadastro" prependId="false" > 
             <script type="text/javascript">
                 jQuery(function($) {
-                      $("#DataEntrada_input").mask("99/99/9999 99:99");
-                      $("#DataSaida_input").mask("99/99/9999 99:99");
+                    $("#DataEntrada_input").mask("99/99/9999 99:99");
+                    $("#DataSaida_input").mask("99/99/9999 99:99");
                 });
- 
-               
+
+
             </script>
             <p:focus context="frmCadastro" />
             <h:panelGrid>
@@ -219,11 +219,30 @@
                                     timeZone="America/Sao_Paulo" />
                     </p:fieldset>
                 </h:panelGrid>
-                <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}" 
-                              showButtons="false" label="Adicionar fotos" auto="true" 
-                              sizeLimit="3000000" allowTypes="/(\.|\/)(pdf|doc?x)$/"
-                              update=":frmEvento" 
-                              dragDropSupport="false" mode="advanced"  />
+<!--                <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}" 
+                              showButtons="false" label="Adicionar fotos" auto="false" 
+                              sizeLimit="3000000" allowTypes="/(\.|\/)(jpg|png)$/"
+                              update=":frmEvento"  immediate="true" 
+                              dragDropSupport="false" mode="advanced"  />-->
+
+                <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"
+                              update=":frmEvento"
+                              cancelLabel="Cancelar"
+                              sizeLimit="100000"
+                              label="dicionar fotos"
+                              invalidFileMessage="Tipo de imagem inválido"
+                              invalidSizeMessage="Imagem muito grande"
+                              uploadLabel="Enviar"
+                              allowTypes="/(\.|\/)(jpe?g)$/"/>
+<!--                <p:outputPanel id="dadosFoto">
+                    <h:panelGrid>
+                        <p:graphicImage cache="false" id="imagemTmp" value="#{ordemServicoController.imagem}" height="300" style="margin: 0 auto;"/>
+                        <h:outputText value="Descrição"/>
+                        <p:inputText value="#{ordemServicoController.foto.descricao}" size="49"/>
+                        <h:outputText value="Ordem"/>
+                        <p:inputMask mask="9" value="#{ordemServicoController.foto.ordem}" size="5"/>
+                    </h:panelGrid>
+                </p:outputPanel>-->
 
                 <p:fieldset>
                     <label>Descrição*</label>
@@ -269,13 +288,33 @@
                         </h:outputText>
                     </p:column>
                     <p:column headerText="Fotos" width="60">
-                        <p:commandButton alt="Fotos" title="Fotos" icon="ui-icon-search"/>
+                        <p:commandButton alt="Fotos" title="Fotos" icon="ui-icon-search" 
+                                         oncomplete="dialogGaleria.show();"
+                                         action="#{ordemServicoController.changeFoto}">
+                            <f:setPropertyActionListener value="#{evento}" target="#{ordemServicoController.evento}" /> 
+                        </p:commandButton>
                     </p:column>
                 </p:dataTable>
                 <h:panelGroup layout="block" style="margin-top: 15px; float: right;" >
-                    <p:commandButton value="Sair" oncomplete="modalHistoricoPopup.hide()" />
+                    <p:commandButton value="Sair" oncomplete="modalHistoricoPopup.hide()"
+                                     immediate="true"/>
                 </h:panelGroup>
             </h:form>
+        </p:dialog>
+        <p:dialog id="dialogGaleria" widgetVar="dialogGaleria" modal="true" position="top"
+                  minWidth="440" minHeight="500">
+            <h:outputText value="Nenhuma foto encontrada" rendered="#{ordemServicoController.fotos.size()==0}"/>
+            <p:galleria value="#{ordemServicoController.fotos}"
+                        var="galeria" effect="slide" effectSpeed="2000"
+                        panelHeight="300" panelWidth="400"
+                        frameHeight="50" frameWidth="50" >
+                <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300"
+                                title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"/>
+
+            </p:galleria>
+            <h:panelGroup layout="block" style="margin-top: 15px; float: right;" >
+                <p:commandButton value="Sair" oncomplete="dialogGaleria.hide()" immediate="true" />
+            </h:panelGroup>
         </p:dialog>
     </ui:define>
 
