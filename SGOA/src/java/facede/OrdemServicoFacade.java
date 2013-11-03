@@ -3,6 +3,7 @@ package facede;
 import facede.base.BaseFacade;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import model.Funcionario;
 import model.OrdemServico;
 import model.OrdemServicoEtapa;
 import model.OrdemServicoEvento;
+import model.OrdemServicoFoto;
 import model.TipoEvento;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -36,7 +38,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
     }
 
     public void incluirEvento(Session sessao, OrdemServicoEtapa etapa, Funcionario funcionario,
-            TipoEvento tipo, String descricao, Date dataInicioParada) throws Exception {
+            TipoEvento tipo, String descricao, Date dataInicioParada, List<OrdemServicoFoto> fotos) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
@@ -46,7 +48,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             etapa.getEventos().add(0,evento);
             evento.setDescricao(descricao);
             evento.setDataInicioParada(dataInicioParada);
-            //evento.setFotos(null);
+            evento.setFotos(fotos);
             sessao.update(etapa);
             HibernateFactory.commitTransaction();
         } catch (Exception e) {
