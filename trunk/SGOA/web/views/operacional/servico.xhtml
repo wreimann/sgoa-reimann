@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 template="./../../template/form.xhtml"
                 xmlns:p="http://primefaces.org/ui"
@@ -195,7 +196,7 @@
             </h:panelGroup>
         </h:form>
 
-        <p:dialog  widgetVar="modalPopup" modal="true" width="580" height="350" resizable="false"
+        <p:dialog  widgetVar="modalPopup" modal="true" width="580" height="440" resizable="false"
                    showEffect="fade" header="Cadastro de Eventos" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmEvento" prependId="false" enctype="multipart/form-data">
@@ -219,37 +220,17 @@
                                     timeZone="America/Sao_Paulo" />
                     </p:fieldset>
                 </h:panelGrid>
-<!--                <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}" 
-                              showButtons="false" label="Adicionar fotos" auto="false" 
-                              sizeLimit="3000000" allowTypes="/(\.|\/)(jpg|png)$/"
-                              update=":frmEvento"  immediate="true" 
-                              dragDropSupport="false" mode="advanced"  />-->
-
-                <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"
-                              update=":frmEvento"
-                              cancelLabel="Cancelar"
-                              sizeLimit="100000"
-                              label="dicionar fotos"
-                              invalidFileMessage="Tipo de imagem inválido"
-                              invalidSizeMessage="Imagem muito grande"
-                              uploadLabel="Enviar"
-                              allowTypes="/(\.|\/)(jpe?g)$/"/>
-<!--                <p:outputPanel id="dadosFoto">
-                    <h:panelGrid>
-                        <p:graphicImage cache="false" id="imagemTmp" value="#{ordemServicoController.imagem}" height="300" style="margin: 0 auto;"/>
-                        <h:outputText value="Descrição"/>
-                        <p:inputText value="#{ordemServicoController.foto.descricao}" size="49"/>
-                        <h:outputText value="Ordem"/>
-                        <p:inputMask mask="9" value="#{ordemServicoController.foto.ordem}" size="5"/>
-                    </h:panelGrid>
-                </p:outputPanel>-->
-
                 <p:fieldset>
                     <label>Descrição*</label>
                     <p:inputTextarea value="#{ordemServicoController.descEvento}" required="true"
                                      requiredMessage="O campo 'Descrição' é obrigatório."/>
                 </p:fieldset>
-
+                <p:fieldset>
+                    <label style="width: 100%;">Adicionar Fotos</label>
+                    <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"  mode="simple" label="Foto 1" style="width: 300px;" />
+                    <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"  mode="simple" label="Procurar" style="width: 300px;" />
+                    <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"  mode="simple" label="Procurar" style="width: 300px;" />
+                </p:fieldset>
                 <h:panelGroup layout="block" style="margin-top: 10px; float: right;" >
                     <p:commandButton id="btnSalvarEvento"
                                      actionListener="#{ordemServicoController.adicionarEvento}"
@@ -258,7 +239,7 @@
                 </h:panelGroup>
             </h:form>
         </p:dialog>
-        <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="700" height="340" resizable="false"
+        <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="750" height="340" resizable="false"
                    showEffect="fade" header="Histórico de Eventos" id="dialogHistorico" >
             <h:form id="frmHistoricoEvento" prependId="false">
                 <p:dataTable var="evento" value="#{ordemServicoController.eventos}" lazy="false"
@@ -268,12 +249,12 @@
                              rows="5" sortBy="dataOcorrencia" paginator="true"
                              currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
-                    <p:column headerText="Ocorrência" width="140">
+                    <p:column headerText="Ocorrência" width="130">
                         <h:outputText value="#{evento.dataOcorrencia}" >
                             <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                         </h:outputText>
                     </p:column>
-                    <p:column headerText="Funcionário" width="150">
+                    <p:column headerText="Funcionário">
                         <h:outputText value="#{evento.funcionario}" />
                     </p:column>
                     <p:column headerText="Evento" width="100">
@@ -282,39 +263,38 @@
                     <p:column headerText="Descrição">
                         <h:outputText value="#{evento.descricao}" />
                     </p:column>
-                    <p:column headerText="Data" width="140">
+                    <p:column headerText="Data" width="130">
                         <h:outputText value="#{evento.dataInicioParada}">
                             <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                         </h:outputText>
                     </p:column>
-                    <p:column headerText="Fotos" width="60">
+                    <p:column headerText="Fotos">
                         <p:commandButton alt="Fotos" title="Fotos" icon="ui-icon-search" 
-                                         oncomplete="dialogGaleria.show();"
+                                         oncomplete="dialogGaleria.show();" 
+                                         update=":frmGaleria"
                                          action="#{ordemServicoController.changeFoto}">
                             <f:setPropertyActionListener value="#{evento}" target="#{ordemServicoController.evento}" /> 
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
-                <h:panelGroup layout="block" style="margin-top: 15px; float: right;" >
-                    <p:commandButton value="Sair" oncomplete="modalHistoricoPopup.hide()"
-                                     immediate="true"/>
-                </h:panelGroup>
+
             </h:form>
         </p:dialog>
-        <p:dialog id="dialogGaleria" widgetVar="dialogGaleria" modal="true" position="top"
-                  minWidth="440" minHeight="500">
-            <h:outputText value="Nenhuma foto encontrada" rendered="#{ordemServicoController.fotos.size()==0}"/>
-            <p:galleria value="#{ordemServicoController.fotos}"
-                        var="galeria" effect="slide" effectSpeed="2000"
-                        panelHeight="300" panelWidth="400"
-                        frameHeight="50" frameWidth="50" >
-                <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300"
-                                title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"/>
+        <p:dialog widgetVar="dialogGaleria" modal="true" id="dGaleria"
+                  width="440" height="400" dynamic="true" position="center" resizable="false" appendToBody="false"
+                  onShow="PrimeFaces.cw('Galleria','galeriaModal',{id:'galeriaModal',transitionInterval:0,panelWidth:400,panelHeight:300,custom:false},'galleria');">
+            <h:form id="frmGaleria" prependId="false"  >
+                <h:outputText value="Nenhuma foto encontrada" rendered="#{ordemServicoController.fotos.size()==0}"/>
+                <p:galleria value="#{ordemServicoController.fotos}" id="galeriaModal"
+                            var="galeria" effect="slide" effectSpeed="2000" showCaption="false" 
+                            showFilmstrip="true"  transitionInterval="0"  
+                            panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50">
+                    <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300"
+                                    title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"  />
 
-            </p:galleria>
-            <h:panelGroup layout="block" style="margin-top: 15px; float: right;" >
-                <p:commandButton value="Sair" oncomplete="dialogGaleria.hide()" immediate="true" />
-            </h:panelGroup>
+                </p:galleria>
+            </h:form>
+
         </p:dialog>
     </ui:define>
 

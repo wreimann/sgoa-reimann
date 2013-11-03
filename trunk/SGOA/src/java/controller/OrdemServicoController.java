@@ -26,6 +26,7 @@ import model.OrdemServicoEtapa;
 import model.OrdemServicoEvento;
 import model.OrdemServicoFoto;
 import model.TipoEvento;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -44,7 +45,6 @@ public final class OrdemServicoController implements Serializable {
     private EtapaFacade etapaFacade;
     @EJB
     private OrdemServicoFacade ejbFacade;
-
     private OrdemServicoEtapa current;
     private List<OrdemServicoEtapa> atividades;
     private TipoEvento tipoEvento;
@@ -267,7 +267,7 @@ public final class OrdemServicoController implements Serializable {
         etapasAtivas = montaListaEtapas();
         montaListaTiposEvento();
         fotosAux = new ArrayList<OrdemServicoFoto>();
-        
+
     }
 
     public void prepararEvento() {
@@ -322,9 +322,7 @@ public final class OrdemServicoController implements Serializable {
         try {
             // imagem = new DefaultStreamedContent(event.getFile().getInputstream());
             OrdemServicoFoto foto = new OrdemServicoFoto();
-            foto.setEtapa(current);
             foto.setNomeArquivo(event.getFile().getFileName());
-            foto.setOrdemServico(current.getOrdemServico());
             foto.setImagem(event.getFile().getContents());
             fotosAux.add(foto);
         } catch (Exception ex) {
@@ -400,8 +398,11 @@ public final class OrdemServicoController implements Serializable {
         }
     }
 
-    public void changeTipoFoto() {
+    public void changeFoto() {
         try {
+            Session sessao = HibernateFactory.currentSession();
+            evento = ejbFacade.obterEvento(sessao, evento.getId());
+            Hibernate.initialize(evento.getFotos());
             setFotos(evento.getFotos());
             for (OrdemServicoFoto f : getFotos()) {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -413,7 +414,8 @@ public final class OrdemServicoController implements Serializable {
         } catch (Exception ex) {
             Logger.getLogger(OrdemServicoController.class.getName()).log(Level.SEVERE, null, ex);
             JsfUtil.addErrorMessage(ex, "Erro ao carregar as fotos. Tente novamente");
+        } finally {
+            HibernateFactory.closeSession();
         }
     }
-
 }

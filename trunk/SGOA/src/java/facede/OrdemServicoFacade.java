@@ -48,8 +48,11 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             etapa.getEventos().add(0,evento);
             evento.setDescricao(descricao);
             evento.setDataInicioParada(dataInicioParada);
+            for (int i = 0; i < fotos.size(); i++) {
+                fotos.get(i).setEvento(evento);
+            }
             evento.setFotos(fotos);
-            sessao.update(etapa);
+            sessao.saveOrUpdate(etapa);
             HibernateFactory.commitTransaction();
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
@@ -193,5 +196,13 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         }
         return resultado;
 
+    }
+    
+     public OrdemServicoEvento obterEvento(Session sessao, int id) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        OrdemServicoEvento entidade = (OrdemServicoEvento) sessao.get(OrdemServicoEvento.class, id);
+        return entidade;
     }
 }

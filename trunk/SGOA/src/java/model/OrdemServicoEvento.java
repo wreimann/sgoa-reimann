@@ -84,7 +84,7 @@ public class OrdemServicoEvento extends BaseEntidadeDescricao<OrdemServicoEvento
     }
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "idordemservicoetapa")
+    @JoinColumn(name = "idordemservicoevento")
     private List<OrdemServicoFoto> fotos;
 
     public List<OrdemServicoFoto> getFotos() {
