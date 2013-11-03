@@ -13,28 +13,16 @@ import model.Base.BaseEntidade;
 @Table(name = "ordemservico_foto")
 public class OrdemServicoFoto extends BaseEntidade<OrdemServicoFoto> {
 
-    @JoinColumn(name = "idordemservico")
+    @JoinColumn(name = "idordemservicoevento")
     @ManyToOne(optional = false)
-    private OrdemServico ordemServico;
+    private OrdemServicoEvento evento;
 
-    public OrdemServico getOrdemServico() {
-        return ordemServico;
+    public OrdemServicoEvento getEvento() {
+        return evento;
     }
 
-    public void setOrdemServico(OrdemServico ordemServico) {
-        this.ordemServico = ordemServico;
-    }
-    
-    @JoinColumn(name = "idordemservicoetapa")
-    @ManyToOne(optional = false)
-    private OrdemServicoEtapa etapa;
-
-    public OrdemServicoEtapa getEtapa() {
-        return etapa;
-    }
-
-    public void setEtapa(OrdemServicoEtapa etapa) {
-        this.etapa = etapa;
+    public void setEvento(OrdemServicoEvento evento) {
+        this.evento = evento;
     }
    
     @Basic(optional = false)
