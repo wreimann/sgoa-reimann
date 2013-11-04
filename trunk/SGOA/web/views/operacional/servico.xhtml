@@ -117,8 +117,8 @@
                     </p:fieldset>
                 </h:panelGrid>
 
-                <h:panelGrid columns="2">
-                    <p:fieldset id="ProximaEtapaField" style="width: 350px;">
+                <h:panelGrid columns="1">
+                    <p:fieldset id="ProximaEtapaField" style="width: 350px; margin-right: 19px;">
                         <label id="ProximaEtapaLabel">Próxima Atividade*</label>
                         <h:selectOneMenu id="ProximaEtapaListBox" 
                                          value="#{ordemServicoController.proximaEtapa}" 
@@ -127,10 +127,18 @@
                             <f:selectItems value="#{ordemServicoController.etapasAtivas}" var="etapa"
                                            itemLabel="#{etapa}" itemValue="#{etapa}"/>
                         </h:selectOneMenu>
-                    </p:fieldset>
-                    <h:selectBooleanCheckbox title="Início imediato?" 
-                                             value="#{ordemServicoController.inicioImediato}">Início imediato?
-                    </h:selectBooleanCheckbox>
+                        <h:selectBooleanCheckbox style="margin-left: 10px; margin-top: 10px;"  
+                                                 value="#{ordemServicoController.inicioImediato}">
+                            <p:ajax event="change" update="ProximaEtapaField,:ajaxStatusMaster"/>
+                        </h:selectBooleanCheckbox><b>Início imediato?</b>
+                        <h:outputLabel style="width: 100%; margin-top: 10px;" value="Funcionário" rendered="#{ordemServicoController.inicioImediato}" /> 
+                        <h:selectOneMenu value="#{ordemServicoController.funcProximaEtapa}" 
+                                         converter="funcionarioConverter" rendered="#{ordemServicoController.inicioImediato}">
+                            <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                            <f:selectItems value="#{ordemServicoController.funcionariosAtivos}" var="funcionario"
+                                           itemLabel="#{funcionario}" itemValue="#{funcionario}"/>
+                        </h:selectOneMenu>
+                    </p:fieldset>    
                 </h:panelGrid>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px;" >
                     <p:commandButton id="btnSalvar" actionListener="#{ordemServicoController.atualizar}"
@@ -156,7 +164,7 @@
                                 <h:outputLabel value="Histórico de Atividades" styleClass="tabs_involved" />                               
                             </div>
                         </f:facet>
-                        <p:column headerText="Data Entrada" width="70">
+                        <p:column headerText="Data Entrada" width="125">
                             <h:outputText value="#{atividade.dataEntrada}" >
                                 <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                             </h:outputText>
@@ -164,7 +172,7 @@
                         <p:column headerText="Atividade">
                             <h:outputText value="#{atividade.etapa}" />
                         </p:column>
-                        <p:column headerText="Data Saída" width="70">
+                        <p:column headerText="Data Saída" width="125">
                             <h:outputText value="#{atividade.dataSaida}">
                                 <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                             </h:outputText>
@@ -196,7 +204,7 @@
             </h:panelGroup>
         </h:form>
 
-        <p:dialog  widgetVar="modalPopup" modal="true" width="580" height="440" resizable="false"
+        <p:dialog  widgetVar="modalPopup" modal="true" width="630" height="480" resizable="false"
                    showEffect="fade" header="Cadastro de Eventos" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmEvento" prependId="false" enctype="multipart/form-data">
@@ -225,12 +233,17 @@
                     <p:inputTextarea value="#{ordemServicoController.descEvento}" required="true"
                                      requiredMessage="O campo 'Descrição' é obrigatório."/>
                 </p:fieldset>
-                <p:fieldset>
-                    <label style="width: 100%;">Adicionar Fotos</label>
-                    <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"  mode="simple" label="Foto 1" style="width: 300px;" />
-                    <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"  mode="simple" label="Procurar" style="width: 300px;" />
-                    <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"  mode="simple" label="Procurar" style="width: 300px;" />
-                </p:fieldset>
+                <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"
+                              cancelLabel="Cancelar"
+                              sizeLimit="100000"
+                              label="Adicionar fotos"
+                              invalidFileMessage="Tipo de imagem inválido"
+                              invalidSizeMessage="Imagem muito grande"
+                              uploadLabel="Enviar"
+                              allowTypes="/(\.|\/)(jpe?g)$/"
+                              dragDropSupport="false" fileLimit="3"
+                              mode="advanced" multiple="true" />
+
                 <h:panelGroup layout="block" style="margin-top: 10px; float: right;" >
                     <p:commandButton id="btnSalvarEvento"
                                      actionListener="#{ordemServicoController.adicionarEvento}"
@@ -246,10 +259,10 @@
                              widgetVar="dataTableEventos" rowIndexVar="rowIx"
                              paginatorPosition="bottom"  
                              emptyMessage="Nenhum resultado encontrado."                   
-                             rows="5" sortBy="dataOcorrencia" paginator="true"
+                             rows="6" paginator="true"
                              currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
-                    <p:column headerText="Ocorrência" width="130">
+                    <p:column headerText="Ocorrência" width="125">
                         <h:outputText value="#{evento.dataOcorrencia}" >
                             <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                         </h:outputText>
@@ -263,7 +276,7 @@
                     <p:column headerText="Descrição">
                         <h:outputText value="#{evento.descricao}" />
                     </p:column>
-                    <p:column headerText="Data" width="130">
+                    <p:column headerText="Data" width="125">
                         <h:outputText value="#{evento.dataInicioParada}">
                             <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                         </h:outputText>
@@ -281,15 +294,15 @@
             </h:form>
         </p:dialog>
         <p:dialog widgetVar="dialogGaleria" modal="true" id="dGaleria"
-                  width="440" height="400" dynamic="true" position="center" resizable="false" appendToBody="false"
-                  onShow="PrimeFaces.cw('Galleria','galeriaModal',{id:'galeriaModal',transitionInterval:0,panelWidth:400,panelHeight:300,custom:false},'galleria');">
+                  width="440" height="400" dynamic="true" position="center" resizable="false" appendToBody="false">
             <h:form id="frmGaleria" prependId="false"  >
-                <h:outputText value="Nenhuma foto encontrada" rendered="#{ordemServicoController.fotos.size()==0}"/>
+                <b><h:outputText value="Nenhuma foto adicionada." rendered="#{ordemServicoController.fotos.size()==0}"/></b>
                 <p:galleria value="#{ordemServicoController.fotos}" id="galeriaModal"
                             var="galeria" effect="slide" effectSpeed="2000" showCaption="false" 
-                            showFilmstrip="true"  transitionInterval="0"  
-                            panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50">
-                    <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300"
+                            showFilmstrip="true"  
+                            panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
+                            rendered="#{ordemServicoController.fotos.size()>0}">
+                    <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 
                                     title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"  />
 
                 </p:galleria>

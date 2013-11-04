@@ -29,9 +29,6 @@ import model.TipoEvento;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
 import util.HibernateFactory;
 import util.JsfUtil;
 
@@ -39,10 +36,6 @@ import util.JsfUtil;
 @ViewScoped
 public final class OrdemServicoController implements Serializable {
 
-    @EJB
-    private FuncionarioFacade funcionarioFacade;
-    @EJB
-    private EtapaFacade etapaFacade;
     @EJB
     private OrdemServicoFacade ejbFacade;
     private OrdemServicoEtapa current;
@@ -335,6 +328,7 @@ public final class OrdemServicoController implements Serializable {
         List<Etapa> resultado = new ArrayList<Etapa>();
         try {
             Session sessao = HibernateFactory.currentSession();
+            EtapaFacade etapaFacade = new EtapaFacade();
             resultado = etapaFacade.selecionarTodosAtivos(sessao);
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de etapas. ");
@@ -371,6 +365,7 @@ public final class OrdemServicoController implements Serializable {
         List<Funcionario> resultado = new ArrayList<Funcionario>();
         try {
             Session sessao = HibernateFactory.currentSession();
+            FuncionarioFacade funcionarioFacade = new FuncionarioFacade();
             resultado = funcionarioFacade.selecionarTodosAtivos(sessao);
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de funcionarios. ");
@@ -418,4 +413,5 @@ public final class OrdemServicoController implements Serializable {
             HibernateFactory.closeSession();
         }
     }
+
 }
