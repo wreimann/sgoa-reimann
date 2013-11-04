@@ -52,6 +52,12 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
                 fotos.get(i).setEvento(evento);
             }
             evento.setFotos(fotos);
+            if(tipo == TipoEvento.InterrupcaoAtividade){
+              etapa.setSituacao('P');
+            }
+            if(tipo == TipoEvento.ReinicioAtividade){
+              etapa.setSituacao('E');
+            }
             sessao.saveOrUpdate(etapa);
             HibernateFactory.commitTransaction();
         } catch (Exception e) {

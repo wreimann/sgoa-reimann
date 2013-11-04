@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import model.Base.BaseEntidadeDescricao;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "ordemservico_evento")
@@ -23,6 +24,7 @@ public class OrdemServicoEvento extends BaseEntidadeDescricao<OrdemServicoEvento
 
     @JoinColumn(name = "idordemservicoetapa")
     @ManyToOne(optional = false)
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private OrdemServicoEtapa etapa;
 
     public OrdemServicoEtapa getEtapa() {
