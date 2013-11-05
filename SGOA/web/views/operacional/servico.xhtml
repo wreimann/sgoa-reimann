@@ -18,6 +18,7 @@
 
     <ui:define name="Conteudo">
         <p:messages id="messages" autoUpdate="true" closable="true" />
+        <p:growl id="growl2"  sticky="false" autoUpdate="true"  showSummary="true"/>
         <h:form id="frmCadastro" prependId="false" > 
             <script type="text/javascript">
                 jQuery(function($) {
@@ -73,7 +74,7 @@
                         </h:selectOneMenu>
                     </p:fieldset> 
                     <p:commandButton id="btnEvento" value="Eventos" title="Adicionar Eventos"
-                                     icon="ui-icon-circle-plus" oncomplete="modalPopup.show()"
+                                     icon="ui-icon-circle-plus" oncomplete="modalPopup.show()" immediate="true"
                                      update=":frmEvento" action="#{ordemServicoController.changeTipoEvento}"/>
 
                 </h:panelGrid>
@@ -129,15 +130,17 @@
                         </h:selectOneMenu>
                         <h:selectBooleanCheckbox style="margin-left: 10px; margin-top: 10px;"  
                                                  value="#{ordemServicoController.inicioImediato}">
-                            <p:ajax event="change" update="ProximaEtapaField,:ajaxStatusMaster"/>
+                            <p:ajax event="change" update="FuncProximaEtapaPainel,:ajaxStatusMaster"/>
                         </h:selectBooleanCheckbox><b>Início imediato?</b>
-                        <h:outputLabel style="width: 100%; margin-top: 10px;" value="Funcionário" rendered="#{ordemServicoController.inicioImediato}" /> 
-                        <h:selectOneMenu value="#{ordemServicoController.funcProximaEtapa}" 
-                                         converter="funcionarioConverter" rendered="#{ordemServicoController.inicioImediato}">
-                            <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                            <f:selectItems value="#{ordemServicoController.funcionariosAtivos}" var="funcionario"
-                                           itemLabel="#{funcionario}" itemValue="#{funcionario}"/>
-                        </h:selectOneMenu>
+                        <h:panelGroup id="FuncProximaEtapaPainel">
+                            <h:outputLabel style="width: 100%; margin-top: 10px;" value="Funcionário" rendered="#{ordemServicoController.inicioImediato}" /> 
+                            <h:selectOneMenu value="#{ordemServicoController.funcProximaEtapa}" 
+                                             converter="funcionarioConverter" rendered="#{ordemServicoController.inicioImediato}">
+                                <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                                <f:selectItems value="#{ordemServicoController.funcionariosAtivos}" var="funcionario"
+                                               itemLabel="#{funcionario}" itemValue="#{funcionario}"/>
+                            </h:selectOneMenu>
+                        </h:panelGroup>
                     </p:fieldset>    
                 </h:panelGrid>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px;" >
@@ -156,7 +159,7 @@
                                  widgetVar="dataTableAtividade" rowIndexVar="rowIx"
                                  paginatorPosition="bottom"  
                                  emptyMessage="Nenhum resultado encontrado."                   
-                                 rows="10"
+                                 rows="10" sortBy="dataEntrada" sortOrder="descending"
                                  currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
                         <f:facet name="header">
@@ -193,7 +196,7 @@
                         </p:column>
                         <p:column headerText="Eventos" width="60">
                             <p:commandButton alt="Eventos" title="Eventos" icon="ui-icon-search"
-                                             oncomplete="modalHistoricoPopup.show()" 
+                                             oncomplete="modalHistoricoPopup.show()" immediate="true"
                                              action="#{ordemServicoController.prepararEvento}"
                                              update=":frmHistoricoEvento">
                                 <f:setPropertyActionListener value="#{atividade}" target="#{ordemServicoController.atividade}" />
@@ -247,7 +250,7 @@
                 <h:panelGroup layout="block" style="margin-top: 10px; float: right;" >
                     <p:commandButton id="btnSalvarEvento"
                                      actionListener="#{ordemServicoController.adicionarEvento}"
-                                     update=":frmEvento" value="Salvar" oncomplete="validarFormDialog(xhr, status, args)" />
+                                     update=":frmEvento, :frmCadastro" value="Salvar" oncomplete="validarFormDialog(xhr, status, args)" />
                     <p:commandButton value="Sair" oncomplete="modalPopup.hide()" immediate="true" />
                 </h:panelGroup>
             </h:form>
@@ -294,9 +297,15 @@
             </h:form>
         </p:dialog>
         <p:dialog widgetVar="dialogGaleria" modal="true" id="dGaleria"
-                  width="440" height="400" dynamic="true" position="center" resizable="false" appendToBody="false">
+                  width="440" height="390" dynamic="true" position="center" resizable="false" appendToBody="false"
+                  header="Fotos">
             <h:form id="frmGaleria" prependId="false"  >
-                <b><h:outputText value="Nenhuma foto adicionada." rendered="#{ordemServicoController.fotos.size()==0}"/></b>
+                <h:panelGroup rendered="#{ordemServicoController.fotos.size()==0}" layout="block" style="margin-top: 20px;">
+                    <div class="ui-messages-warn ui-corner-all" style="padding-bottom: 0px; padding-top: 0px; ">
+                        <span class="ui-messages-warn-icon" style="margin-right: 10px; margin-top: 10px;" ></span>
+                        <p>Nenhuma foto encontrada.</p>
+                    </div>
+                </h:panelGroup>
                 <p:galleria value="#{ordemServicoController.fotos}" id="galeriaModal"
                             var="galeria" effect="slide" effectSpeed="2000" showCaption="false" 
                             showFilmstrip="true"  

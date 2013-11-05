@@ -45,18 +45,18 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         try {
             HibernateFactory.beginTransaction();
             OrdemServicoEvento evento = adicionarEvento(etapa, funcionario, tipo);
-            etapa.getEventos().add(0,evento);
+            etapa.getEventos().add(0, evento);
             evento.setDescricao(descricao);
             evento.setDataInicioParada(dataInicioParada);
             for (int i = 0; i < fotos.size(); i++) {
                 fotos.get(i).setEvento(evento);
             }
             evento.setFotos(fotos);
-            if(tipo == TipoEvento.InterrupcaoAtividade){
-              etapa.setSituacao('P');
+            if (tipo == TipoEvento.InterrupcaoAtividade) {
+                etapa.setSituacao('P');
             }
-            if(tipo == TipoEvento.ReinicioAtividade){
-              etapa.setSituacao('E');
+            if (tipo == TipoEvento.ReinicioAtividade) {
+                etapa.setSituacao('E');
             }
             sessao.saveOrUpdate(etapa);
             HibernateFactory.commitTransaction();
@@ -90,7 +90,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
     }
 
     private OrdemServicoEtapa adicionarAtividade(Funcionario funcExecutor, OrdemServico os,
-            Etapa tarefa, boolean inicioImediato, Funcionario funcProximaEtapa) {
+            Etapa tarefa, boolean inicioImediato, Funcionario funcProximaEtapa, Date dataEntrada) {
         Calendar cal = Calendar.getInstance();
         Date dataAtual = new Date();
         cal.setTime(dataAtual);
@@ -100,9 +100,9 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         etapa.setOrdemServico(os);
         os.setEtapaAtual(etapa);
         if (inicioImediato) {
-            etapa.setDataEntrada(cal.getTime());
+            etapa.setDataEntrada(dataEntrada);
             etapa.setFuncionario(funcProximaEtapa);
-            etapa.getEventos().add(adicionarEvento(etapa, funcExecutor, TipoEvento.InicioAtividade));
+            etapa.getEventos().add(0, adicionarEvento(etapa, funcExecutor, TipoEvento.InicioAtividade));
             etapa.setSituacao('E'); // em execuçao
         } else {
             etapa.setSituacao('F'); //fila de espera
@@ -127,13 +127,16 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             ConfigOrdemServicoFacade ebjConfig = new ConfigOrdemServicoFacade();
             ConfigOrdemServico config = ebjConfig.obterPorId(sessao, 1);
             OrdemServicoEtapa etapa = null;
+            Calendar dataProximaAtiv = Calendar.getInstance();
+            dataProximaAtiv.setTime(cal.getTime());
+            dataProximaAtiv.add(Calendar.MINUTE, 1);
             if (item.getOrcamento().getSeguradora() != null) {
-                etapa = adicionarAtividade(item.getFuncionarioAprovacao(), item, config.getEtapaInicialSeguradora(), true, null);
+                etapa = adicionarAtividade(item.getFuncionarioAprovacao(), item, config.getEtapaInicialSeguradora(), true, null, dataProximaAtiv.getTime());
             } else {
-                etapa = adicionarAtividade(item.getFuncionarioAprovacao(), item, config.getEtapaInicial(), false, null);
+                etapa = adicionarAtividade(item.getFuncionarioAprovacao(), item, config.getEtapaInicial(), false, null, null);
             }
             item.setEtapaAtual(etapa);
-            item.getEtapas().add(etapa);
+            item.getEtapas().add(0, etapa);
             sessao.save(item);
             HibernateFactory.commitTransaction();
         } catch (Exception e) {
@@ -151,18 +154,21 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         try {
             HibernateFactory.beginTransaction();
             if (item.getSituacao() == 'F') { // Fila de Espera
-                item.getEventos().add(adicionarEvento(item, funcExecutor, TipoEvento.InicioAtividade));
+                item.getEventos().add(0, adicionarEvento(item, funcExecutor, TipoEvento.InicioAtividade));
                 item.setSituacao('E'); //Em execução
             }
             if (item.getDataSaida() != null) {
-                item.getEventos().add(adicionarEvento(item, funcExecutor, TipoEvento.FimAtividade));
+                item.getEventos().add(0, adicionarEvento(item, funcExecutor, TipoEvento.FimAtividade));
                 item.setSituacao('C'); //Concluido
                 //proxima atividade
                 if (proximaEtapa == null) {
                     throw new Exception("Próxima atividade é obrigatória.");
                 }
-                item.getOrdemServico().getEtapas().add(adicionarAtividade(funcExecutor, item.getOrdemServico(),
-                        proximaEtapa, inicioImediato, funcProximaEtapa));
+                Calendar dataProximaAtiv = Calendar.getInstance();
+                dataProximaAtiv.setTime(item.getDataSaida());
+                dataProximaAtiv.add(Calendar.MINUTE, 1);
+                item.getOrdemServico().getEtapas().add(0, adicionarAtividade(funcExecutor, item.getOrdemServico(),
+                        proximaEtapa, inicioImediato, funcProximaEtapa, dataProximaAtiv.getTime()));
                 //muda situação da OS
                 ConfigOrdemServicoFacade ebjConfig = new ConfigOrdemServicoFacade();
                 ConfigOrdemServico config = ebjConfig.obterPorId(sessao, 1);
@@ -203,8 +209,8 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         return resultado;
 
     }
-    
-     public OrdemServicoEvento obterEvento(Session sessao, int id) throws Exception {
+
+    public OrdemServicoEvento obterEvento(Session sessao, int id) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
