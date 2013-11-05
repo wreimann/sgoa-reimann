@@ -191,9 +191,7 @@ public final class OrdemServicoController implements Serializable {
 
     public OrdemServicoController() {
         atividades = new ArrayList<OrdemServicoEtapa>();
-        //imagem = new DefaultStreamedContent();
         limparCampos();
-
     }
 
     public void atualizar(ActionEvent event) {
@@ -221,10 +219,14 @@ public final class OrdemServicoController implements Serializable {
                 return;
             }
             //atividades ordenadas por maior data de cadastro
-            if (atividades.get(0).getDataSaida().after(current.getDataEntrada())) {
+            if (atividades.size() > 2 && atividades.get(1).getDataSaida().after(current.getDataEntrada())) {
                 JsfUtil.addErrorMessage(null, "A data de entrada deve ser maior que a data de saída da atividade anterior.");
                 return;
             }
+        }
+        if (inicioImediato && getFuncProximaEtapa() == null) {
+            JsfUtil.addErrorMessage(null, "Informe o funcionário da próxima etapa.");
+            return;
         }
         try {
             Session sessao = HibernateFactory.currentSession();
@@ -239,6 +241,8 @@ public final class OrdemServicoController implements Serializable {
                 setVeiculo(resultado.getOrcamento().getVeiculo().toString());
                 current = resultado.getEtapaAtual();
                 atividades = resultado.getEtapas();
+                etapasAtivas = montaListaEtapas();
+                etapasAtivas.remove(current.getEtapa());
             }
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Erro ao salvar o registro.");
@@ -257,7 +261,6 @@ public final class OrdemServicoController implements Serializable {
         setDataInicioParada(null);
         setAtividade(null);
         funcionariosAtivos = montaListaFuncionarios();
-        etapasAtivas = montaListaEtapas();
         montaListaTiposEvento();
         fotosAux = new ArrayList<OrdemServicoFoto>();
 
@@ -351,6 +354,8 @@ public final class OrdemServicoController implements Serializable {
                 setVeiculo(resultado.getOrcamento().getVeiculo().toString());
                 current = resultado.getEtapaAtual();
                 atividades = resultado.getEtapas();
+                etapasAtivas = montaListaEtapas();
+                etapasAtivas.remove(current.getEtapa());
             } else {
                 JsfUtil.addErrorMessage(null, "Nenhuma ordem de serviço localiza para a placa informada.");
             }
@@ -413,5 +418,4 @@ public final class OrdemServicoController implements Serializable {
             HibernateFactory.closeSession();
         }
     }
-
 }
