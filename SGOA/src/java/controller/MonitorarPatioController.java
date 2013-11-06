@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import model.Cliente;
 import model.Etapa;
 import model.OrdemServicoEtapa;
@@ -203,6 +205,7 @@ public class MonitorarPatioController implements Serializable {
     }
 
     public String editar() {
-      return "servico";
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("Etapa", current);
+        return "servico?faces-redirect=true";
     }
 }

@@ -226,6 +226,14 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         OrdemServicoEvento entidade = (OrdemServicoEvento) sessao.get(OrdemServicoEvento.class, id);
         return entidade;
     }
+    
+    public OrdemServicoEtapa obterEtapa(Session sessao, int id) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        OrdemServicoEtapa entidade = (OrdemServicoEtapa) sessao.get(OrdemServicoEtapa.class, id);
+        return entidade;
+    }
 
     public List<OrdemServicoEtapa> monitorarPatio(Session sessao, String sort, SortOrder order,
             Integer page, Integer maxPage, String numero, Cliente cliente, String placa,
