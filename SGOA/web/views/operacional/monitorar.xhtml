@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="Navagador">
-        <a class="current">Cadastro</a>
+        <a class="current">Operacional</a>
         <div class="breadcrumb_divider"></div> 
         <a class="current">Monitorar pátio</a>
     </ui:define>
@@ -17,64 +17,114 @@
     </ui:define>
 
     <ui:define name="Conteudo">
-        <h:form id="frmPesquisa">
-            <p:fieldset id="NumeroOSField" style="width: 260px;">
-                <label id="NumeroOSLabel">Orçamento</label>
-                <h:inputText id="NumeroOSInput" />
-            </p:fieldset>
-            <p:fieldset id="ClientePesquisaField">
-                <label id="ClientePesquisaLabel">Cliente</label>
-                <p:autoComplete id="ClientePesquisaInput" />
-            </p:fieldset>
-            <p:fieldset id="PlacaPesquisaField" style="width: 260px;" >
-                <label id="PlacaPesquisaLabel">Placa</label>
-                <h:inputText id="PlacaPesquisaInput" />
-            </p:fieldset>
-            <p:fieldset id="SetorField">
-                <label id="SetorLabel">Setor</label>
-                <h:inputText id="SetorInput" />
-            </p:fieldset>
-            <p:commandButton id="btnPesquisar" value="Pesquisar" type="button" />
-            <p:commandButton id="btnLimparPesquisa" value="Limpar" type="button" />
+        <h:form id="frmPesquisa" prependId="false">
+            <p:focus context="frmPesquisa"/>
+            <h:panelGrid columns="2">
+                <p:fieldset id="NumeroPesquisaField" style="width: 190px; margin-right: 19px;">
+                    <p:outputLabel id="NumeroPesquisaLabel" value="Orçamento"/>
+                    <p:inputMask id="NumeroPesquisaInput"
+                                 value="#{monitorarPatioController.numero}" mask="9999.9?999" />
+                </p:fieldset>
+                <p:fieldset id="SituacaoPesquisaField" style="width: 195px;">
+                    <p:outputLabel id="SituacaoPesquisaLabel" value="Situação"/>
+                    <p:selectOneMenu id="SituacaoPesquisaListBox" styleClass="selectOneMenu"
+                                     value="#{monitorarPatioController.situacaoFiltro}" >
+                        <f:selectItem itemLabel="Em Execução" itemValue="E" />
+                        <f:selectItem itemLabel="Parado" itemValue="P" />
+                        <f:selectItem itemLabel="Fila de espera" itemValue="F" />
+                    </p:selectOneMenu>
+                </p:fieldset>
+            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <p:fieldset id="ClientePesquisaField" style="width: 490px; margin-right: 19px;">
+                    <p:outputLabel id="ClientePesquisaLabel" value="Cliente"/>
+                    <p:autoComplete value="#{monitorarPatioController.clienteFiltro}" id="ClientePesquisaInput"
+                                    completeMethod="#{monitorarPatioController.selecionarClienteAutoComplete}"
+                                    var="cliente" effect="fade"
+                                    itemLabel="#{cliente.pessoa.nome}" itemValue="#{cliente}"
+                                    converter="clienteConverter" forceSelection="true" />
+                </p:fieldset>
+                <p:fieldset id="PlacaPesquisaField" style="width: 190px;" >
+                    <p:outputLabel id="PlacaPesquisaLabel" value="Placa"/>
+                    <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" value="#{monitorarPatioController.placaFiltro}"
+                                 style="text-transform: uppercase;"/>
+                </p:fieldset>
+            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <p:fieldset id="AtividadeField" style="width: 340px;" >
+                    <label id="AtividadeLabel">Atividade</label>
+                    <h:selectOneMenu id="AtividadeFieldListBox" 
+                                     value="#{monitorarPatioController.atividadeFiltro}" 
+                                     converter="etapaConverter" >
+                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                        <f:selectItems value="#{monitorarPatioController.etapas}" var="etapa"
+                                       itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                    </h:selectOneMenu>
+                </p:fieldset>
+                <p:fieldset id="SetorField" style="width: 340px; margin-left: 19px;" >
+                    <label id="SetorLabel">Setor</label>
+                    <h:selectOneMenu id="SetorFieldListBox" 
+                                     value="#{monitorarPatioController.setorFiltro}" 
+                                     converter="setorConverter" >
+                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                        <f:selectItems value="#{monitorarPatioController.setores}" var="setor"
+                                       itemLabel="#{setor}" itemValue="#{setor}"/>
+                    </h:selectOneMenu>
+                </p:fieldset>
+            </h:panelGrid>
+            <p:commandButton id="btnPesquisar" value="Pesquisar" update="messages, :frmPesquisa" title="Pesquisar"/>
+            <p:commandButton id="btnLimparPesquisa" value="Limpar" update=":frmPesquisa" action="#{monitorarPatioController.limparCampos}" />
+            <p:messages id="messages" autoUpdate="true" closable="true"  />
+
+            <div class="spacer"></div>
+            <p:dataTable id="dataTable" var="item"
+                         value="#{monitorarPatioController.lazyModel}" lazy="true"
+                         paginator="true" paginatorPosition="bottom"
+                         emptyMessage="Nenhum resultado encontrado."
+                         rows="#{monitorarPatioController.pageSize}"
+                         currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                <f:facet name="header">
+                    <div class="tabs_involved">
+                        <h:outputLabel value="Monitorar pátio" styleClass="tabs_involved" />
+                    </div>
+                </f:facet>
+                <p:column headerText="Ações" width="35">
+                    <p:commandButton  alt="Editar" title="Editar" icon="btn_editar" 
+                                      action="#{monitorarPatioController.editar}">
+                        <f:setPropertyActionListener value="#{item}" target="#{monitorarPatioController.current}" /> 
+                    </p:commandButton>
+                </p:column>
+                <p:column sortBy="#{item.dataCadastro}" headerText="Data Cadastro">
+                    <h:outputText value="#{item.dataCadastro}" >
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo" />
+                    </h:outputText>
+                </p:column>
+                <p:column sortBy="#{item.ordemServico.orcamento.ano}" headerText="Orçamento" width="60" >
+                    <h:outputText value="#{item.ordemServico.orcamento}" />
+                </p:column>
+                <p:column sortBy="#{item.ordemServico.orcamento.cliente}" headerText="Cliente">
+                    <h:outputText value="#{item.ordemServico.orcamento.cliente.pessoa.nome}" />
+                </p:column>
+                <p:column sortBy="#{item.ordemServico.orcamento.veiculo}" headerText="Veículo">
+                    <h:outputText value="#{item.ordemServico.orcamento.veiculo}" />
+                </p:column>
+                <p:column sortBy="#{item.etapa}" headerText="Atividade">
+                    <h:outputText value="#{item.etapa}" />
+                </p:column>
+                <p:column sortBy="#{item.etapa.setor}" headerText="Setor">
+                    <h:outputText value="#{item.etapa.setor}" />
+                </p:column>
+                <p:column sortBy="#{item.funcionario}" headerText="Funcionário">
+                    <h:outputText value="#{item.funcionario}" />
+                </p:column>
+                <p:column sortBy="#{item.situacao}" headerText="Situação">
+                    <p:outputLabel value="Em Execução" rendered="#{item.situacao == 'E'}"   />  
+                    <p:outputLabel value="Parado" rendered="#{item.situacao == 'P'}"   />  
+                    <p:outputLabel value="Fila de espera" rendered="#{item.situacao == 'F'}"   />  
+                </p:column>
+            </p:dataTable>
         </h:form>
-        <div class="spacer"></div>
-        <div class="width_full_border">
-            <header>
-                <h3 class="tabs_involved">Monitorar pátio</h3>              
-            </header>
-            <div id="tab1" class="tab_content">
-                <table class="tablesorter" cellspacing="0"> 
-                    <thead> 
-                        <tr> 
-                            <th width="50px">Ações</th>
-                            <th>Cliente</th>
-                            <th>Veículo</th> 
-                            <th>Data Entrada</th>
-                            <th>Fluxo</th>
-                            <th>Etapa Atual</th>
-                            <th>Setor</th>
-                            <th>Funcionário</th>
-                        </tr> 
-                    </thead> 
-                    <tbody> 
-                        <tr> 
-                            <td width="50px"> 
-                                <h:graphicImage alt="Editar" url="/images/icn_edit.png" style="margin-right: 10px;" />
-                            </td>
-                            <td>Reimann</td> 
-                            <td>ATO-3804 - Pálio</td> 
-                            <td>12/11/2012</td>
-                            <td>Serviço rápido</td>
-                            <td>Preparação de Pintura</td>
-                            <td>Setor de Pintura</td>
-                            <td>João</td>
-                        </tr>                         
-                    </tbody> 
-                </table>
-            </div>
-        </div>
-
-
     </ui:define>
 
     <ui:define name="Rodape">
