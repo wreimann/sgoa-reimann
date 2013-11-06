@@ -192,6 +192,28 @@ public final class OrdemServicoController implements Serializable {
     public OrdemServicoController() {
         atividades = new ArrayList<OrdemServicoEtapa>();
         limparCampos();
+        OrdemServicoEtapa etapaParam = (OrdemServicoEtapa) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("Etapa");
+        if (etapaParam != null) {
+            try {
+                Session sessao = HibernateFactory.currentSession();
+                ejbFacade = new OrdemServicoFacade();
+                OrdemServico os = ejbFacade.obterPorId(sessao, etapaParam.getOrdemServico().getId());
+                Hibernate.initialize(os.getEtapas());
+                setCliente(os.getOrcamento().getCliente().toString());
+                setVeiculo(os.getOrcamento().getVeiculo().toString());
+                setPlaca(os.getOrcamento().getVeiculo().getPlaca());
+                current = os.getEtapaAtual();
+                atividades = os.getEtapas();
+                etapasAtivas = montaListaEtapas();
+                etapasAtivas.remove(current.getEtapa());
+            } catch (Exception ex) {
+                Logger.getLogger(OrdemServicoController.class.getName()).log(Level.SEVERE, null, ex);
+                JsfUtil.addErrorMessage(ex, "Erro ao carregar da atividade. Tente novamente.");
+            } finally {
+                HibernateFactory.closeSession();
+            }
+
+        }
     }
 
     public void atualizar(ActionEvent event) {
@@ -267,8 +289,16 @@ public final class OrdemServicoController implements Serializable {
     }
 
     public void prepararEvento() {
-        eventos = atividade.getEventos();
-
+        try {
+            Session sessao = HibernateFactory.currentSession();
+            OrdemServicoEtapa etapa = ejbFacade.obterEtapa(sessao, atividade.getId());
+            Hibernate.initialize(etapa.getEventos());
+            eventos = etapa.getEventos();
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, "Erro ao carregar os eventos da atividade.");
+        } finally {
+            HibernateFactory.closeSession();
+        }
     }
 
     public void changeTipoEvento() {

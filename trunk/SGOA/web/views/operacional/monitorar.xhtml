@@ -91,7 +91,7 @@
                 </f:facet>
                 <p:column headerText="Ações" width="35">
                     <p:commandButton  alt="Editar" title="Editar" icon="btn_editar" 
-                                      action="#{monitorarPatioController.editar}">
+                                      action="#{monitorarPatioController.editar}" ajax="false" >
                         <f:setPropertyActionListener value="#{item}" target="#{monitorarPatioController.current}" /> 
                     </p:commandButton>
                 </p:column>
