@@ -15,7 +15,7 @@
     </ui:define>
 
     <ui:define name="Conteudo">
-        <h:form id="frmPesquisa" prependId="false" enctype="multipart/form-data">
+        <h:form id="frmPesquisa" prependId="false">
             <script type="text/javascript">
                 jQuery(function($) {
                       $("#DataInicioPesquisa_input").mask("99/99/9999");
@@ -368,9 +368,9 @@
                     </p:tab>
                     <p:tab  id="tab5" title="Anexo">
                         <p:fileUpload fileUploadListener="#{orcamentoController.handleFileUpload}" 
-                                      showButtons="false" label="Procurar..." auto="true" 
+                                      label="Procurar..." auto="true" 
                                       sizeLimit="3000000" allowTypes="/(\.|\/)(pdf|doc?x)$/"
-                                      update=":frmCadastro"
+                                      update=":frmCadastro" sizeLimit="1"
                                       dragDropSupport="false" mode="advanced" />
 
                         <p:commandButton id="downloadLink" value="Download Anexo" 

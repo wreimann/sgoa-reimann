@@ -7,19 +7,28 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import model.Cliente;
 import model.ConfigOrdemServico;
 import model.Etapa;
 import model.Funcionario;
+import model.Orcamento;
 import model.OrdemServico;
 import model.OrdemServicoEtapa;
 import model.OrdemServicoEvento;
 import model.OrdemServicoFoto;
+import model.Setor;
 import model.TipoEvento;
+import model.Veiculo;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
+import org.primefaces.model.SortOrder;
+import util.DateUtils;
 import util.HibernateFactory;
 
 @Stateless
@@ -216,5 +225,78 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         }
         OrdemServicoEvento entidade = (OrdemServicoEvento) sessao.get(OrdemServicoEvento.class, id);
         return entidade;
+    }
+
+    public List<OrdemServicoEtapa> monitorarPatio(Session sessao, String sort, SortOrder order,
+            Integer page, Integer maxPage, String numero, Cliente cliente, String placa,
+            String situacao, Etapa atividade, Setor setor) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+
+        // <editor-fold defaultstate="collapsed" desc="busca o total de registro que atendam o filtro da pesquisa">
+        Criteria c = sessao.createCriteria(OrdemServicoEtapa.class, "ose");
+        c.add(Restrictions.isNull("ose.dataSaida"));
+        c.createCriteria("ordemservico", "os").createCriteria("orcamento", "o");
+        if (numero != null && !numero.isEmpty()) {
+            c.add(Restrictions.eq("o.ano", Integer.parseInt(numero.substring(0, 4))));
+            c.add(Restrictions.eq("o.numero", Integer.parseInt(numero.substring(5))));
+        }
+        if (situacao != null && !situacao.isEmpty()) {
+            c.add(Restrictions.eq("ose.situacao", situacao.charAt(0)));
+        }
+        if (cliente != null) {
+            c.add(Restrictions.eq("o.cliente", cliente));
+        }
+        if (placa != null && !placa.isEmpty()) {
+            c.createCriteria("o.cliente", "cli").createCriteria("pessoa", "pes");
+            DetachedCriteria veiculosCriteria = DetachedCriteria.forClass(Veiculo.class, "veiculos");
+            veiculosCriteria.add(Restrictions.like("veiculos.placa", placa, MatchMode.EXACT).ignoreCase());
+            veiculosCriteria.add(Restrictions.eqProperty("veiculos.pessoa.id", "pes.id"));
+            c.add(Subqueries.exists(veiculosCriteria.setProjection(Projections.property("veiculos.id"))));
+        }
+        if (atividade != null) {
+            c.add(Restrictions.eq("ose.etapa", atividade));
+        }
+        if (setor != null) {
+            c.createCriteria("ose.etapa", "et");
+            c.add(Restrictions.eq("et.setor", setor));
+        }
+        super.setRowCount((Long) c.setProjection(Projections.rowCount()).uniqueResult());
+        // </editor-fold>
+
+        // <editor-fold defaultstate="collapsed" desc="paginacao por demanda">
+        c = sessao.createCriteria(OrdemServicoEtapa.class, "ose");
+        c.setFirstResult(page).setMaxResults(maxPage);
+        c.add(Restrictions.isNull("ose.dataSaida"));
+        c.createCriteria("ordemservico", "os").createCriteria("orcamento", "o");
+        if (numero != null && !numero.isEmpty()) {
+            c.add(Restrictions.eq("o.ano", Integer.parseInt(numero.substring(0, 4))));
+            c.add(Restrictions.eq("o.numero", Integer.parseInt(numero.substring(5))));
+        }
+        if (situacao != null && !situacao.isEmpty()) {
+            c.add(Restrictions.eq("ose.situacao", situacao.charAt(0)));
+        }
+        if (cliente != null) {
+            c.add(Restrictions.eq("o.cliente", cliente));
+        }
+        if (placa != null && !placa.isEmpty()) {
+            c.createCriteria("o.cliente", "cli").createCriteria("pessoa", "pes");
+            DetachedCriteria veiculosCriteria = DetachedCriteria.forClass(Veiculo.class, "veiculos");
+            veiculosCriteria.add(Restrictions.like("veiculos.placa", placa, MatchMode.EXACT).ignoreCase());
+            veiculosCriteria.add(Restrictions.eqProperty("veiculos.pessoa.id", "pes.id"));
+            c.add(Subqueries.exists(veiculosCriteria.setProjection(Projections.property("veiculos.id"))));
+        }
+        if (atividade != null) {
+            c.add(Restrictions.eq("ose.etapa", atividade));
+        }
+        if (setor != null) {
+            c.createCriteria("ose.etapa", "et");
+            c.add(Restrictions.eq("et.setor", setor));
+        }
+        // </editor-fold>
+        List<OrdemServicoEtapa> resultado = c.list();
+        return resultado;
+
     }
 }

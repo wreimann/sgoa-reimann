@@ -55,7 +55,7 @@
                     <p:commandButton actionListener="#{tipoServicoController.prepararExclusao}"
                                      title="Excluir" alt="Excluir"
                                      icon="btn_excluir" 
-                                     oncomplete="confirmDialog.show()"  />
+                                     oncomplete="confirmDialog.show();"  />
                 </p:column>
                 <p:column sortBy="#{item.id}" headerText="Código"  width="60" >  
                     <h:outputText value="#{item.id}" />  
