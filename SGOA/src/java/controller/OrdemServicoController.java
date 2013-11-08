@@ -252,7 +252,8 @@ public final class OrdemServicoController implements Serializable {
         }
         try {
             Session sessao = HibernateFactory.currentSession();
-            ejbFacade.atualizarServico(sessao, LoginFilter.usuarioLogado(sessao), current, proximaEtapa, inicioImediato, funcProximaEtapa);
+            LoginController loginController = new LoginController();
+            ejbFacade.atualizarServico(sessao, loginController.getUsuarioSession(), current, proximaEtapa, inicioImediato, funcProximaEtapa);
             JsfUtil.addSuccessMessage("Atividade atualizada com sucesso!");
             setProximaEtapa(null);
             setInicioImediato(false);
@@ -334,7 +335,8 @@ public final class OrdemServicoController implements Serializable {
         }
         try {
             Session sessao = HibernateFactory.currentSession();
-            ejbFacade.incluirEvento(sessao, current, LoginFilter.usuarioLogado(sessao), getTipoEvento(), getDescEvento(), getDataInicioParada(), fotosAux);
+            LoginController loginController = new LoginController();
+            ejbFacade.incluirEvento(sessao, current, loginController.getUsuarioSession(), getTipoEvento(), getDescEvento(), getDataInicioParada(), fotosAux);
             JsfUtil.addSuccessMessage("Evento incluído com sucesso!");
             fotosAux = new ArrayList<OrdemServicoFoto>();
         } catch (Exception e) {

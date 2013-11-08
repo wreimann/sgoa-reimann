@@ -106,10 +106,20 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
-        Criteria c = sessao.createCriteria(Funcionario.class,"func").createCriteria("pessoa","pes");
+        Criteria c = sessao.createCriteria(Funcionario.class, "func").createCriteria("pessoa", "pes");
         c.add(Restrictions.eq("func.ativo", true));
         c.addOrder(Order.asc("pes.nome"));
         List<Funcionario> lista = c.list();
         return lista;
+    }
+
+    public Funcionario login(Session sessao, String email, String senha) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        Criteria c = sessao.createCriteria(Funcionario.class, "func").createCriteria("pessoa", "pes");
+        c.add(Restrictions.eq("pes.email", email));
+        c.add(Restrictions.eq("func.senha", senha));
+        return (Funcionario) c.uniqueResult();
     }
 }

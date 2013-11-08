@@ -7,6 +7,8 @@ import facede.OrdemServicoFacade;
 import facede.SeguradoraFacade;
 import facede.TipoServicoFacade;
 import filter.LoginFilter;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -32,8 +34,10 @@ import model.Veiculo;
 import org.hibernate.Session;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import util.HibernateFactory;
 import util.JsfUtil;
 import org.primefaces.model.UploadedFile;
@@ -114,6 +118,7 @@ public class OrcamentoController implements Serializable {
     private double totalDescoto;
     private double totalServico;
     private UploadedFile file;
+    private StreamedContent fileDownload;
     private String motivoCancelamento;
     private Boolean bloqueado;
     private Boolean gerarOS;
@@ -156,6 +161,14 @@ public class OrcamentoController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public StreamedContent getFileDownload() {
+        return fileDownload;
+    }
+
+    public void setFileDownload(StreamedContent fileDownload) {
+        this.fileDownload = fileDownload;
     }
 
     public List<Fluxo> getFluxos() {
@@ -215,7 +228,6 @@ public class OrcamentoController implements Serializable {
     public OrcamentoController() {
         limparCampos();
         lazyModel = new LazyDataModel<Orcamento>() {
-
             @Override
             public List<Orcamento> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 List<Orcamento> resultado = new ArrayList<Orcamento>();
@@ -291,8 +303,8 @@ public class OrcamentoController implements Serializable {
                 ejbFacade.alterar(sessao, current);
                 JsfUtil.addSuccessMessage("Orçamento alterado com sucesso!");
             } else {
-                HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-                current.setFuncionarioCancelamento(LoginFilter.usuarioLogado(sessao));
+                LoginController loginController = new LoginController();
+                current.setFuncionarioCancelamento(loginController.getUsuarioSession());
                 ejbFacade.incluir(sessao, current);
                 JsfUtil.addSuccessMessage("Orçamento incluído com sucesso!");
             }
@@ -308,7 +320,8 @@ public class OrcamentoController implements Serializable {
         try {
             Session sessao = HibernateFactory.currentSession();
             Calendar cal = Calendar.getInstance();
-            current.setFuncionarioCancelamento(LoginFilter.usuarioLogado(sessao));
+            LoginController loginController = new LoginController();
+            current.setFuncionarioCancelamento(loginController.getUsuarioSession());
             current.setDataCancelamento(cal.getTime());
             current.setSituacao('C');
             current.setMotivoCancelamento(motivoCancelamento);
@@ -326,7 +339,8 @@ public class OrcamentoController implements Serializable {
         try {
             Session sessao = HibernateFactory.currentSession();
             OrdemServico os = new OrdemServico();
-            os.setFuncionarioAprovacao(LoginFilter.usuarioLogado(sessao));
+            LoginController loginController = new LoginController();
+            os.setFuncionarioAprovacao(loginController.getUsuarioSession());
             os.setOrcamento(current);
             OrdemServicoFacade osFacade = new OrdemServicoFacade();
             osFacade.incluir(sessao, os);
@@ -415,7 +429,7 @@ public class OrcamentoController implements Serializable {
         }
         return resultado;
     }
-    
+
     public List<Fluxo> montaListaFluxos() {
         List<Fluxo> resultado = new ArrayList<Fluxo>();
         try {
@@ -452,5 +466,8 @@ public class OrcamentoController implements Serializable {
 
     public void handleFileUpload(FileUploadEvent event) {
         file = event.getFile();
+        InputStream is = new ByteArrayInputStream(file.getContents());
+        StreamedContent image = new DefaultStreamedContent(is, "application/pdf", "orçamento_anexo.pdf");
+        fileDownload = image;
     }
 }
