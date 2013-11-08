@@ -4,6 +4,7 @@ import facede.FuncionarioFacade;
 import facede.PerfilFacade;
 import facede.ProfissaoFacade;
 import facede.SetorFacade;
+import filter.LoginFilter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import model.Funcionario;
+import model.OrdemServico;
 import model.Perfil;
 import model.PessoaEndereco;
 import model.PessoaFisica;
@@ -37,6 +39,7 @@ public class FuncionarioController implements Serializable {
     private facede.FuncionarioFacade ejbFacade;
     //propriedades para filtro da pesquisa
     private String nomeFiltro;
+    private boolean editarAcesso;
 
     public String getNomeFiltro() {
         return nomeFiltro;
@@ -267,4 +270,9 @@ public class FuncionarioController implements Serializable {
         }
     }
 
+    public boolean isEditarAcesso() {
+        LoginController loginController = new LoginController();
+        return loginController.usuarioLogadoIsGerente();
+    }
+  
 }

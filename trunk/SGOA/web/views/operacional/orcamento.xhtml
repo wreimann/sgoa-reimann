@@ -18,11 +18,11 @@
         <h:form id="frmPesquisa" prependId="false">
             <script type="text/javascript">
                 jQuery(function($) {
-                      $("#DataInicioPesquisa_input").mask("99/99/9999");
-                      $("#DataFinalPesquisa_input").mask("99/99/9999");
+                    $("#DataInicioPesquisa_input").mask("99/99/9999");
+                    $("#DataFinalPesquisa_input").mask("99/99/9999");
                 });
- 
-               
+
+
             </script>
             <p:focus context="frmPesquisa"/>
             <h:panelGrid columns="2">
@@ -368,16 +368,22 @@
                     </p:tab>
                     <p:tab  id="tab5" title="Anexo">
                         <p:fileUpload fileUploadListener="#{orcamentoController.handleFileUpload}" 
-                                      label="Procurar..." auto="true" 
-                                      sizeLimit="3000000" allowTypes="/(\.|\/)(pdf|doc?x)$/"
-                                      update=":frmCadastro" sizeLimit="1"
-                                      dragDropSupport="false" mode="advanced" />
+                                      mode="advanced" dragDropSupport="true"   
+                                      sizeLimit="3000000" allowTypes="/(\.|\/)(pdf)$/"
+                                      update="tab5" fileLimit="1"
+                                      cancelLabel="Cancelar"
+                                      label="Procurar..."
+                                      invalidFileMessage="Tipo de imagem inválido"
+                                      invalidSizeMessage="Imagem muito grande"
+                                      rendered="#{orcamentoController.file == null}"/>
 
-                        <p:commandButton id="downloadLink" value="Download Anexo" 
-                                         onclick="PrimeFaces.monitorDownload(start, stop)"
+                        <p:commandButton id="downloadLink" value="Baixar Anexo" 
+                                         onclick="PrimeFaces.monitorDownload(start, stop);"
                                          disabled="#{orcamentoController.bloqueado}"
-                                         icon="ui-icon-arrowthichk-s" >  
-                            <p:fileDownload value="#{orcamentoController.file}" />  
+                                         icon="ui-icon-arrowthichk-s" style="margin: 20px;"
+                                         rendered="#{orcamentoController.file != null}"
+                                         immediate="true" ajax="false" > 
+                            <p:fileDownload value="#{orcamentoController.fileDownload}"  />  
                         </p:commandButton>
                     </p:tab>
                 </p:tabView>
@@ -395,7 +401,7 @@
                 </h:panelGroup>
             </h:form>
         </p:dialog>
-        <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">  
+        <p:dialog modal="true" widgetVar="statusDialog" header="Status do download" draggable="false" closable="false" resizable="false">  
             <p:graphicImage value="/images/ajax-loader.gif" />  
         </p:dialog>  
         <p:confirmDialog widgetVar="confirmOSDialog"
@@ -411,18 +417,18 @@
                 </h:panelGroup>
             </h:form>
         </p:confirmDialog> 
-       
-        <script type="text/javascript">  
-            function start() {  
-                PF('statusDialog').show();  
-            }  
-  
-            function stop() {  
-                PF('statusDialog').hide();  
-            }  
-            
-           
-                            
+
+        <script type="text/javascript">
+                function start() {
+                    PF('statusDialog').show();
+                }
+
+                function stop() {
+                    PF('statusDialog').hide();
+                }
+
+
+
         </script>  
     </ui:define>
 

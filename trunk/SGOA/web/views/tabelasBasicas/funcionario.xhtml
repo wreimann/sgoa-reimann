@@ -94,10 +94,10 @@
 
             <h:form id="frmCadastro" prependId="false" >  
 
-                <script type="text/javascript">  
-                   jQuery(function($) {
-                       $("#tabView\\:pnlDataNasc_input").mask("99/99/9999");
-                   });
+                <script type="text/javascript">
+                    jQuery(function($) {
+                        $("#tabView\\:pnlDataNasc_input").mask("99/99/9999");
+                    });
                 </script> 
                 <p:focus context="frmCadastro"/> 
                 <p:tabView id="tabView" activeIndex="0" >
@@ -235,16 +235,19 @@
                                          converterMessage="Valor inválido!" style="text-transform: uppercase;" />
                         </p:fieldset>
                     </p:tab>
-                    <p:tab id="tab6" title="Acesso Sistema">
-                        <p:fieldset id="PerfilField">
-                            <label id="PerfilLabel">Perfil de Acesso *</label>
-                            <p:selectOneMenu id="PerfilListBox" styleClass="selectOneMenu" 
-                                             value="#{funcionarioController.current.perfilAcesso}" converter="perfilConverter">  
-                                <f:selectItem itemValue="#{null}" itemLabel="Sem acesso" noSelectionOption="true" />
-                                <f:selectItems value="#{funcionarioController.perfisAtivos}" var="perfilAcesso" 
-                                               itemLabel="#{perfilAcesso.descricao}" itemValue="#{perfilAcesso}"/>  
-                            </p:selectOneMenu> 
-                        </p:fieldset>
+                    <p:tab id="tab6" title="Acesso ao Sistema" disabled="#{funcionarioController.editarAcesso}" >
+                        <h:panelGrid columns="2">
+                            <p:fieldset id="PerfilField" style="width: 280px;" >
+                                <label id="PerfilLabel">Perfil de Acesso*</label>
+                                <p:selectOneMenu id="PerfilListBox" styleClass="selectOneMenu" 
+                                                 value="#{funcionarioController.current.perfilAcesso}" converter="perfilConverter">  
+                                    <f:selectItem itemValue="#{null}" itemLabel="Sem acesso" noSelectionOption="true" />
+                                    <f:selectItems value="#{funcionarioController.perfisAtivos}" var="perfilAcesso" 
+                                                   itemLabel="#{perfilAcesso.descricao}" itemValue="#{perfilAcesso}"/>  
+                                </p:selectOneMenu> 
+                            </p:fieldset>
+                          
+                        </h:panelGrid>
                     </p:tab>
                 </p:tabView>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
