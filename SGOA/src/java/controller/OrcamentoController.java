@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import model.Cliente;
@@ -48,6 +49,8 @@ public class OrcamentoController implements Serializable {
     private LazyDataModel<Orcamento> lazyModel;
     @EJB
     private facede.OrcamentoFacade ejbFacade;
+    @ManagedProperty(value="#{loginController}")
+    private LoginController loginController;
     // <editor-fold defaultstate="collapsed" desc="propriedades para filtro da pesquisa">
     private String numero;
     private Cliente clienteFiltro;
@@ -300,8 +303,7 @@ public class OrcamentoController implements Serializable {
                 ejbFacade.alterar(sessao, current);
                 JsfUtil.addSuccessMessage("Orçamento alterado com sucesso!");
             } else {
-                LoginController loginController = new LoginController();
-                current.setFuncionarioCancelamento(loginController.getUsuarioSession());
+                current.setFuncionarioCancelamento(getLoginController().getUsuarioSession());
                 ejbFacade.incluir(sessao, current);
                 JsfUtil.addSuccessMessage("Orçamento incluído com sucesso!");
             }
@@ -317,7 +319,6 @@ public class OrcamentoController implements Serializable {
         try {
             Session sessao = HibernateFactory.currentSession();
             Calendar cal = Calendar.getInstance();
-            LoginController loginController = new LoginController();
             current.setFuncionarioCancelamento(loginController.getUsuarioSession());
             current.setDataCancelamento(cal.getTime());
             current.setSituacao('C');
@@ -336,7 +337,6 @@ public class OrcamentoController implements Serializable {
         try {
             Session sessao = HibernateFactory.currentSession();
             OrdemServico os = new OrdemServico();
-            LoginController loginController = new LoginController();
             os.setFuncionarioAprovacao(loginController.getUsuarioSession());
             os.setOrcamento(current);
             OrdemServicoFacade osFacade = new OrdemServicoFacade();
@@ -466,5 +466,13 @@ public class OrcamentoController implements Serializable {
         InputStream is = new ByteArrayInputStream(file.getContents());
         StreamedContent image = new DefaultStreamedContent(is, "application/pdf", "orçamento_anexo.pdf");
         fileDownload = image;
+    }
+
+    public LoginController getLoginController() {
+        return loginController;
+    }
+
+    public void setLoginController(LoginController loginController) {
+        this.loginController = loginController;
     }
 }

@@ -7,9 +7,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"  >
     <ui:define name="Navagador">
-        <a class="current">Configuração</a>
-        <div class="breadcrumb_divider"></div> 
-        <a class="current">Alterar Senha</a>
+       <a class="current">Alterar Senha</a>
     </ui:define>
 
     <ui:define name="Titulo">
@@ -17,32 +15,46 @@
     </ui:define>
 
     <ui:define name="Conteudo">
-        <h:form id="frmCadastro"> 
-            <p:fieldset id="SenhaAtual" style="width: 260px; margin-right: 19px">
+        <p:messages id="messages" autoUpdate="true" closable="true" /> 
+        <h:form id="frmCadastro" prependId="false"> 
+            <p:focus /> 
+
+            <fieldset id="SenhaAtual" style="width: 260px; margin-right: 19px">
                 <label id="SenhaAtualLabel">Senha Atual *</label>
-                <h:inputSecret id="SenhaAtualText" required="true" />
-            </p:fieldset>
+                <p:password id="senhaInput"  required="true" 
+                            requiredMessage="O campo 'Senha Atual' é obrigatório." 
+                            value="#{loginController.password}" maxlength="10" />
+            </fieldset>
 
-            <p:fieldset id="NovaSenha" style="width: 260px; display:inline; margin-right: 19px">
+            <fieldset id="NovaSenha" style="width: 260px; display:inline; margin-right: 19px">
                 <label id="NovaSenhaLabel">Nova Senha *</label>
-                <h:inputSecret id="NovaSenhaText" required="true" />
-            </p:fieldset>
+                <p:password id="pwd1" value="#{loginController.newpassword}" match="pwd2" label="Novo Senha" 
+                            required="true" requiredMessage="O campo 'Nova Senha' é obrigatório."
+                            validatorMessage="As senhas não conferem." maxlength="10" />  
+            </fieldset>
 
-            <p:fieldset id="ConfirmarSenha" style="width: 260px; display:inline; margin-right: 19px">
+            <fieldset id="ConfirmarSenha" style="width: 260px; display:inline; margin-right: 19px">
                 <label id="ConfirmarSenhaLabel">Confirmar Senha *</label>
-                <h:inputSecret id="ConfirmarSenhaText" required="true" />
-            </p:fieldset>
+                <p:password id="pwd2" value="#{loginController.newpassword}" label="Confirmação da Senha" 
+                            required="true" requiredMessage="O campo 'Confirmar Senha' é obrigatório."
+                            maxlength="10"/>  
+            </fieldset>
 
             <div class="spacer"></div>
             <h:panelGrid columns="4">  
-                <p:commandButton id="btnSalvar" value="Salvar" />  
-                <p:commandButton id="btnCancelar" value="Cancelar" />  
+                <p:commandButton  title="Alterar Senha" 
+                                  action="#{loginController.alterarSenha}" 
+                                  value="Salvar" update=":frmCadastro"/>
+                <p:commandButton  title="Cancelar" 
+                                  action="#{loginController.cancelarAlterarSenha}" 
+                                  value="Cancelar" update=":frmCadastro"  immediate="true"/>
+
             </h:panelGrid>
         </h:form>
     </ui:define>
 
     <ui:define name="Rodape">
-        
+
     </ui:define>
 
 </ui:composition>

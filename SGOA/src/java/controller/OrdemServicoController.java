@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -38,6 +39,8 @@ public final class OrdemServicoController implements Serializable {
 
     @EJB
     private OrdemServicoFacade ejbFacade;
+    @ManagedProperty(value="#{loginController}")
+    private LoginController loginController;
     private OrdemServicoEtapa current;
     private List<OrdemServicoEtapa> atividades;
     private TipoEvento tipoEvento;
@@ -252,8 +255,7 @@ public final class OrdemServicoController implements Serializable {
         }
         try {
             Session sessao = HibernateFactory.currentSession();
-            LoginController loginController = new LoginController();
-            ejbFacade.atualizarServico(sessao, loginController.getUsuarioSession(), current, proximaEtapa, inicioImediato, funcProximaEtapa);
+            ejbFacade.atualizarServico(sessao, getLoginController().getUsuarioSession(), current, proximaEtapa, inicioImediato, funcProximaEtapa);
             JsfUtil.addSuccessMessage("Atividade atualizada com sucesso!");
             setProximaEtapa(null);
             setInicioImediato(false);
@@ -335,8 +337,7 @@ public final class OrdemServicoController implements Serializable {
         }
         try {
             Session sessao = HibernateFactory.currentSession();
-            LoginController loginController = new LoginController();
-            ejbFacade.incluirEvento(sessao, current, loginController.getUsuarioSession(), getTipoEvento(), getDescEvento(), getDataInicioParada(), fotosAux);
+            ejbFacade.incluirEvento(sessao, current, getLoginController().getUsuarioSession(), getTipoEvento(), getDescEvento(), getDataInicioParada(), fotosAux);
             JsfUtil.addSuccessMessage("Evento incluído com sucesso!");
             fotosAux = new ArrayList<OrdemServicoFoto>();
         } catch (Exception e) {
@@ -449,5 +450,13 @@ public final class OrdemServicoController implements Serializable {
         } finally {
             HibernateFactory.closeSession();
         }
+    }
+
+    public LoginController getLoginController() {
+        return loginController;
+    }
+
+    public void setLoginController(LoginController loginController) {
+        this.loginController = loginController;
     }
 }
