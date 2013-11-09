@@ -10,29 +10,36 @@
         <h:outputStylesheet name="layout.css" library="css" value="text/css" />  
     </h:head>
     <h:body styleClass="login-bg">
-
         <div align="center" id="login-holder">
-
             <img src="images/Logo.png" style="margin-top: 80px;" />
             <div align="center" id="loginbox">
                 <div id="login-inner" >
-                    <h:panelGrid>
-                        <p:outputLabel value="E-mail" for="IdInput"/>
-                        <p:inputText id="IdInput" styleClass="login-inp" 
-                                     required="true"  requiredMessage="O campo 'E-mail' é obrigatório." 
-                                     value="#{loginController.email}" />
-                    </h:panelGrid>
-                    <h:panelGrid>
-                        <p:outputLabel value="Senha" for="SenhaInput"/>
-                        <p:password id="SenhaInput" styleClass="login-inp"
-                                    required="true" requiredMessage="O campo 'Senha' é obrigatório." 
-                                    value="#{loginController.password}" maxlength="10"/>
-                    </h:panelGrid>
-                    <div class="btn_view_site">
-                        <p:commandButton ajax="false" id="btnEntrar" title="Entrar" 
-                                         action="#{loginController.login}" 
-                                         value="Entrar"/>
-                    </div>
+                    <h:form id="frmLogin" prependId="false">
+                        <p:growl autoUpdate="true"  />
+                        <h:panelGrid columns="2">
+                            <label style="width: 30px;margin-right: 5px;" >E-mail</label>
+                            <p:inputText id="IdInput" styleClass="login-inp" 
+                                         required="true"  requiredMessage="O campo 'E-mail' é obrigatório." 
+                                         value="#{loginController.email}" validatorMessage="E-mail inválido." >
+                                <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
+                                                 for="IdInput"  />
+                            </p:inputText>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <label style="width: 30px; margin-right: 5px;">Senha</label>
+                            <p:password id="SenhaInput" styleClass="login-inp" 
+                                        required="true" requiredMessage="O campo 'Senha' é obrigatório." 
+                                        value="#{loginController.password}" maxlength="10"/>
+
+                        </h:panelGrid>
+
+                        <div class="btn_view_site" style="margin-left: 80px; margin-top: 10px;">
+                            <p:commandButton title="Entrar" id="EntrarButton"
+                                             action="#{loginController.login}" ajax="false"
+                                             value="Entrar" />
+                        </div>
+
+                    </h:form>
                 </div>
             </div>
         </div>

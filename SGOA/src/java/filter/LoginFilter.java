@@ -1,8 +1,10 @@
 package filter;
 
 import controller.LoginController;
-import facede.FuncionarioFacade;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,10 +16,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Funcionario;
-import org.hibernate.Session;
-import util.HibernateFactory;
-import util.JsfUtil;
 
 @WebFilter(filterName = "LoginFilter", urlPatterns = {"/*.xhtml"})
 public class LoginFilter implements Filter {
@@ -32,8 +30,10 @@ public class LoginFilter implements Filter {
             Integer user = (Integer) session.getAttribute("usuario");
             if (user != null) {
                 String perfil = (String) session.getAttribute("perfil");
-                LoginController controller = new LoginController();
-                validate = controller.verificarPermissao(perfil, requestPath);
+                LoginController loginController = (LoginController) req.getSession().getAttribute("loginController");
+                if (loginController != null) {
+                    validate = loginController.verificarPermissao(perfil, requestPath);
+                }
             }
             if (!validate) {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;

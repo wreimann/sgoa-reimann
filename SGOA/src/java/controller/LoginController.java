@@ -13,10 +13,6 @@ import util.CriptografiaUtil;
 import util.HibernateFactory;
 import util.JsfUtil;
 
-/**
- *
- * @author Wellingthon Reimann
- */
 @ManagedBean
 @SessionScoped
 public class LoginController implements Serializable {
@@ -27,7 +23,9 @@ public class LoginController implements Serializable {
     private Funcionario usuarioSession = null;
 
     public LoginController() {
-        
+        setEmail(null);
+        setPassword(null);
+
     }
 
     public String login() {
@@ -37,44 +35,45 @@ public class LoginController implements Serializable {
         try {
             senha = CriptografiaUtil.encrypt(password);
         } catch (NoSuchAlgorithmException ex) {
-            JsfUtil.addErrorMessage(ex, "Erro ao criptografar dados.");
+            JsfUtil.addErrorMessageExterna("Erro ao criptografar dados.");
             return "/login?faces-redirect=true";
         }
         try {
             Session sessao = HibernateFactory.currentSession();
             usuario = ebjUsario.login(sessao, getEmail(), senha);
         } catch (Exception ex) {
-            JsfUtil.addErrorMessage(ex, "Erro ao buscar dados.");
+            JsfUtil.addErrorMessageExterna("Erro ao buscar dados.");
             return "/login?faces-redirect=true";
         } finally {
             HibernateFactory.closeSession();
         }
         if (usuario == null) {
-            JsfUtil.addErrorMessage("E-mail ou Senha inválidos.");
+            JsfUtil.addErrorMessageExterna("E-mail ou Senha inválidos.");
             return "/login?faces-redirect=true";
         } else if (!usuario.getAtivo()) {
-            JsfUtil.addErrorMessage("Usuário inativo.");
+            JsfUtil.addErrorMessageExterna("Funionário inativo.");
             return "/login?faces-redirect=true";
         } else {
             session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-            session.setAttribute("usuario", (Integer) usuario.getId());
-            session.setAttribute("perfil", String.valueOf(usuario.getPerfilAcesso()));
+            getSession().setAttribute("usuario", (Integer) usuario.getId());
+            getSession().setAttribute("perfil", String.valueOf(usuario.getPerfilAcesso()));
+            //FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("loginController", this);
             return "/index?faces-redirect=true";
         }
     }
 
     public String logout() {
-        if (session != null) {
-            session.removeAttribute("usuario");
-            session.removeAttribute("perfil");
-            session.invalidate();
+        if (getSession() != null) {
+            getSession().removeAttribute("usuario");
+            getSession().removeAttribute("perfil");
+            getSession().invalidate();
         }
         return "/login?faces-redirect=true";
     }
 
     public void alterarSenha() {
-        if (session != null) {
-            Integer idUser = (Integer) session.getAttribute("usuario");
+        if (getSession() != null) {
+            Integer idUser = (Integer) getSession().getAttribute("usuario");
             if (idUser != null && idUser > 0) {
                 FuncionarioFacade ebjUsario = new FuncionarioFacade();
                 Funcionario usuario = null;
@@ -94,7 +93,7 @@ public class LoginController implements Serializable {
                     return;
                 }
                 if (!senha.equals(usuario.getSenha())) {
-                    JsfUtil.addErrorMessage("Senha atual não confere.");
+                    JsfUtil.addErrorMessageExterna("Senha atual não confere.");
                     return;
                 }
                 try {
@@ -132,8 +131,8 @@ public class LoginController implements Serializable {
     }
 
     public Funcionario getUsuarioSession() {
-        if (session != null) {
-            Integer idUser = (Integer) session.getAttribute("usuario");
+        if (getSession() != null) {
+            Integer idUser = (Integer) getSession().getAttribute("usuario");
             if (idUser != null && idUser > 0) {
                 if (usuarioSession == null) {
                     try {
@@ -156,40 +155,41 @@ public class LoginController implements Serializable {
     public boolean usuarioLogadoIsGerente() {
         return "Gerente".equals(getUsuarioSession().getPerfilAcesso().getDescricao());
     }
-    
+
     public boolean verificarPermissao(String pagina) {
         boolean acesso = false;
         if (getUsuarioSession() != null) {
             if (usuarioLogadoIsGerente()) {
                 acesso = true;
             } /*else if ("Administrativo".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
-                if (pagina.contains("usuario.xhtml")
-                        || pagina.contains("alterarsenha.xhtml")) {
-                    acesso = false;
-                } else {
-                    acesso = true;
-                }
-            } else if ("Operacional".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
+             if (pagina.contains("usuario.xhtml")
+             || pagina.contains("alterarsenha.xhtml")) {
+             acesso = false;
+             } else {
+             acesso = true;
+             }
+             } else if ("Operacional".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
             
-            }*/
+             }*/
         }
         return acesso;
     }
+
     public boolean verificarPermissao(String perfil, String pagina) {
         boolean acesso = false;
-       if (getUsuarioSession() != null) {
+        if (getUsuarioSession() != null) {
             if (usuarioLogadoIsGerente()) {
                 acesso = true;
             } /*else if ("Administrativo".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
-                if (pagina.contains("usuario.xhtml")
-                        || pagina.contains("alterarsenha.xhtml")) {
-                    acesso = false;
-                } else {
-                    acesso = true;
-                }
-            } else if ("Operacional".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
+             if (pagina.contains("usuario.xhtml")
+             || pagina.contains("alterarsenha.xhtml")) {
+             acesso = false;
+             } else {
+             acesso = true;
+             }
+             } else if ("Operacional".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
             
-            }*/
+             }*/
         }
         return acesso;
     }
@@ -200,5 +200,9 @@ public class LoginController implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public HttpSession getSession() {
+        return session;
     }
 }
