@@ -14,29 +14,29 @@
         <h:outputScript name="jquery.equalHeight.js" library="js" />
         <h:outputScript name="maskedinput.js" library="js" />
         <script type="text/javascript">
-                    jQuery(document).ready(function() { 
-                      jQuery(".tablesorter").tablesorter(); 
-                      //jQuery('.date').mask('99/99/9999');
-                    });
-                   jQuery(document).ready(function() {
-                      //When page loads...
-                      jQuery(".tab_content").hide(); //Hide all content
-                      jQuery("ul.tabs li:first").addClass("active").show(); //Activate first tab
-                      jQuery(".tab_content:first").show(); //Show first tab content
-                      //On Click Event
-                      jQuery("ul.tabs li").click(function() {
-                          jQuery("ul.tabs li").removeClass("active"); //Remove any "active" class
-                          jQuery(this).addClass("active"); //Add "active" class to selected tab
-                          jQuery(".tab_content").hide(); //Hide all tab content
+            jQuery(document).ready(function() {
+                jQuery(".tablesorter").tablesorter();
+                //jQuery('.date').mask('99/99/9999');
+            });
+            jQuery(document).ready(function() {
+                //When page loads...
+                jQuery(".tab_content").hide(); //Hide all content
+                jQuery("ul.tabs li:first").addClass("active").show(); //Activate first tab
+                jQuery(".tab_content:first").show(); //Show first tab content
+                //On Click Event
+                jQuery("ul.tabs li").click(function() {
+                    jQuery("ul.tabs li").removeClass("active"); //Remove any "active" class
+                    jQuery(this).addClass("active"); //Add "active" class to selected tab
+                    jQuery(".tab_content").hide(); //Hide all tab content
 
-                          var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
-                          jQuery(activeTab).fadeIn(); //Fade in the active ID content
-                          return false;
-                      });
-                   });
+                    var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
+                    jQuery(activeTab).fadeIn(); //Fade in the active ID content
+                    return false;
+                });
+            });
         </script>
         <script type="text/javascript">
-            jQuery(function(){
+            jQuery(function() {
                 jQuery('.column').equalHeight();
             });
         </script>	
@@ -68,7 +68,10 @@
 
         <section id="secondary_bar">
             <div class="user">
-                <p>Olá <h:link id="UsuarioLogado" value="Reimann" outcome="/views/config/alterarsenha.xhtml" title="Alterar Senha" /></p>
+                <h:form>
+                    <p>Olá <h:commandLink id="UsuarioLogado" value="#{loginController.usuarioSession.pessoa.nome}" action="/views/config/alterarsenha?faces-redirect=true" title="Alterar Senha"
+                                          style="color: blue;"/> !</p>
+                </h:form>
             </div>
             <div class="breadcrumbs_container">
                 <article class="breadcrumbs">
@@ -98,11 +101,11 @@
                 <li class="icn_new_article"><h:link id="MonitorarPatioMenu" value="Monitorar Pátio" outcome="/views/operacional/monitorar.xhtml" title="Monitorar Pátio" /></li>
                 <li class="icn_folder"><h:link id="ServicoMenu" value="Controle de Serviços" outcome="/views/operacional/servico.xhtml" title="Controle de Serviços" /></li>             
             </ul>
-             <h3>Ferramentas</h3>
+            <h3>Ferramentas</h3>
             <ul class="toggle">
                 <li class="icn_photo"><h:link id="ConfigMenu" value="Configurações" outcome="/views/ferramentas/configuracao.xhtml" title="Configurações" /></li>
                 <li class="icn_photo"><h:link id="EtapaFluxoMenu" value="Atividades" outcome="/views/ferramentas/etapa.xhtml" title="Atividades" /></li>
-<!--                <li class="icn_photo"><h:link id="FluxoMenu" value="Fluxos de Trabalho" outcome="/views/ferramentas/fluxo.xhtml" title="Fluxos de Trabalho" /></li>-->
+                <!--                <li class="icn_photo"><h:link id="FluxoMenu" value="Fluxos de Trabalho" outcome="/views/ferramentas/fluxo.xhtml" title="Fluxos de Trabalho" /></li>-->
             </ul>
             <footer>
                 <hr /> 

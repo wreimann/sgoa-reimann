@@ -1,5 +1,6 @@
 package util;
 
+import controller.LoginController;
 import facede.ConfigEmailFacade;
 import java.util.List;
 import java.util.Properties;
@@ -14,6 +15,8 @@ import javax.mail.Message;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import model.ConfigEmail;
 import model.Pessoa;
 import org.hibernate.Session;
@@ -55,14 +58,12 @@ public class JsfUtil {
         FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg);
         FacesContext.getCurrentInstance().addMessage(null, facesMsg);
     }
-    
+
     public static void addErrorMessageExterna(String msg) {
         FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg);
         FacesContext.getCurrentInstance().addMessage(null, facesMsg);
         FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
     }
-    
-    
 
     public static void addSuccessMessage(String msg) {
         FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, msg, msg);
@@ -101,7 +102,7 @@ public class JsfUtil {
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(pessoa.getEmail(), pessoa.getNome()));
             if (assuntoEmail.isEmpty()) {
                 msg.setSubject(config.getAssuntoEmail());
-            }else {
+            } else {
                 msg.setSubject(assuntoEmail);
             }
             if (mensagem.isEmpty()) {
@@ -117,4 +118,6 @@ public class JsfUtil {
             Logger.getLogger(JsfUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    
 }

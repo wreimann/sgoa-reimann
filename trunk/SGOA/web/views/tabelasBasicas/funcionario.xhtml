@@ -56,7 +56,9 @@
                                      oncomplete="confirmDialog.show()"  />
                 </p:column>
                 <p:column sortBy="#{item.matricula}" headerText="Matricula"  width="60" >  
-                    <h:outputText value="#{item.matricula}" />  
+                    <h:outputText value="#{item.matricula}" >
+                     
+                    </h:outputText>  
                 </p:column>  
 
                 <p:column sortBy="#{item.pessoa}" headerText="Nome">  
@@ -235,7 +237,7 @@
                                          converterMessage="Valor inválido!" style="text-transform: uppercase;" />
                         </p:fieldset>
                     </p:tab>
-                    <p:tab id="tab6" title="Acesso ao Sistema" disabled="#{funcionarioController.editarAcesso}" >
+                    <p:tab id="tab6" title="Acesso ao Sistema" disabled="#{!funcionarioController.editarAcesso}" >
                         <h:panelGrid columns="2">
                             <p:fieldset id="PerfilField" style="width: 280px;" >
                                 <label id="PerfilLabel">Perfil de Acesso*</label>

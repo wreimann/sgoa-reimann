@@ -4,7 +4,6 @@ import facede.FuncionarioFacade;
 import facede.PerfilFacade;
 import facede.ProfissaoFacade;
 import facede.SetorFacade;
-import filter.LoginFilter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,10 +11,10 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import model.Funcionario;
-import model.OrdemServico;
 import model.Perfil;
 import model.PessoaEndereco;
 import model.PessoaFisica;
@@ -37,6 +36,8 @@ public class FuncionarioController implements Serializable {
     private LazyDataModel<Funcionario> lazyModel;
     @EJB
     private facede.FuncionarioFacade ejbFacade;
+    @ManagedProperty(value="#{loginController}")
+    private LoginController loginController;
     //propriedades para filtro da pesquisa
     private String nomeFiltro;
     private boolean editarAcesso;
@@ -71,15 +72,15 @@ public class FuncionarioController implements Serializable {
     public void setDocumento(String documento) {
         this.documento = documento;
     }
-    
-     public String getMatricula() {
+
+    public String getMatricula() {
         return matricula;
     }
 
     public void setMatricula(String matricula) {
         this.matricula = matricula;
     }
-    
+
     public List<Setor> getSetoresAtivos() {
         return setoresAtivos;
     }
@@ -95,7 +96,6 @@ public class FuncionarioController implements Serializable {
     public FuncionarioController() {
         limparCampos();
         lazyModel = new LazyDataModel<Funcionario>() {
-
             @Override
             public List<Funcionario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 List<Funcionario> resultado = new ArrayList<Funcionario>();
@@ -196,8 +196,7 @@ public class FuncionarioController implements Serializable {
             }
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Erro ao salvar o registro. ");
-        }
-        finally {
+        } finally {
             HibernateFactory.closeSession();
         }
     }
@@ -271,8 +270,14 @@ public class FuncionarioController implements Serializable {
     }
 
     public boolean isEditarAcesso() {
-        LoginController loginController = new LoginController();
-        return loginController.usuarioLogadoIsGerente();
+        return getLoginController().usuarioLogadoIsGerente();
     }
-  
+
+    public LoginController getLoginController() {
+        return loginController;
+    }
+
+    public void setLoginController(LoginController loginController) {
+        this.loginController = loginController;
+    }
 }
