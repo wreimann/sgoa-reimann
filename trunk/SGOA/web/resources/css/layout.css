@@ -1064,12 +1064,12 @@ fieldset textarea:focus {
 }
 .login-inp	{
     background: url(../images/login/inp_login.gif) no-repeat;
-    border: none;
     color: #fff;
     font-size: 16px;
     height: 28px;
     padding: 6px 6px 0 10px;
     width: 204px;
+    border: 1px solid gray;
 }
 #logo-login	{
     float: left;

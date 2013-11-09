@@ -17,6 +17,8 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import util.CriptografiaUtil;
+import util.JsfUtil;
 
 @Stateless
 public class FuncionarioFacade extends BaseFacade<Funcionario> {
@@ -36,13 +38,27 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
     @Override
     public void incluir(Session sessao, Funcionario item) throws Exception {
         validarDocumento(sessao, item);
+        boolean enviarEmail = incluirAcessoAoSitema(item);
         super.incluir(sessao, item);
+        if(enviarEmail){
+            JsfUtil.enviarEmail(sessao,item.getPessoa(),"Reiman´s Car - Senha de autenticação", 
+                    "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
+                    + "E-mail: " + item.getPessoa().getEmail()
+                    + "Senha: " + item.getMatricula().replaceAll("\\.", ""));
+        }
     }
 
     @Override
     public void alterar(Session sessao, Funcionario item) throws Exception {
         validarDocumento(sessao, item);
+        boolean enviarEmail = incluirAcessoAoSitema(item);
         super.alterar(sessao, item);
+        if(enviarEmail){
+            JsfUtil.enviarEmail(sessao,item.getPessoa(),"Reiman´s Car - Senha de autenticação", 
+                    "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
+                    + "E-mail: " + item.getPessoa().getEmail()
+                    + "Senha: " + item.getMatricula().replaceAll("\\.", ""));
+        }
     }
 
     private void validarDocumento(Session sessao, Funcionario item) throws Exception {
@@ -57,6 +73,18 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
             if (funcionarios != null && !funcionarios.isEmpty()) {
                 throw new Exception("Já existe um funcionário cadastrado com o mesmo número de CPF.");
             }
+        }
+    }
+
+    private boolean incluirAcessoAoSitema(Funcionario item) throws Exception {
+        if (item == null) {
+            throw new EntityNotFoundException("Objeto nulo.");
+        }
+        if (item.getSenha() == null && item.getPerfilAcesso() != null) {
+            item.setSenha(CriptografiaUtil.encrypt(item.getMatricula()));
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -114,12 +142,17 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
     }
 
     public Funcionario login(Session sessao, String email, String senha) throws Exception {
+
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
-        Criteria c = sessao.createCriteria(Funcionario.class, "func").createCriteria("pessoa", "pes");
-        c.add(Restrictions.eq("pes.email", email));
-        c.add(Restrictions.eq("func.senha", senha));
-        return (Funcionario) c.uniqueResult();
+        Funcionario retorno = null;
+        if (!email.isEmpty() && !senha.isEmpty()) {
+            Criteria c = sessao.createCriteria(Funcionario.class, "func").createCriteria("pessoa", "pes");
+            c.add(Restrictions.eq("pes.email", email));
+            c.add(Restrictions.eq("func.senha", senha));
+            retorno = (Funcionario) c.uniqueResult();
+        }
+        return retorno;
     }
 }
