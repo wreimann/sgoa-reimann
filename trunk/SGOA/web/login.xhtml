@@ -32,8 +32,12 @@
                                         value="#{loginController.password}" maxlength="10"/>
 
                         </h:panelGrid>
+                        <h:panelGrid width="90%">
+                            <p:commandLink immediate="true" value="Recuperar Senha" style="margin-left: 182px; color: white; font-size: 9px; font-weight: bold;"
+                                           oncomplete="modalPopup.show();" />
+                        </h:panelGrid>
 
-                        <div class="btn_view_site" style="margin-left: 80px; margin-top: 10px;">
+                        <div class="btn_view_site" style="margin-left: 80px;">
                             <p:commandButton title="Entrar" id="EntrarButton"
                                              action="#{loginController.login}" ajax="false"
                                              value="Entrar" />
@@ -42,6 +46,41 @@
                     </h:form>
                 </div>
             </div>
+            <p:dialog  widgetVar="modalPopup" modal="true" width="450" height="200" resizable="false"
+                       showEffect="fade" header="Recuperar Senha" id="dialog" position="center" >
+                <h:form prependId="false" id="frmEsqueciSenha">
+                    <p:fieldset>
+                        <label style="width: 100%; text-align: left;" >E-mail*</label>
+                        <p:inputText id="EmailText" styleClass="login-inp" 
+                                     required="true"  requiredMessage="O campo 'E-mail' é obrigatório." 
+                                     value="#{loginController.emailEnvio}" validatorMessage="E-mail inválido." >
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
+                                             for="EmailText"  />
+                        </p:inputText>
+                    </p:fieldset>
+                    <h:panelGroup>
+                        <p:messages closable="true" autoUpdate="true"  />
+                    </h:panelGroup>
+                    <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px; float: right;" >
+                        <p:commandButton id="btnSalvar" 
+                                         actionListener="#{loginController.enviarSenha}" 
+                                         update=":frmEsqueciSenha" value="Enviar"/>
+                        <p:commandButton id="btnCancelar" value="Sair" immediate="true"
+                                         oncomplete="modalPopup.hide();" />  
+                    </h:panelGroup>
+
+                </h:form>
+            </p:dialog>
+            <script type="text/javascript">
+                function validarFormDialog(xhr, status, args) {
+                    if (args.validationFailed || args.exceptionThrown) {
+                        jQuery('#dialog').effect("shake", {times: 3}, 100);
+                    } else {
+                        modalPopup.hide();
+
+                    }
+                }
+            </script> 
         </div>
     </h:body>
 </html>

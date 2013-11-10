@@ -16,6 +16,7 @@ import util.JsfUtil;
 public class LoginController implements Serializable {
 
     private String email;
+    private String emailEnvio;
     private String password;
     private String newpassword;
     private Funcionario usuarioSession = null;
@@ -112,6 +113,24 @@ public class LoginController implements Serializable {
         }
     }
 
+    public void enviarSenha() {
+        try {
+            if (emailEnvio == null || emailEnvio.isEmpty()) {
+                JsfUtil.addErrorMessageExterna("Informe o e-mail de cadastro.");
+            } else {
+                Session sessao = HibernateFactory.currentSession();
+                FuncionarioFacade ebjUsario = new FuncionarioFacade();
+                ebjUsario.recuperarSenha(sessao, emailEnvio);
+                setEmailEnvio(null);
+                JsfUtil.addSuccessMessage("A nova senha foi enviada para o e-mail informado.");
+            }
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage("Erro ao recuperar senha. " + ex.getMessage());
+        } finally {
+            HibernateFactory.closeSession();
+        }
+    }
+
     public void cancelarAlterarSenha() {
         setPassword(null);
         setNewpassword(newpassword);
@@ -185,5 +204,13 @@ public class LoginController implements Serializable {
 
     public void setNewpassword(String newpassword) {
         this.newpassword = newpassword;
+    }
+
+    public String getEmailEnvio() {
+        return emailEnvio;
+    }
+
+    public void setEmailEnvio(String emailEnvio) {
+        this.emailEnvio = emailEnvio;
     }
 }

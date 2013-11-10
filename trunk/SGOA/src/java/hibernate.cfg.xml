@@ -35,5 +35,6 @@
     <mapping class="model.OrdemServicoFoto"/>
     <mapping class="model.OrdemServicoEvento"/>
     <mapping class="model.ConfigOrdemServico"/>
+    <mapping class="model.ConfigEmail"/>
   </session-factory>
 </hibernate-configuration>

@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html  xmlns:p="http://primefaces.org/ui"
+       xmlns:h="http://java.sun.com/jsf/html"  
+       xmlns:ui="http://java.sun.com/jsf/facelets"
+       xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Reiman´s Car - Acompanhe o Serviço</title>
+        <h:outputStylesheet name="layout.css" library="css" value="text/css" /> 
+        <h:outputScript name="hideshow.js" library="js" />
+        <h:outputScript name="jquery.tablesorter.min.js" library="js" />
+        <h:outputScript name="jquery.equalHeight.js" library="js" />
+    </h:head>
+    <h:body>
+        <header id="header">
+            <hgroup>
+                <h1 class="site_title">
+                    <h:graphicImage id="logoMaster" url="/images/Logo.png" width="184" height="50" style="margin-top: 5px;"/>
+                </h1>
+                <div class="btn_view_site" style="float: right;" >
+                    <h:form>
+                        <h:commandLink id="btnSair" action="/index.xhtml?faces-redirect=true" value="Sair" title="Sair"/>
+                    </h:form>
+                </div>
+            </hgroup>
+        </header> 
+        <section id="main" class="column">
+            <article class="module width_full">
+                <header>
+                    <h2>Acompanhe o Serviço</h2>
+                </header>
+                <div class="module_content">
+                    <h:form id="frmConsulta" prependId="false">
+                        <h:panelGroup rendered="#{acompanharServicoController.etapa==null}" layout="block" style="margin-top: 20px;">
+                            <p:messages id="growl" />
+                            <div class="ui-messages-warn ui-corner-all" style="padding-bottom: 0px; padding-top: 0px; ">
+                                <span class="ui-messages-warn-icon" style="margin-right: 10px; margin-top: 10px;" ></span>
+                                <p>O veículo não possui nenhuma ordem de serviço pendente.</p>
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{acompanharServicoController.etapa!=null}" layout="block" style="margin-top: 20px;">
+                            <p:messages id="grow" />
+                            <h:panelGrid columns="2">
+                                <p:fieldset style="width: 360px; margin-right: 19px;">
+                                    <p:outputLabel value="Cliente"/>
+                                    <p:inputText value="#{acompanharServicoController.cliente}"
+                                                 disabled="true"/>
+                                </p:fieldset>
+                                <p:fieldset style="width: 200px;">
+                                    <p:outputLabel value="Veículo"/>
+                                    <p:inputText value="#{acompanharServicoController.veiculo}"
+                                                 disabled="true"/>
+                                </p:fieldset>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2">
+                                <p:fieldset style="width: 360px; margin-right: 19px;">
+                                    <p:outputLabel value="Atividade Atual"/>
+                                    <p:inputText value="#{acompanharServicoController.etapa}"
+                                                 disabled="true"/>
+                                </p:fieldset>
+                                <p:fieldset style="width: 200px;">
+                                    <p:outputLabel value="Situação"/>
+                                    <h:selectOneMenu id="SituacaoListBox" disabled="true"
+                                                     value="#{acompanharServicoController.situacao}">
+                                        <f:selectItem itemLabel="Em Execução" itemValue="E" />
+                                        <f:selectItem itemLabel="Cancelado" itemValue="A" />
+                                        <f:selectItem itemLabel="Parado" itemValue="P" />
+                                        <f:selectItem itemLabel="Fila de espera" itemValue="F" />
+                                        <f:selectItem itemLabel="Concluído" itemValue="C" />
+                                    </h:selectOneMenu>
+                                </p:fieldset>
+                            </h:panelGrid>
+                            <h:panelGroup layout="block" style="margin-top: 25px;">
+                                <p:dataTable var="atividade" 
+                                             value="#{acompanharServicoController.atividades}" lazy="false"
+                                             widgetVar="dataTableAtividade" rowIndexVar="rowIx"
+                                             paginatorPosition="bottom"  
+                                             emptyMessage="Nenhum resultado encontrado."                   
+                                             rows="10" sortBy="dataEntrada" sortOrder="descending"
+                                             currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                                    <f:facet name="header">
+                                        <div class="tabs_involved">
+                                            <h:outputLabel value="Histórico de Atividades" styleClass="tabs_involved" />                               
+                                        </div>
+                                    </f:facet>
+                                    <p:column headerText="Data Entrada" width="125">
+                                        <h:outputText value="#{atividade.dataEntrada}" >
+                                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Atividade">
+                                        <h:outputText value="#{atividade.etapa}" />
+                                    </p:column>
+                                    <p:column headerText="Data Saída" width="125">
+                                        <h:outputText value="#{atividade.dataSaida}">
+                                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Situação" width="90">
+                                        <p:outputLabel value="Em Execução" rendered="#{atividade.situacao == 'E'}"   />  
+                                        <p:outputLabel value="Cancelado" rendered="#{atividade.situacao == 'A'}"   />  
+                                        <p:outputLabel value="Parado" rendered="#{atividade.situacao == 'P'}"   />  
+                                        <p:outputLabel value="Fila de Espera" rendered="#{atividade.situacao == 'F'}"   />  
+                                        <p:outputLabel value="Concluído" rendered="#{atividade.situacao == 'C'}"   /> 
+                                    </p:column>
+
+                                    <p:column headerText="Horas Trab." width="70">
+                                        <h:outputText value="#{atividade.horasTrabalhadas}" />
+                                    </p:column>
+                                    <p:column headerText="Detalhes" width="60">
+                                        <p:commandButton alt="Detalhes" title="Detalhes" icon="ui-icon-search"
+                                                         oncomplete="modalHistoricoPopup.show()" immediate="true"
+                                                         action="#{acompanharServicoController.prepararEvento}"
+                                                         update=":frmHistoricoEvento">
+                                            <f:setPropertyActionListener value="#{atividade}" target="#{acompanharServicoController.atividade}" />
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </h:form>
+                </div>
+                <footer>
+                </footer>
+            </article>
+
+            <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="750" height="340" resizable="false"
+                       showEffect="fade" header="Detalhes da atividade" id="dialogHistorico" >
+                <h:form id="frmHistoricoEvento" prependId="false">
+                    <p:dataTable var="evento" value="#{acompanharServicoController.eventos}" lazy="false"
+                                 widgetVar="dataTableEventos" rowIndexVar="rowIx"
+                                 paginatorPosition="bottom"  
+                                 emptyMessage="Nenhum resultado encontrado."                   
+                                 rows="6" paginator="true"
+                                 currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                        <p:column headerText="Ocorrência" width="125">
+                            <h:outputText value="#{evento.dataOcorrencia}" >
+                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Funcionário">
+                            <h:outputText value="#{evento.funcionario}" />
+                        </p:column>
+                        <p:column headerText="Evento" width="100">
+                            <h:outputText value="#{evento.tipoEvento.toString()}" />
+                        </p:column>
+                        <p:column headerText="Descrição">
+                            <h:outputText value="#{evento.descricao}" />
+                        </p:column>
+                        <p:column headerText="Data" width="125">
+                            <h:outputText value="#{evento.dataInicioParada}">
+                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Fotos">
+                            <p:commandButton alt="Fotos" title="Fotos" icon="ui-icon-search" 
+                                             oncomplete="dialogGaleria.show();" 
+                                             update=":frmGaleria"
+                                             action="#{acompanharServicoController.changeFoto}">
+                                <f:setPropertyActionListener value="#{evento}" target="#{acompanharServicoController.evento}" /> 
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog widgetVar="dialogGaleria" modal="true" id="dGaleria"
+                      width="440" height="390" dynamic="true" position="center" resizable="false" appendToBody="false"
+                      header="Fotos">
+                <h:form id="frmGaleria" prependId="false"  >
+                    <h:panelGroup rendered="#{acompanharServicoController.fotos.size()==0}" layout="block" style="margin-top: 20px;">
+                        <div class="ui-messages-warn ui-corner-all" style="padding-bottom: 0px; padding-top: 0px; ">
+                            <span class="ui-messages-warn-icon" style="margin-right: 10px; margin-top: 10px;" ></span>
+                            <p>Nenhuma foto encontrada.</p>
+                        </div>
+                    </h:panelGroup>
+                    <p:galleria value="#{acompanharServicoController.fotos}" id="galeriaModal"
+                                var="galeria" effect="slide" effectSpeed="2000" showCaption="false" 
+                                showFilmstrip="true"  
+                                panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
+                                rendered="#{acompanharServicoController.fotos.size()>0}">
+                        <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 
+                                        title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"  />
+
+                    </p:galleria>
+                </h:form>
+
+            </p:dialog>
+        </section>
+    </h:body>
+</html>
+
