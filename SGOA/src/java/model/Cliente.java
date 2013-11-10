@@ -87,6 +87,6 @@ public class Cliente extends BaseEntidadeAtivo<Cliente> {
     
     @Override
     public String toString() {
-        return super.toString() + " - " + getPessoa().getNome();
+        return getPessoa().getNome();
     }
 }

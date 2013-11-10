@@ -40,8 +40,8 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
         validarDocumento(sessao, item);
         boolean enviarEmail = incluirAcessoAoSitema(item);
         super.incluir(sessao, item);
-        if(enviarEmail){
-            JsfUtil.enviarEmail(sessao,item.getPessoa(),"Reiman´s Car - Senha de autenticação", 
+        if (enviarEmail) {
+            JsfUtil.enviarEmail(sessao, item.getPessoa(), "Reiman´s Car - Senha de autenticação",
                     "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
                     + "E-mail: " + item.getPessoa().getEmail()
                     + "Senha: " + item.getMatricula().replaceAll("\\.", ""));
@@ -53,8 +53,8 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
         validarDocumento(sessao, item);
         boolean enviarEmail = incluirAcessoAoSitema(item);
         super.alterar(sessao, item);
-        if(enviarEmail){
-            JsfUtil.enviarEmail(sessao,item.getPessoa(),"Reiman´s Car - Senha de autenticação", 
+        if (enviarEmail) {
+            JsfUtil.enviarEmail(sessao, item.getPessoa(), "Reiman´s Car - Senha de autenticação",
                     "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
                     + "E-mail: " + item.getPessoa().getEmail()
                     + "Senha: " + item.getMatricula().replaceAll("\\.", ""));
@@ -84,6 +84,9 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
             item.setSenha(CriptografiaUtil.encrypt(item.getMatricula()));
             return true;
         } else {
+            if (item.getPerfilAcesso() == null) {
+                item.setSenha(null);
+            }
             return false;
         }
     }
@@ -142,7 +145,6 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
     }
 
     public Funcionario login(Session sessao, String email, String senha) throws Exception {
-
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
@@ -154,5 +156,39 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
             retorno = (Funcionario) c.uniqueResult();
         }
         return retorno;
+    }
+
+    public Funcionario obterPorEmail(Session sessao, String email) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        Funcionario retorno = null;
+        if (!email.isEmpty()) {
+            Criteria c = sessao.createCriteria(Funcionario.class, "func").createCriteria("pessoa", "pes");
+            c.add(Restrictions.eq("pes.email", email));
+            retorno = (Funcionario) c.uniqueResult();
+        }
+        return retorno;
+    }
+
+    public void recuperarSenha(Session sessao, String email) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        Funcionario retorno = obterPorEmail(sessao, email);
+        if (retorno != null) {
+            if (retorno.getPerfilAcesso() != null) {
+                retorno.setSenha(CriptografiaUtil.encrypt(retorno.getMatricula()));
+                alterar(sessao, retorno);
+                JsfUtil.enviarEmail(sessao, retorno.getPessoa(), "Reiman´s Car - Recuperação de senha de autenticação",
+                        "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
+                        + "E-mail: " + retorno.getPessoa().getEmail()
+                        + "Senha: " + retorno.getMatricula().replaceAll("\\.", ""));
+            } else {
+                throw new Exception("Funcionário sem permissão ao sistema.");
+            }
+        } else {
+            throw new Exception("E-mail não localizado.");
+        }
     }
 }

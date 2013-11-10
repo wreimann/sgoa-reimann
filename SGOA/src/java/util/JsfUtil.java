@@ -1,6 +1,5 @@
 package util;
 
-import controller.LoginController;
 import facede.ConfigEmailFacade;
 import java.util.List;
 import java.util.Properties;
@@ -15,8 +14,6 @@ import javax.mail.Message;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import model.ConfigEmail;
 import model.Pessoa;
 import org.hibernate.Session;
@@ -71,7 +68,7 @@ public class JsfUtil {
     }
 
     public static String getRequestParameter(String key) {
-        return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(key);
+       return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(key);
     }
 
     public static Object getObjectFromRequestParameter(String requestParameterName, Converter converter, UIComponent component) {
