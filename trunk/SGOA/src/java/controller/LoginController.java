@@ -171,25 +171,6 @@ public class LoginController implements Serializable {
         return acesso;
     }
 
-    public boolean verificarPermissao(String perfil, String pagina) {
-        boolean acesso = false;
-        if (getUsuarioSession() != null) {
-            if (usuarioLogadoIsGerente()) {
-                acesso = true;
-            } /*else if ("Administrativo".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
-             if (pagina.contains("usuario.xhtml")
-             || pagina.contains("alterarsenha.xhtml")) {
-             acesso = false;
-             } else {
-             acesso = true;
-             }
-             } else if ("Operacional".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
-            
-             }*/
-        }
-        return acesso;
-    }
-
     public String getEmail() {
         return email;
     }
