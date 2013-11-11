@@ -23,7 +23,7 @@ public class LoginFilter implements Filter {
                 && !requestPath.contains("acompanharservico.xhtml")) {
             LoginController loginController = (LoginController) req.getSession().getAttribute("loginController");
             if (loginController != null) {
-                boolean validate = loginController.verificarPermissao(loginController.getUsuarioSession().getPerfilAcesso().getDescricao(), requestPath);
+                boolean validate = loginController.verificarPermissao(requestPath);
                 if (!validate) {
                     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
                     httpServletResponse.sendRedirect(req.getContextPath() + "/faces/erroPadrao.xhtml");

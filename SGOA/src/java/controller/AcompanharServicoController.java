@@ -42,22 +42,27 @@ public class AcompanharServicoController implements Serializable {
                 OrdemServico os = ejbFacade.ObterOrdemServicoPorPlaca(sessao, placa);
                 if (os != null) {
                     if (os.getOrcamento().getCliente().getPessoa() instanceof PessoaFisica) {
-                      if(!((PessoaFisica)os.getOrcamento().getCliente().getPessoa()).getCpf().equals(doc)){
-                          JsfUtil.addErrorMessage("Veículo não localizado.");
-                          return;
-                      }
+                        if (!((PessoaFisica) os.getOrcamento().getCliente().getPessoa()).getCpf().equals(doc)) {
+                            JsfUtil.addErrorMessage("Veículo não localizado.");
+                            return;
+                        }
                     } else {
-                        if(!((PessoaJuridica)os.getOrcamento().getCliente().getPessoa()).getCnpj().equals(doc)){
-                          JsfUtil.addErrorMessage("Veículo não localizado.");
-                          return;
-                      }
+                        if (!((PessoaJuridica) os.getOrcamento().getCliente().getPessoa()).getCnpj().equals(doc)) {
+                            JsfUtil.addErrorMessage("Veículo não localizado.");
+                            return;
+                        }
                     }
                     setCliente(os.getOrcamento().getCliente().toString());
                     setVeiculo(os.getOrcamento().getVeiculo().toString());
                     setPlaca(os.getOrcamento().getVeiculo().getPlaca());
-                    etapa = os.getEtapaAtual().getEtapa();
-                    setSituacao(os.getEtapaAtual().getSituacao());
-                    atividades = os.getEtapas();
+                    atividades.clear();
+                    for (OrdemServicoEtapa ativ : os.getEtapas()) {
+                        if (ativ.getEtapa().getVisivelWebSite()) {
+                            atividades.add(0,ativ);
+                        }
+                    }
+                    etapa = atividades.get(0).getEtapa();
+                    setSituacao(atividades.get(0).getSituacao());                    
                 } else {
                     JsfUtil.addErrorMessage("Veículo não localizado.");
                 }
@@ -139,7 +144,7 @@ public class AcompanharServicoController implements Serializable {
     public void setPlaca(String placa) {
         this.placa = placa;
     }
-    
+
     public char getSituacao() {
         return situacao;
     }
