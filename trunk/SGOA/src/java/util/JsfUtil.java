@@ -68,7 +68,7 @@ public class JsfUtil {
     }
 
     public static String getRequestParameter(String key) {
-       return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(key);
+        return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(key);
     }
 
     public static Object getObjectFromRequestParameter(String requestParameterName, Converter converter, UIComponent component) {
@@ -116,5 +116,35 @@ public class JsfUtil {
         }
     }
 
-    
+    public static void enviarEmailOficina(Session sessao, String placa, String mensagem) {
+        try {
+            ConfigEmailFacade ebjEmail = new ConfigEmailFacade();
+            final ConfigEmail config = ebjEmail.obterPorId(sessao, 1);
+            java.util.Properties props = new Properties();
+            props.setProperty("mail.transport.protocol", "smtp");
+            props.setProperty("mail.host", config.getServidorSMTP());
+            props.setProperty("mail.smtp.auth", "true");
+            props.setProperty("mail.smtp.starttls.enable", "true");
+            props.setProperty("mail.smtp.port", config.getPorta().toString());
+            props.setProperty("mail.mime.charset", "ISO-8859-1");
+            // Cria a sessao passando as propriedades e a autenticação
+            //javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, auth);
+            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props);
+            // Gera um log no console referente ao processo de envio
+            session.setDebug(true);
+            //cria a mensagem setando o remetente e seus destinatários
+            Message msg = new MimeMessage(session);
+            //aqui seta o remetente
+            msg.setFrom(new InternetAddress(config.getEmail(), config.getIdentificacaoEmail()));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress("contato@reimanscar.com.br"));
+            msg.setSubject("Interação do cliente no serviço");
+            msg.setText(mensagem + "<br/>" + "Mensagem enviado pelo cliente com veículo de placa: " + placa);
+            Transport transportTLS = session.getTransport();
+            transportTLS.connect(config.getServidorSMTP(), config.getPorta(), config.getEmail(), config.getSenha());
+            transportTLS.sendMessage(msg, msg.getAllRecipients());
+            transportTLS.close();
+        } catch (Exception ex) {
+            Logger.getLogger(JsfUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

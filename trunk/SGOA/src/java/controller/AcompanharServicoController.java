@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,6 +23,7 @@ import model.OrdemServicoEvento;
 import model.OrdemServicoFoto;
 import model.PessoaFisica;
 import model.PessoaJuridica;
+import model.TipoEvento;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import util.HibernateFactory;
@@ -52,17 +54,40 @@ public class AcompanharServicoController implements Serializable {
                             return;
                         }
                     }
-                    setCliente(os.getOrcamento().getCliente().toString());
-                    setVeiculo(os.getOrcamento().getVeiculo().toString());
-                    setPlaca(os.getOrcamento().getVeiculo().getPlaca());
                     atividades.clear();
                     for (OrdemServicoEtapa ativ : os.getEtapas()) {
                         if (ativ.getEtapa().getVisivelWebSite()) {
-                            atividades.add(0,ativ);
+                            atividades.add(ativ);
                         }
                     }
-                    etapa = atividades.get(0).getEtapa();
-                    setSituacao(atividades.get(0).getSituacao());                    
+                    if (atividades.size() > 0) {
+                        etapa = atividades.get(0).getEtapa();
+                        switch (atividades.get(0).getSituacao()) {
+                            case 'A':
+                                situacao = "Cancelado";
+                                break;
+                            case 'E':
+                                situacao = "Em Execução";
+                                break;
+                            case 'F':
+                                situacao = "Fila de Espera";
+                                break;
+                            case 'P':
+                                situacao = "Parado";
+                                break;
+                            case 'C':
+                                situacao = "Concluído";
+                                break;
+                            default:
+                                situacao = "";
+                        }
+                    
+                    }
+                    setCliente(os.getOrcamento().getCliente().toString());
+                    setVeiculo(os.getOrcamento().getVeiculo().toString());
+                    setPlaca(os.getOrcamento().getVeiculo().getPlaca());
+                    setOrcamento(os.getOrcamento().toString());
+                    setDataAprovacao(new SimpleDateFormat("dd/MM/yyyy hh:mm").format(os.getDataAprovacao()));
                 } else {
                     JsfUtil.addErrorMessage("Veículo não localizado.");
                 }
@@ -82,8 +107,12 @@ public class AcompanharServicoController implements Serializable {
         setDoc(null);
         setCliente(null);
         setVeiculo(null);
+        setOrcamento(null);
+        setDataAprovacao(null);
+        setSituacao(null);
         setEtapa(null);
         setAtividade(null);
+        setInformacao(null);
     }
 
     public String logout() {
@@ -97,7 +126,10 @@ public class AcompanharServicoController implements Serializable {
     private String doc;
     private String cliente;
     private Etapa etapa;
-    private char situacao;
+    private String situacao;
+    private String orcamento;
+    private String dataAprovacao;
+    private String informacao;
     private List<OrdemServicoEtapa> atividades;
     private List<OrdemServicoEvento> eventos;
     private OrdemServicoEtapa atividade;
@@ -145,11 +177,35 @@ public class AcompanharServicoController implements Serializable {
         this.placa = placa;
     }
 
-    public char getSituacao() {
+    public String getInformacao() {
+        return informacao;
+    }
+
+    public void setInformacao(String informacao) {
+        this.informacao = informacao;
+    }
+
+    public String getOrcamento() {
+        return orcamento;
+    }
+
+    public void setOrcamento(String orcamento) {
+        this.orcamento = orcamento;
+    }
+
+    public String getDataAprovacao() {
+        return dataAprovacao;
+    }
+
+    public void setDataAprovacao(String dataAprovacao) {
+        this.dataAprovacao = dataAprovacao;
+    }
+
+    public String getSituacao() {
         return situacao;
     }
 
-    public void setSituacao(char situacao) {
+    public void setSituacao(String situacao) {
         this.situacao = situacao;
     }
 
@@ -203,7 +259,16 @@ public class AcompanharServicoController implements Serializable {
         }
     }
 
-    public void adicionarEvento(ActionEvent event) {
+    public void adicionarEvento() {
+        try {
+            Session sessao = HibernateFactory.currentSession();
+            ejbFacade.incluirEvento(sessao, atividade, null, TipoEvento.ContatoCliente, informacao, null, null, false); 
+            JsfUtil.addSuccessMessage("Mensagem enviada com sucesso. Obrigado pela sua colaboração.");
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, "Erro ao enviar a mensagem. Tente mais tarde novamente.");
+        } finally {
+            HibernateFactory.closeSession();
+        }
     }
 
     private void criaArquivo(byte[] bytes, String arquivo) {

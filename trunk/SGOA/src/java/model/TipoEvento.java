@@ -7,7 +7,9 @@ public enum TipoEvento {
     Cancelamento("Cancelamento da Atividade"),
     InterrupcaoAtividade("Interrupção da Atividade"),
     ReinicioAtividade("Reinício da Atividade"),
-    Informacao("Informação");
+    Informacao("Informação"),
+    ContatoCliente("Contato do Cliente");
+    
     private String value;
 
     private TipoEvento(String value) {

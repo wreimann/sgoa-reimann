@@ -211,7 +211,7 @@
                    showEffect="fade" header="Cadastro de Eventos" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmEvento" prependId="false" enctype="multipart/form-data">
-                <h:panelGrid columns="2">
+                <h:panelGrid columns="3">
                     <p:fieldset style="width: 180px;">
                         <label>Tipo Evento*</label>
                         <h:selectOneMenu value="#{ordemServicoController.tipoEvento}" required="true"
@@ -230,6 +230,7 @@
                                     pattern="dd/MM/yyyy HH:mm" locale="pt"
                                     timeZone="America/Sao_Paulo" />
                     </p:fieldset>
+                    <h:selectBooleanCheckbox value="#{ordemServicoController.inicioImediato}"/><b>Notifica o cliente via e-mail?</b>
                 </h:panelGrid>
                 <p:fieldset>
                     <label>Descrição*</label>

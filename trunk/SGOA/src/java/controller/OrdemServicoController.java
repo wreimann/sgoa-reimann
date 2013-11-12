@@ -3,7 +3,6 @@ package controller;
 import facede.EtapaFacade;
 import facede.FuncionarioFacade;
 import facede.OrdemServicoFacade;
-import filter.LoginFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,7 +38,7 @@ public final class OrdemServicoController implements Serializable {
 
     @EJB
     private OrdemServicoFacade ejbFacade;
-    @ManagedProperty(value="#{loginController}")
+    @ManagedProperty(value = "#{loginController}")
     private LoginController loginController;
     private OrdemServicoEtapa current;
     private List<OrdemServicoEtapa> atividades;
@@ -50,6 +49,7 @@ public final class OrdemServicoController implements Serializable {
     private List<OrdemServicoFoto> fotosAux;
     private String descEvento;
     private Date dataInicioParada;
+    private boolean enviaEmailEvento;
     private boolean exibirData;
     private OrdemServicoEtapa atividade;
     private OrdemServicoEvento evento;
@@ -81,6 +81,14 @@ public final class OrdemServicoController implements Serializable {
 
     public List<OrdemServicoEvento> getEventos() {
         return eventos;
+    }
+
+    public boolean isEnviaEmailEvento() {
+        return enviaEmailEvento;
+    }
+
+    public void setEnviaEmailEvento(boolean enviaEmailEvento) {
+        this.enviaEmailEvento = enviaEmailEvento;
     }
 
     public boolean isExibirData() {
@@ -337,7 +345,7 @@ public final class OrdemServicoController implements Serializable {
         }
         try {
             Session sessao = HibernateFactory.currentSession();
-            ejbFacade.incluirEvento(sessao, current, getLoginController().getUsuarioSession(), getTipoEvento(), getDescEvento(), getDataInicioParada(), fotosAux);
+            ejbFacade.incluirEvento(sessao, current, getLoginController().getUsuarioSession(), getTipoEvento(), getDescEvento(), getDataInicioParada(), fotosAux, isEnviaEmailEvento());
             JsfUtil.addSuccessMessage("Evento incluído com sucesso!");
             fotosAux = new ArrayList<OrdemServicoFoto>();
         } catch (Exception e) {

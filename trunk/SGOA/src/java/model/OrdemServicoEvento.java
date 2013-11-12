@@ -98,5 +98,18 @@ public class OrdemServicoEvento extends BaseEntidadeDescricao<OrdemServicoEvento
     }
     
     
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "NotificaViaEmail")
+    private boolean notificaViaEmail;
+
+    public boolean getNotificaViaEmail() {
+        return notificaViaEmail;
+    }
+
+    public void setNotificaViaEmail(boolean notificaViaEmail) {
+        this.notificaViaEmail = notificaViaEmail;
+    }
+    
     
 }
