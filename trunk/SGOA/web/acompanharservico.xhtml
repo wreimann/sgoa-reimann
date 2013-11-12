@@ -60,16 +60,20 @@
                                 <p:row>  
                                     <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
                                     <p:column><p:outputLabel value="Atividade Atual" style="font-weight: bold;color: blue;" for="AtividadeLabel"/></p:column>
-                                    <p:column><p:outputLabel id="AtividadeLabel" value="#{acompanharServicoController.etapa}" style="font-weight: bold;color: #30B0C8;" /></p:column>
+                                    <p:column><p:outputLabel id="AtividadeLabel" value="#{acompanharServicoController.etapa}" /></p:column>
+
+                                </p:row>
+                                <p:row>
                                     <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
                                     <p:column><p:outputLabel value="Situação" style="font-weight: bold;color: blue;" for="SituacaoLabel"/></p:column>
-                                    <p:column><p:outputLabel id="SituacaoLabel" value="#{acompanharServicoController.situacao}" style="font-weight: bold;color: #30B0C8;" /></p:column>
+                                    <p:column><p:outputLabel id="SituacaoLabel" value="#{acompanharServicoController.situacao}" /></p:column>
                                 </p:row>
+
                             </p:panelGrid>
                             <p:commandButton title="Entre em Contato"  icon="ui-icon-circle-plus" 
                                              value="Entre em Contato" oncomplete="modalPopup.show()"
                                              style="margin-top: 25px;"/>
-                            <p:tabView id="tabView" style="margin-top: 25px;" >
+                            <p:tabView id="tabView" style="margin-top: 25px;"  dynamic="true">
                                 <p:tab id="tab2" title="Atividades">  
                                     <p:dataTable var="atividade" 
                                                  value="#{acompanharServicoController.atividades}" lazy="false"
@@ -118,7 +122,13 @@
                                         </p:column>
                                     </p:dataTable>
                                 </p:tab>
-                                <p:tab id="tab3" title="Fotos">
+                                <p:tab id="tab3" title="Fotos" >
+                                    <h:panelGroup rendered="#{acompanharServicoController.fotosOS.size()==0}" layout="block" style="margin-top: 20px;">
+                                        <div class="ui-messages-warn ui-corner-all" style="padding-bottom: 0px; padding-top: 0px; ">
+                                            <span class="ui-messages-warn-icon" style="margin-right: 10px; margin-top: 10px;" ></span>
+                                            <p>Nenhuma foto encontrada.</p>
+                                        </div>
+                                    </h:panelGroup>
                                     <p:galleria value="#{acompanharServicoController.fotosOS}" 
                                                 var="galeria" effect="slide" effectSpeed="2000" showCaption="false" 
                                                 showFilmstrip="true" panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
