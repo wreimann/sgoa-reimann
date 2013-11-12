@@ -395,12 +395,13 @@ aside#sidebar {
 
 
 section#main {
-    width: 100%;
+    width: 77%;
     min-height: 500px;
     background: url(../images/sidebar_shadow.png) repeat-y left top;
     float: left;
-    margin-top: 10px;
+    margin-top: -2px;
 }
+
 
 #main h3 {
     color: #1F1F20;
@@ -1079,4 +1080,9 @@ fieldset textarea:focus {
 
 .semBorda tr, .semBorda td {  
     border: none !important;  
+}
+
+.full {
+    width: 100% !important;
+    margin-top: 10px !important;
 }
