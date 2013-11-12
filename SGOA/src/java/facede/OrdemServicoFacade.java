@@ -11,7 +11,6 @@ import model.Cliente;
 import model.ConfigOrdemServico;
 import model.Etapa;
 import model.Funcionario;
-import model.Orcamento;
 import model.OrdemServico;
 import model.OrdemServicoEtapa;
 import model.OrdemServicoEvento;
@@ -28,7 +27,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.primefaces.model.SortOrder;
-import util.DateUtils;
 import util.HibernateFactory;
 
 @Stateless
@@ -47,13 +45,15 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
     }
 
     public void incluirEvento(Session sessao, OrdemServicoEtapa etapa, Funcionario funcionario,
-            TipoEvento tipo, String descricao, Date dataInicioParada, List<OrdemServicoFoto> fotos) throws Exception {
+            TipoEvento tipo, String descricao, Date dataInicioParada, List<OrdemServicoFoto> fotos,
+            boolean notificaViaEmail) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
         try {
             HibernateFactory.beginTransaction();
             OrdemServicoEvento evento = adicionarEvento(etapa, funcionario, tipo);
+            evento.setNotificaViaEmail(notificaViaEmail);
             etapa.getEventos().add(0, evento);
             evento.setDescricao(descricao);
             evento.setDataInicioParada(dataInicioParada);
@@ -69,6 +69,9 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             }
             sessao.saveOrUpdate(etapa);
             HibernateFactory.commitTransaction();
+            if (notificaViaEmail) {
+                util.JsfUtil.enviarEmail(sessao, etapa.getOrdemServico().getOrcamento().getCliente().getPessoa(), null, null);
+            }
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
             throw e;
@@ -125,6 +128,9 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             throw new Exception("Sessão não iniciada.");
         }
         try {
+            if (ObterOrdemServicoPorPlaca(sessao, item.getOrcamento().getVeiculo().getPlaca()) != null) {
+                throw new Exception("Erro na aprovação do orçamento. O veículo já possui uma ordem de serviço em execução.");
+            }
             HibernateFactory.beginTransaction();
             item.getOrcamento().setSituacao('P');
             Calendar cal = Calendar.getInstance();
@@ -148,6 +154,9 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             item.getEtapas().add(0, etapa);
             sessao.save(item);
             HibernateFactory.commitTransaction();
+            if (etapa.getEtapa().getEnviaEmailInicio()) {
+                util.JsfUtil.enviarEmail(sessao, item.getOrcamento().getCliente().getPessoa(), null, null);
+            }
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
             throw e;
@@ -190,10 +199,17 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             }
             sessao.saveOrUpdate(item);
             HibernateFactory.commitTransaction();
+            if (item.getEtapa().getEnviaEmailFim()) {
+                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), null, null);
+            }
+            if (proximaEtapa.getEnviaEmailInicio()) {
+                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), null, null);
+            }
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
             throw e;
         }
+
     }
 
     public OrdemServico ObterOrdemServicoPorPlaca(Session sessao, String placa) throws Exception {
@@ -204,7 +220,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         c.add(Restrictions.eq("os.situacao", 'E'));//em execução
         c.createCriteria("orcamento", "orc").createCriteria("veiculo", "v");
         c.add(Restrictions.like("v.placa", placa, MatchMode.EXACT).ignoreCase());
-        OrdemServico resultado = ((OrdemServico) c.uniqueResult());
+        OrdemServico resultado = (OrdemServico) c.uniqueResult();
         if (resultado != null) {
             Hibernate.initialize(resultado.getEtapaAtual());
             for (OrdemServicoEtapa item : resultado.getEtapas()) {
@@ -226,7 +242,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         OrdemServicoEvento entidade = (OrdemServicoEvento) sessao.get(OrdemServicoEvento.class, id);
         return entidade;
     }
-    
+
     public OrdemServicoEtapa obterEtapa(Session sessao, int id) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");

@@ -39,32 +39,6 @@ public class Etapa extends BaseEntidadeDescricao<Etapa> {
     
     @Basic(optional = false)
     @NotNull
-    @Column(name = "Automatica")
-    private boolean automatica;
-
-    public boolean getAutomatica() {
-        return automatica;
-    }
-
-    public void setAutomatica(boolean automatica) {
-        this.automatica = automatica;
-    }
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Decisao")
-    private boolean decisao;
-
-    public boolean getDecisao() {
-        return decisao;
-    }
-
-    public void setDecisao(boolean decisao) {
-        this.decisao = decisao;
-    }
-    
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "VisivelWebSite")
     private boolean visivelWebSite;
 
