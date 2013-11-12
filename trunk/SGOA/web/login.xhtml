@@ -46,9 +46,12 @@
                     </h:form>
                 </div>
             </div>
-            <p:dialog  widgetVar="modalPopup" modal="true" width="450" height="200" resizable="false"
-                       showEffect="fade" header="Recuperar Senha" id="dialog" position="center" >
+            <p:dialog  widgetVar="modalPopup" modal="true" width="450" resizable="false"
+                       showEffect="fade" header="Recuperar Senha" id="dialog" style="text-align: left;" >
                 <h:form prependId="false" id="frmEsqueciSenha">
+                    <h:panelGroup>
+                        <p:messages closable="true" autoUpdate="true"  />
+                    </h:panelGroup>
                     <p:fieldset>
                         <label style="width: 100%; text-align: left;" >E-mail*</label>
                         <p:inputText id="EmailText" styleClass="login-inp" 
@@ -58,9 +61,7 @@
                                              for="EmailText"  />
                         </p:inputText>
                     </p:fieldset>
-                    <h:panelGroup>
-                        <p:messages closable="true" autoUpdate="true"  />
-                    </h:panelGroup>
+
                     <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px; float: right;" >
                         <p:commandButton id="btnSalvar" 
                                          actionListener="#{loginController.enviarSenha}" 

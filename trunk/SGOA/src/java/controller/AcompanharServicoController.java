@@ -14,7 +14,6 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.ServletContext;
 import model.Etapa;
 import model.OrdemServico;
@@ -81,13 +80,17 @@ public class AcompanharServicoController implements Serializable {
                             default:
                                 situacao = "";
                         }
-                    
+
                     }
                     setCliente(os.getOrcamento().getCliente().toString());
                     setVeiculo(os.getOrcamento().getVeiculo().toString());
                     setPlaca(os.getOrcamento().getVeiculo().getPlaca());
                     setOrcamento(os.getOrcamento().toString());
                     setDataAprovacao(new SimpleDateFormat("dd/MM/yyyy hh:mm").format(os.getDataAprovacao()));
+                    fotosOS = ejbFacade.obterFotosOS(sessao, os.getId());
+                    if (fotosOS == null) {
+                        fotosOS = new ArrayList<OrdemServicoFoto>();
+                    }
                 } else {
                     JsfUtil.addErrorMessage("Veículo não localizado.");
                 }
@@ -113,6 +116,8 @@ public class AcompanharServicoController implements Serializable {
         setEtapa(null);
         setAtividade(null);
         setInformacao(null);
+        fotosOS = new ArrayList<OrdemServicoFoto>();
+
     }
 
     public String logout() {
@@ -135,6 +140,7 @@ public class AcompanharServicoController implements Serializable {
     private OrdemServicoEtapa atividade;
     private OrdemServicoEvento evento;
     private List<OrdemServicoFoto> fotos;
+    private List<OrdemServicoFoto> fotosOS;
 
     // <editor-fold defaultstate="collapsed" desc="gets e sets">
     public OrdemServicoEvento getEvento() {
@@ -155,6 +161,10 @@ public class AcompanharServicoController implements Serializable {
 
     public List<OrdemServicoEvento> getEventos() {
         return eventos;
+    }
+
+    public List<OrdemServicoFoto> getFotosOS() {
+        return fotosOS;
     }
 
     public List<OrdemServicoFoto> getFotos() {
@@ -260,14 +270,18 @@ public class AcompanharServicoController implements Serializable {
     }
 
     public void adicionarEvento() {
-        try {
-            Session sessao = HibernateFactory.currentSession();
-            ejbFacade.incluirEvento(sessao, atividade, null, TipoEvento.ContatoCliente, informacao, null, null, false); 
-            JsfUtil.addSuccessMessage("Mensagem enviada com sucesso. Obrigado pela sua colaboração.");
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, "Erro ao enviar a mensagem. Tente mais tarde novamente.");
-        } finally {
-            HibernateFactory.closeSession();
+        if (atividades != null && atividades.size() > 0) {
+            try {
+                Session sessao = HibernateFactory.currentSession();
+                ejbFacade.incluirEvento(sessao, atividades.get(0), null, TipoEvento.ContatoCliente, informacao, null, null, false);
+                JsfUtil.addSuccessMessage("Mensagem enviada com sucesso. Obrigado pela sua colaboração.");
+            } catch (Exception e) {
+                JsfUtil.addErrorMessage(e, "Erro ao enviar a mensagem. Tente mais tarde novamente.");
+            } finally {
+                HibernateFactory.closeSession();
+            }
+        } else {
+            JsfUtil.addErrorMessage("Erro ao enviar a mensagem. Tente mais tarde novamente.");
         }
     }
 

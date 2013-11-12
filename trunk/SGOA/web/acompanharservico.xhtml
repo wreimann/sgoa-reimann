@@ -23,7 +23,7 @@
                 </div>
             </hgroup>
         </header> 
-        <section id="main" class="column">
+        <section id="main" class="full"  >
             <article class="module width_full">
                 <header>
                     <h2>Acompanhe o Serviço</h2>
@@ -59,65 +59,76 @@
                                 </p:row>
                                 <p:row>  
                                     <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
-                                    <p:column><p:outputLabel value="Atividade Atual" style="font-weight: bold;" for="AtividadeLabel"/></p:column>
-                                    <p:column><p:outputLabel id="AtividadeLabel" value="#{acompanharServicoController.etapa}"/></p:column>
+                                    <p:column><p:outputLabel value="Atividade Atual" style="font-weight: bold;color: blue;" for="AtividadeLabel"/></p:column>
+                                    <p:column><p:outputLabel id="AtividadeLabel" value="#{acompanharServicoController.etapa}" style="font-weight: bold;color: #30B0C8;" /></p:column>
                                     <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
-                                    <p:column><p:outputLabel value="Situação" style="font-weight: bold;" for="SituacaoLabel"/></p:column>
-                                    <p:column><p:outputLabel id="SituacaoLabel" value="#{acompanharServicoController.situacao}"/></p:column>
+                                    <p:column><p:outputLabel value="Situação" style="font-weight: bold;color: blue;" for="SituacaoLabel"/></p:column>
+                                    <p:column><p:outputLabel id="SituacaoLabel" value="#{acompanharServicoController.situacao}" style="font-weight: bold;color: #30B0C8;" /></p:column>
                                 </p:row>
                             </p:panelGrid>
-                            <p:commandButton title="Entrar em contato"  icon="ui-icon-circle-plus" 
-                                             value="Entrar em contato" oncomplete="modalPopup.show()"
+                            <p:commandButton title="Entre em Contato"  icon="ui-icon-circle-plus" 
+                                             value="Entre em Contato" oncomplete="modalPopup.show()"
                                              style="margin-top: 25px;"/>
-                            <h:panelGroup layout="block" style="margin-top: 25px;">
-                                <p:dataTable var="atividade" 
-                                             value="#{acompanharServicoController.atividades}" lazy="false"
-                                             widgetVar="dataTableAtividade" rowIndexVar="rowIx"
-                                             paginatorPosition="bottom"  
-                                             emptyMessage="Nenhum resultado encontrado."                   
-                                             rows="10" sortBy="dataEntrada" sortOrder="descending"
-                                             currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
-                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
-                                    <f:facet name="header">
-                                        <div class="tabs_involved">
-                                            <h:outputLabel value="Histórico de Atividades" styleClass="tabs_involved" />                               
+                            <p:tabView id="tabView" style="margin-top: 25px;" >
+                                <p:tab id="tab2" title="Atividades">  
+                                    <p:dataTable var="atividade" 
+                                                 value="#{acompanharServicoController.atividades}" lazy="false"
+                                                 widgetVar="dataTableAtividade" rowIndexVar="rowIx"
+                                                 paginatorPosition="bottom"  
+                                                 emptyMessage="Nenhum serviço cadastrado."                   
+                                                 rows="10" sortBy="dataEntrada" sortOrder="descending"
+                                                 currentPageReportTemplate="Tota de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                                        <f:facet name="header">
+                                            <div class="tabs_involved">
+                                                <h:outputLabel value="Histórico" styleClass="tabs_involved" />                               
+                                            </div>
+                                        </f:facet>
+                                        <p:column headerText="Data Entrada" width="125">
+                                            <h:outputText value="#{atividade.dataEntrada}" >
+                                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Atividade">
+                                            <h:outputText value="#{atividade.etapa}" />
+                                        </p:column>
+                                        <p:column headerText="Data Saída" width="125">
+                                            <h:outputText value="#{atividade.dataSaida}">
+                                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Situação" width="100">
+                                            <p:outputLabel value="Em Execução" rendered="#{atividade.situacao == 'E'}"   />  
+                                            <p:outputLabel value="Cancelado" rendered="#{atividade.situacao == 'A'}"   />  
+                                            <p:outputLabel value="Parado" rendered="#{atividade.situacao == 'P'}"   />  
+                                            <p:outputLabel value="Fila de Espera" rendered="#{atividade.situacao == 'F'}"   />  
+                                            <p:outputLabel value="Concluído" rendered="#{atividade.situacao == 'C'}"   /> 
+                                        </p:column>
 
-                                        </div>
-                                    </f:facet>
-                                    <p:column headerText="Data Entrada" width="125">
-                                        <h:outputText value="#{atividade.dataEntrada}" >
-                                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
-                                        </h:outputText>
-                                    </p:column>
-                                    <p:column headerText="Atividade">
-                                        <h:outputText value="#{atividade.etapa}" />
-                                    </p:column>
-                                    <p:column headerText="Data Saída" width="125">
-                                        <h:outputText value="#{atividade.dataSaida}">
-                                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
-                                        </h:outputText>
-                                    </p:column>
-                                    <p:column headerText="Situação" width="100">
-                                        <p:outputLabel value="Em Execução" rendered="#{atividade.situacao == 'E'}"   />  
-                                        <p:outputLabel value="Cancelado" rendered="#{atividade.situacao == 'A'}"   />  
-                                        <p:outputLabel value="Parado" rendered="#{atividade.situacao == 'P'}"   />  
-                                        <p:outputLabel value="Fila de Espera" rendered="#{atividade.situacao == 'F'}"   />  
-                                        <p:outputLabel value="Concluído" rendered="#{atividade.situacao == 'C'}"   /> 
-                                    </p:column>
+                                        <p:column headerText="Horas Trab." width="80">
+                                            <h:outputText value="#{atividade.horasTrabalhadas}" />
+                                        </p:column>
+                                        <p:column headerText="Detalhes" width="60">
+                                            <p:commandButton alt="Detalhes" title="Detalhes" icon="ui-icon-search"
+                                                             oncomplete="modalHistoricoPopup.show()" immediate="true"
+                                                             action="#{acompanharServicoController.prepararEvento}"
+                                                             update=":frmHistoricoEvento" style="margin-left: 15px;">
+                                                <f:setPropertyActionListener value="#{atividade}" target="#{acompanharServicoController.atividade}" />
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:tab>
+                                <p:tab id="tab3" title="Fotos">
+                                    <p:galleria value="#{acompanharServicoController.fotosOS}" 
+                                                var="galeria" effect="slide" effectSpeed="2000" showCaption="false" 
+                                                showFilmstrip="true" panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
+                                                rendered="#{acompanharServicoController.fotosOS.size()>0}">
+                                        <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 
+                                                        title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"  />
 
-                                    <p:column headerText="Horas Trab." width="80">
-                                        <h:outputText value="#{atividade.horasTrabalhadas}" />
-                                    </p:column>
-                                    <p:column headerText="Detalhes" width="60">
-                                        <p:commandButton alt="Detalhes" title="Detalhes" icon="ui-icon-search"
-                                                         oncomplete="modalHistoricoPopup.show()" immediate="true"
-                                                         action="#{acompanharServicoController.prepararEvento}"
-                                                         update=":frmHistoricoEvento" style="margin-left: 15px;">
-                                            <f:setPropertyActionListener value="#{atividade}" target="#{acompanharServicoController.atividade}" />
-                                        </p:commandButton>
-                                    </p:column>
-                                </p:dataTable>
-                            </h:panelGroup>
+                                    </p:galleria>
+                                </p:tab>
+                            </p:tabView>
                         </h:panelGroup>
                     </h:form>
                 </div>
@@ -140,13 +151,10 @@
                                 <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Funcionário">
-                            <h:outputText value="#{evento.funcionario}" />
-                        </p:column>
-                        <p:column headerText="Evento" width="100">
+                        <p:column headerText="Evento" width="140">
                             <h:outputText value="#{evento.tipoEvento.toString()}" />
                         </p:column>
-                        <p:column headerText="Descrição">
+                        <p:column headerText="Mensagem">
                             <h:outputText value="#{evento.descricao}" />
                         </p:column>
                         <p:column headerText="Data" width="125">
@@ -154,7 +162,7 @@
                                 <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Fotos">
+                        <p:column headerText="Fotos"  width="40">
                             <p:commandButton alt="Fotos" title="Fotos" icon="ui-icon-search" 
                                              oncomplete="dialogGaleria.show();" 
                                              update=":frmGaleria"
@@ -167,7 +175,7 @@
             </p:dialog>
 
             <p:dialog widgetVar="dialogGaleria" modal="true" id="dGaleria"
-                      width="440" height="390" dynamic="true" position="center" resizable="false" appendToBody="false"
+                      width="440"  dynamic="true" position="center" resizable="false" appendToBody="false"
                       header="Fotos">
                 <h:form id="frmGaleria" prependId="false"  >
                     <h:panelGroup rendered="#{acompanharServicoController.fotos.size()==0}" layout="block" style="margin-top: 20px;">
@@ -188,8 +196,8 @@
                 </h:form>
 
             </p:dialog>
-            <p:dialog widgetVar="modalPopup" modal="true" width="300"  resizable="false"
-                      showEffect="fade" header="Entrar em contato" id="dialog">
+            <p:dialog widgetVar="modalPopup" modal="true" width="450"  resizable="false"
+                      showEffect="fade" header="Contato" id="dialog">
                 <h:form id="frmEvento">
                     <p:messages autoUpdate="true" />
                     <p:fieldset>

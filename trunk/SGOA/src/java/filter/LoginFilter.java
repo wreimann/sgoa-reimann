@@ -22,7 +22,7 @@ public class LoginFilter implements Filter {
         if (!requestPath.contains("login.xhtml") && !requestPath.contains("erroPadrao.xhtml")
                 && !requestPath.contains("acompanharservico.xhtml")) {
             LoginController loginController = (LoginController) req.getSession().getAttribute("loginController");
-            if (loginController != null) {
+            if (loginController != null && loginController.getUsuarioSession() != null) {
                 boolean validate = loginController.verificarPermissao(requestPath);
                 if (!validate) {
                     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
