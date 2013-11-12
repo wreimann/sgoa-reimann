@@ -57,8 +57,10 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             etapa.getEventos().add(0, evento);
             evento.setDescricao(descricao);
             evento.setDataInicioParada(dataInicioParada);
-            for (int i = 0; i < fotos.size(); i++) {
-                fotos.get(i).setEvento(evento);
+            if (fotos != null) {
+                for (int i = 0; i < fotos.size(); i++) {
+                    fotos.get(i).setEvento(evento);
+                }
             }
             evento.setFotos(fotos);
             if (tipo == TipoEvento.InterrupcaoAtividade) {
@@ -71,6 +73,9 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             HibernateFactory.commitTransaction();
             if (notificaViaEmail) {
                 util.JsfUtil.enviarEmail(sessao, etapa.getOrdemServico().getOrcamento().getCliente().getPessoa(), null, null);
+            }
+            if (tipo == TipoEvento.ContatoCliente) {
+                util.JsfUtil.enviarEmailOficina(sessao, etapa.getOrdemServico().getOrcamento().getVeiculo().getPlaca(), descricao);
             }
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
@@ -232,7 +237,6 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             }
         }
         return resultado;
-
     }
 
     public OrdemServicoEvento obterEvento(Session sessao, int id) throws Exception {
@@ -249,6 +253,17 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         }
         OrdemServicoEtapa entidade = (OrdemServicoEtapa) sessao.get(OrdemServicoEtapa.class, id);
         return entidade;
+    }
+    
+    public List<OrdemServicoFoto> obterFotosOS(Session sessao, int id) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        Criteria c = sessao.createCriteria(OrdemServicoFoto.class, "osf");
+        c.createCriteria("evento", "ev").createCriteria("etapa", "et").createCriteria("ordemservico", "os");
+        c.add(Restrictions.eq("os.id", id));
+        List<OrdemServicoFoto> resultado =  c.list();
+        return resultado;
     }
 
     public List<OrdemServicoEtapa> monitorarPatio(Session sessao, String sort, SortOrder order,
