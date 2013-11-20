@@ -159,7 +159,9 @@ public class LoginController implements Serializable {
                 acesso = true;
             } else if ("Operacional".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
                 if (pagina.contains("setor.xhtml") || 
-                    pagina.contains("alterarsenha.xhtml")) {
+                    pagina.contains("tiposervico.xhtml") ||
+                    pagina.contains("configuracao.xhtml") ||
+                    pagina.contains("etapa.xhtml")) {
                     acesso = false;
                 } else {
                     acesso = true;
