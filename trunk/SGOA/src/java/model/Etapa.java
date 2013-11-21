@@ -76,15 +76,4 @@ public class Etapa extends BaseEntidadeDescricao<Etapa> {
         this.enviaEmailFim = enviaEmailFim;
     }
     
-    @JoinColumn(name = "IdImagem")
-    @ManyToOne(optional = false)
-    private ImagemEtapa imagem;
-
-    public ImagemEtapa getImagem() {
-        return imagem;
-    }
-
-    public void setImagem(ImagemEtapa imagem) {
-        this.imagem = imagem;
-    }
-}
+   }

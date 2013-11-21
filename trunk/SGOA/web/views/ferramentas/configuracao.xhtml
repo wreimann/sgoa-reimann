@@ -20,56 +20,101 @@
         <h:form id="frmCadastro" prependId="false" > 
             <p:messages id="growl" autoUpdate="true" closable="true" />
             <p:focus context="frmCadastro"/> 
-            <p:fieldset style="width: 450px;">
-                <label>Ativ. Inicial*</label>
-                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaInicial}" 
-                                 converter="etapaConverter"  required="true" 
-                                 requiredMessage="O campo 'Ativ. Inicial' é obrigatório.">
-                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
-                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
-                </h:selectOneMenu>              
-            </p:fieldset>
-            <p:fieldset style="width: 450px;">
-                <label style="width: 250px">Ativ. Inicial Seguradora*</label>
-                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaInicialSeguradora}" 
-                                 converter="etapaConverter"  required="true" 
-                                 requiredMessage="O campo 'Ativ. Inicial Seguradora' é obrigatório.">
-                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
-                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
-                </h:selectOneMenu>              
-            </p:fieldset>
-            <p:fieldset style="width: 450px;">
-                <label style="width: 250px">Ativ. Fim Concerto*</label>
-                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaFimConcerto}" 
-                                 converter="etapaConverter"  required="true" 
-                                 requiredMessage="O campo 'Ativ. Fim Concerto' é obrigatório.">
-                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
-                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
-                </h:selectOneMenu>              
-            </p:fieldset>
-            <p:fieldset style="width: 450px;">
-                <label style="width: 250px">Ativ. Conclusão da Ordem Serviço*</label>
-                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaConclusaoOrdemServico}" 
-                                 converter="etapaConverter"  required="true" 
-                                 requiredMessage="O campo 'Ativ. Conclusão da Ordem de Serviço' é obrigatório.">
-                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
-                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
-                </h:selectOneMenu>              
-            </p:fieldset>
-            <p:fieldset style="width: 450px;">
-                <label style="width: 250px">Ativ. Cancelamento Concerto*</label>
-                <h:selectOneMenu value="#{configOrdemServicoController.current.etapaCancelamentoConcerto}" 
-                                 converter="etapaConverter"  required="true" 
-                                 requiredMessage="O campo 'Ativ. Cancelamento Concerto' é obrigatório.">
-                    <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                    <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
-                                   itemLabel="#{etapa}" itemValue="#{etapa}"/>
-                </h:selectOneMenu>              
-            </p:fieldset>
+            <p:tabView id="tabView" >
+                <p:tab id="tab1" title="Ordens de Serviço">  
+                    <p:fieldset style="width: 450px;">
+                        <label>Atividade Inicial*</label>
+                        <h:selectOneMenu value="#{configOrdemServicoController.current.etapaInicial}" 
+                                         converter="etapaConverter"  required="true" 
+                                         requiredMessage="O campo 'Ativ. Inicial' é obrigatório.">
+                            <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                            <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                           itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                        </h:selectOneMenu>              
+                    </p:fieldset>
+                    <p:fieldset style="width: 450px;">
+                        <label style="width: 250px">Atividade Inicial Seguradora*</label>
+                        <h:selectOneMenu value="#{configOrdemServicoController.current.etapaInicialSeguradora}" 
+                                         converter="etapaConverter"  required="true" 
+                                         requiredMessage="O campo 'Ativ. Inicial Seguradora' é obrigatório.">
+                            <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                            <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                           itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                        </h:selectOneMenu>              
+                    </p:fieldset>
+                    <p:fieldset style="width: 450px;">
+                        <label style="width: 250px">Atividade Fim Concerto*</label>
+                        <h:selectOneMenu value="#{configOrdemServicoController.current.etapaFimConcerto}" 
+                                         converter="etapaConverter"  required="true" 
+                                         requiredMessage="O campo 'Ativ. Fim Concerto' é obrigatório.">
+                            <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                            <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                           itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                        </h:selectOneMenu>              
+                    </p:fieldset>
+                    <p:fieldset style="width: 450px;">
+                        <label style="width: 250px">Atividade Conclusão da Ordem Serviço*</label>
+                        <h:selectOneMenu value="#{configOrdemServicoController.current.etapaConclusaoOrdemServico}" 
+                                         converter="etapaConverter"  required="true" 
+                                         requiredMessage="O campo 'Ativ. Conclusão da Ordem de Serviço' é obrigatório.">
+                            <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                            <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                           itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                        </h:selectOneMenu>              
+                    </p:fieldset>
+                    <p:fieldset style="width: 450px;">
+                        <label style="width: 250px">Atividade Cancelamento Concerto*</label>
+                        <h:selectOneMenu value="#{configOrdemServicoController.current.etapaCancelamentoConcerto}" 
+                                         converter="etapaConverter"  required="true" 
+                                         requiredMessage="O campo 'Ativ. Cancelamento Concerto' é obrigatório.">
+                            <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                            <f:selectItems value="#{configOrdemServicoController.etapasAtiva}" var="etapa"
+                                           itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                        </h:selectOneMenu>              
+                    </p:fieldset>
+                </p:tab>
+                <p:tab id="tab2" title="E-mail">
+                    <h:panelGrid columns="3">
+                        <p:fieldset>
+                            <p:outputLabel style="width: 100%;" value="E-mail utilizado para o envio de mensagens"/>
+                            <p:inputText id="IdInput2" value="#{configOrdemServicoController.configEmail.emailEnvio}" validatorMessage="E-mail inválido." >
+                                <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
+                                                 for="IdInput2"  />
+                            </p:inputText>
+                        </p:fieldset>   
+                        <p:fieldset style="width: 150px; margin-left: 19px;" >
+                            <p:outputLabel value="Senha"/>
+                            <p:password value="#{configOrdemServicoController.configEmail.senha}" maxlength="15"  />
+                        </p:fieldset>  
+                        <p:fieldset style="width: 280px; margin-left: 19px;">
+                            <p:outputLabel value="Identificador do E-mail"/>
+                            <p:inputText value="#{configOrdemServicoController.configEmail.identificacaoEmail}" />
+                        </p:fieldset>
+                    </h:panelGrid>
+                    <h:panelGrid columns="2">
+                        <p:fieldset style="width: 430px;">
+                            <p:outputLabel value="Servidor SMTP"/>
+                            <p:inputText value="#{configOrdemServicoController.configEmail.servidorSMTP}" />
+                            <p:selectBooleanCheckbox itemLabel="Servidor necessita de autenticação" 
+                                                     value="#{configOrdemServicoController.configEmail.servidorNecessitaAutenticacao}">
+
+                            </p:selectBooleanCheckbox>
+                        </p:fieldset> 
+                        <p:fieldset style="width: 150px; margin-left: 19px;" >
+                            <p:outputLabel value="Porta"/>
+                            <p:inputText value="#{configOrdemServicoController.configEmail.porta}" />
+                        </p:fieldset> 
+
+                    </h:panelGrid>
+                    <p:fieldset style="width: 430px;">
+                        <p:outputLabel style="width: 100%;" value="E-mail utilizado para receber mensagens de clientes"/>
+                        <p:inputText id="IdInput" value="#{configOrdemServicoController.configEmail.emailRecebCliente}" validatorMessage="E-mail inválido." >
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
+                                             for="IdInput"  />
+                        </p:inputText>
+                    </p:fieldset>  
+                </p:tab>
+            </p:tabView>
             <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
                 <p:commandButton id="btnSalvar" update=":frmCadastro"
                                  actionListener="#{configOrdemServicoController.salvar}" 

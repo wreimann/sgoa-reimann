@@ -95,20 +95,12 @@ public class JsfUtil {
             //cria a mensagem setando o remetente e seus destinatários
             Message msg = new MimeMessage(session);
             //aqui seta o remetente
-            msg.setFrom(new InternetAddress(config.getEmail(), config.getIdentificacaoEmail()));
+            msg.setFrom(new InternetAddress(config.getEmailEnvio(), config.getIdentificacaoEmail()));
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(pessoa.getEmail(), pessoa.getNome()));
-            if (assuntoEmail.isEmpty()) {
-                msg.setSubject(config.getAssuntoEmail());
-            } else {
-                msg.setSubject(assuntoEmail);
-            }
-            if (mensagem.isEmpty()) {
-                msg.setText(config.getTextoEmail());
-            } else {
-                msg.setText(mensagem);
-            }
+            msg.setSubject(assuntoEmail);
+            msg.setText(mensagem);
             Transport transportTLS = session.getTransport();
-            transportTLS.connect(config.getServidorSMTP(), config.getPorta(), config.getEmail(), config.getSenha());
+            transportTLS.connect(config.getServidorSMTP(), config.getPorta(), config.getEmailEnvio(), config.getSenha());
             transportTLS.sendMessage(msg, msg.getAllRecipients());
             transportTLS.close();
         } catch (Exception ex) {
@@ -135,12 +127,12 @@ public class JsfUtil {
             //cria a mensagem setando o remetente e seus destinatários
             Message msg = new MimeMessage(session);
             //aqui seta o remetente
-            msg.setFrom(new InternetAddress(config.getEmail(), config.getIdentificacaoEmail()));
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress("contato@reimanscar.com.br"));
+            msg.setFrom(new InternetAddress(config.getEmailEnvio(), config.getIdentificacaoEmail()));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(config.getEmailRecebCliente()));
             msg.setSubject("Interação do cliente no serviço");
             msg.setText(mensagem + "<br/>" + "Mensagem enviado pelo cliente com veículo de placa: " + placa);
             Transport transportTLS = session.getTransport();
-            transportTLS.connect(config.getServidorSMTP(), config.getPorta(), config.getEmail(), config.getSenha());
+            transportTLS.connect(config.getServidorSMTP(), config.getPorta(), config.getEmailEnvio(), config.getSenha());
             transportTLS.sendMessage(msg, msg.getAllRecipients());
             transportTLS.close();
         } catch (Exception ex) {

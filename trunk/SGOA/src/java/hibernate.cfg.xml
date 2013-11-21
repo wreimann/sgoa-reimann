@@ -26,9 +26,6 @@
     <mapping class="model.Orcamento"/>
     <mapping class="model.Seguradora"/>
     <mapping class="model.Etapa"/>
-    <mapping class="model.ImagemEtapa"/>
-    <mapping class="model.Fluxo"/>
-    <mapping class="model.FluxoEtapa"/>
     <mapping class="model.OrcamentoAnexo"/>
     <mapping class="model.OrdemServico"/>
     <mapping class="model.OrdemServicoEtapa"/>

@@ -72,7 +72,9 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             sessao.saveOrUpdate(etapa);
             HibernateFactory.commitTransaction();
             if (notificaViaEmail) {
-                util.JsfUtil.enviarEmail(sessao, etapa.getOrdemServico().getOrcamento().getCliente().getPessoa(), null, null);
+                util.JsfUtil.enviarEmail(sessao, etapa.getOrdemServico().getOrcamento().getCliente().getPessoa(), 
+                        "Notificação do andamento do serviço", 
+                        "A oficina acaba de incluir novas informações do serviço que esta sendo realizado em seu veículo. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
             if (tipo == TipoEvento.ContatoCliente) {
                 util.JsfUtil.enviarEmailOficina(sessao, etapa.getOrdemServico().getOrcamento().getVeiculo().getPlaca(), descricao);
@@ -160,7 +162,8 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             sessao.save(item);
             HibernateFactory.commitTransaction();
             if (etapa.getEtapa().getEnviaEmailInicio()) {
-                util.JsfUtil.enviarEmail(sessao, item.getOrcamento().getCliente().getPessoa(), null, null);
+                util.JsfUtil.enviarEmail(sessao, item.getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço", 
+                        "O seu veículo acaba de iniciar um nova atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
@@ -205,10 +208,12 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             sessao.saveOrUpdate(item);
             HibernateFactory.commitTransaction();
             if (item.getEtapa().getEnviaEmailFim()) {
-                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), null, null);
+                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço", 
+                        "O seu veículo acaba de encerar uam atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
             if (proximaEtapa.getEnviaEmailInicio()) {
-                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), null, null);
+                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(),"Notificação do andamento do serviço", 
+                        "O seu veículo acaba de iniciar um nova atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();

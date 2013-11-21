@@ -10,28 +10,7 @@ import model.Base.BaseEntidade;
 @Table(name = "configemail")
 public class ConfigEmail extends BaseEntidade<ConfigEmail> {
 
-    @Size(max = 100)
-    @Column(name = "AssuntoEmail")
-    private String assuntoEmail;
-    public String getAssuntoEmail() {
-        return assuntoEmail;
-    }
-
-    public void setAssuntoEmail(String assuntoEmail) {
-        this.assuntoEmail = assuntoEmail;
-    }
-    
-    @Size(max = 1000)
-    @Column(name = "TextoEmail")
-    private String textoEmail;
-    public String getTextoEmail() {
-        return textoEmail;
-    }
-
-    public void setTextoEmail(String textoEmail) {
-        this.textoEmail = textoEmail;
-    }
-    
+       
     @Size(max = 100)
     @Column(name = "IdentificacaoEmail")
     private String identificacaoEmail;
@@ -44,14 +23,14 @@ public class ConfigEmail extends BaseEntidade<ConfigEmail> {
     }
     
     @Size(max = 250)
-    @Column(name = "Email")
-    private String email;
-    public String getEmail() {
-        return email;
+    @Column(name = "EmailEnvio")
+    private String emailEnvio;
+    public String getEmailEnvio() {
+        return emailEnvio;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailEnvio(String email) {
+        this.emailEnvio = email;
     }
     
     @Size(max = 20)
@@ -94,4 +73,16 @@ public class ConfigEmail extends BaseEntidade<ConfigEmail> {
     public void setPorta(Integer porta) {
         this.porta = porta;
     }
+    
+    @Size(max = 250)
+    @Column(name = "EmailRecebCliente")
+    private String emailRecebCliente;
+    public String getEmailRecebCliente() {
+        return emailRecebCliente;
+    }
+
+    public void setEmailRecebCliente(String email) {
+        this.emailRecebCliente = email;
+    }
+    
 }
