@@ -9,11 +9,11 @@
     <ui:define name="Navagador">
         <a class="current">Ferramentas</a>
         <div class="breadcrumb_divider"></div> 
-        <a class="current">Etapas</a>
+        <a class="current">Atividades</a>
     </ui:define>
 
     <ui:define name="Titulo">
-        <h2>Etapas</h2>
+        <h2>Atividades</h2>
     </ui:define>
 
     <ui:define name="Conteudo">
@@ -38,7 +38,7 @@
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >  
                 <f:facet name="header">  
                     <div class="tabs_involved">
-                        <h:outputLabel value="Listagem de Etapa" styleClass="tabs_involved" />
+                        <h:outputLabel value="Listagem de Atividade" styleClass="tabs_involved" />
                         <p:commandLink id="btnNovo" title="Novo"  styleClass="btn_new" 
                                        value="Novo" update=":frmCadastro, :growl" 
                                        actionListener="#{etapaController.prepararInclusao}" 
@@ -70,7 +70,7 @@
 
             </p:dataTable>
             <p:confirmDialog widgetVar="confirmDialog" 
-                             message="Confirma a exclusão da etapa selecionada ?" 
+                             message="Confirma a exclusão da atividade selecionada ?" 
                              showEffect="slide" hideEffect="clip" severity="alert">  
 
                 <p:commandButton oncomplete="confirmDialog.hide()" update=":frmPesquisa"
@@ -83,7 +83,7 @@
 
 
         <p:dialog widgetVar="modalPopup" modal="true" width="600" resizable="false"
-                  showEffect=" fade" header="Cadastro de Etapa" id="dialog">
+                  showEffect=" fade" header="Cadastro de Atividade" id="dialog">
             <p:messages id="growl" autoUpdate="true" closable="true" />
             <h:form id="frmCadastro" prependId="false" > 
                 <p:focus context="frmCadastro"/> 
@@ -94,25 +94,7 @@
                                  requiredMessage="O campo 'Descrição' é obrigatório." 
                                  value="#{etapaController.current.descricao}"  />                 
                 </p:fieldset>
-                <p:fieldset id="Imagem">
-                    <label id="ImagemEtapaLabel">Imagem *</label>
-                    <br />
-                    <p:selectOneMenu value="#{etapaController.current.imagem}" styleClass="selectOneMenu"
-                                     converter="imagemEtapaConverter" effect="fade" 
-                                     var="p" required="true" filter="false"
-                                     requiredMessage="O campo 'Imagem' é obrigatório.">  
-
-                        <f:selectItems value="#{etapaController.imagens}" var="imagem" itemLabel="#{imagem.titulo}" 
-                                       itemValue="#{imagem}"/>  
-                        <p:column>  
-                            <p:graphicImage value="#{p.descricao}" width="50" height="50"/>  
-                        </p:column> 
-                        <p:column>  
-                            #{p.titulo}
-                        </p:column>
-
-                    </p:selectOneMenu>
-                </p:fieldset>
+                
                 <h:panelGrid columns="2"  style="margin-top: 5px">
                     <p:fieldset id="SetorField"  style="width: 245px;">
                         <label id="SetorLabel">Setor *</label>

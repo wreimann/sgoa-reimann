@@ -1,7 +1,6 @@
 package controller;
 
 import facede.EtapaFacade;
-import facede.ImagemEtapaFacade;
 import facede.SetorFacade;
 import facede.TipoServicoFacade;
 import java.io.Serializable;
@@ -13,7 +12,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import model.Etapa;
-import model.ImagemEtapa;
 import model.Setor;
 import model.TipoServico;
 import org.hibernate.Session;
@@ -36,7 +34,6 @@ public class EtapaController implements Serializable {
     private String descFiltro;
     private List<Setor> setoresAtivos;
     private List<TipoServico> tiposServicosAtivos;
-    private List<ImagemEtapa> imagens;
 
     public String getDescFiltro() {
         return descFiltro;
@@ -51,10 +48,6 @@ public class EtapaController implements Serializable {
     public List<TipoServico> getTiposServicosAtivos() {
         return tiposServicosAtivos;
     }
-    public List<ImagemEtapa> getImagens() {
-        return imagens;
-    }
-    
 
     public EtapaController() {
         limparCampos();
@@ -147,7 +140,6 @@ public class EtapaController implements Serializable {
         setDescFiltro(null);
         montaListaSetor();
         montaListaTipoServico();
-        montaListaImagens();
     }
     
     private void montaListaSetor() {
@@ -174,15 +166,5 @@ public class EtapaController implements Serializable {
         }
     }
     
-    private void montaListaImagens() {
-        try {
-            Session sessao = HibernateFactory.currentSession();
-            ImagemEtapaFacade ebjImagem = new ImagemEtapaFacade();
-            imagens = ebjImagem.selecionarTodosAtivos(sessao);
-        } catch (Exception ex) {
-            JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de imagens. ");
-        } finally {
-            HibernateFactory.closeSession();
-        }
-    }
+   
 }

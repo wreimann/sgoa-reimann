@@ -1,7 +1,6 @@
 package controller;
 
 import facede.ClienteFacade;
-import facede.FluxoFacade;
 import facede.OrcamentoFacade;
 import facede.OrdemServicoFacade;
 import facede.SeguradoraFacade;
@@ -21,7 +20,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import model.Cliente;
-import model.Fluxo;
 import model.Orcamento;
 import model.OrcamentoAnexo;
 import model.OrcamentoTipoServico;
@@ -112,8 +110,6 @@ public class OrcamentoController implements Serializable {
     private List<Seguradora> seguradoras;
     private List<OrcamentoTipoServico> servicos;
     private List<TipoServico> tipoServicos;
-    private List<Fluxo> fluxos;
-    private Fluxo fluxo;
     private double totalHoras;
     private double totalDescoto;
     private double totalServico;
@@ -122,14 +118,6 @@ public class OrcamentoController implements Serializable {
     private String motivoCancelamento;
     private Boolean bloqueado;
     private Boolean gerarOS;
-
-    public Fluxo getFluxo() {
-        return fluxo;
-    }
-
-    public void setFluxo(Fluxo fluxo) {
-        this.fluxo = fluxo;
-    }
 
     public Boolean getBloqueado() {
         bloqueado = false;
@@ -170,11 +158,6 @@ public class OrcamentoController implements Serializable {
     public void setFileDownload(StreamedContent fileDownload) {
         this.fileDownload = fileDownload;
     }
-
-    public List<Fluxo> getFluxos() {
-        return fluxos;
-    }
-
     public List<Veiculo> getVeiculos() {
         return veiculos;
     }
@@ -370,7 +353,6 @@ public class OrcamentoController implements Serializable {
         veiculos = new ArrayList<Veiculo>();
         seguradoras = montaListaSeguradoras();
         tipoServicos = montaListaTipoServicos();
-        fluxos = montaListaFluxos();
         file = null;
         totalDescoto = 0;
         totalHoras = 0;
@@ -427,19 +409,7 @@ public class OrcamentoController implements Serializable {
         return resultado;
     }
 
-    public List<Fluxo> montaListaFluxos() {
-        List<Fluxo> resultado = new ArrayList<Fluxo>();
-        try {
-            Session sessao = HibernateFactory.currentSession();
-            FluxoFacade ebj = new FluxoFacade();
-            resultado = ebj.selecionarTodosAtivos(sessao);
-        } catch (Exception ex) {
-            JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de seguradoras. ");
-        } finally {
-            HibernateFactory.closeSession();
-        }
-        return resultado;
-    }
+    
 
     public void changeTipoServico() {
         totalDescoto = 0;
