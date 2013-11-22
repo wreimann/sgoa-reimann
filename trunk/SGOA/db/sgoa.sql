@@ -3,7 +3,7 @@
 # Server version:               5.5.28
 # Server OS:                    Win64
 # HeidiSQL version:             6.0.0.3603
-# Date/time:                    2013-11-21 02:45:44
+# Date/time:                    2013-11-21 22:55:08
 # --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -11,13 +11,13 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-# Dumping database structure for sgoa
-DROP DATABASE IF EXISTS `sgoa`;
-CREATE DATABASE IF NOT EXISTS `sgoa` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `sgoa`;
+# Dumping database structure for sgoa2
+DROP DATABASE IF EXISTS `sgoa2`;
+CREATE DATABASE IF NOT EXISTS `sgoa2` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `sgoa2`;
 
 
-# Dumping structure for table sgoa.cliente
+# Dumping structure for table sgoa2.cliente
 DROP TABLE IF EXISTS `cliente`;
 CREATE TABLE IF NOT EXISTS `cliente` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -30,13 +30,13 @@ CREATE TABLE IF NOT EXISTS `cliente` (
   CONSTRAINT `FK_Cliente_Pessoa` FOREIGN KEY (`IdPessoa`) REFERENCES `pessoa` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.cliente: ~0 rows (approximately)
+# Dumping data for table sgoa2.cliente: ~0 rows (approximately)
 DELETE FROM `cliente`;
 /*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
 /*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.configemail
+# Dumping structure for table sgoa2.configemail
 DROP TABLE IF EXISTS `configemail`;
 CREATE TABLE IF NOT EXISTS `configemail` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `configemail` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.configemail: ~1 rows (approximately)
+# Dumping data for table sgoa2.configemail: ~1 rows (approximately)
 DELETE FROM `configemail`;
 /*!40000 ALTER TABLE `configemail` DISABLE KEYS */;
 INSERT INTO `configemail` (`Id`, `IdentificacaoEmail`, `EmailEnvio`, `Senha`, `ServidorNecessitaAutenticacao`, `ServidorSMTP`, `Porta`, `EmailRecebCliente`) VALUES
@@ -58,15 +58,15 @@ INSERT INTO `configemail` (`Id`, `IdentificacaoEmail`, `EmailEnvio`, `Senha`, `S
 /*!40000 ALTER TABLE `configemail` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.config_ordemservico
+# Dumping structure for table sgoa2.config_ordemservico
 DROP TABLE IF EXISTS `config_ordemservico`;
 CREATE TABLE IF NOT EXISTS `config_ordemservico` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `IdEtapaInicial` int(11) NOT NULL,
-  `IdEtapaInicialSeguradora` int(11) NOT NULL,
-  `IdEtapaFimConcerto` int(11) NOT NULL,
-  `IdEtapaCancelamentoConcerto` int(11) NOT NULL,
-  `IdEtapaConclusaoOrdemServico` int(11) NOT NULL,
+  `IdEtapaInicial` int(11) DEFAULT NULL,
+  `IdEtapaInicialSeguradora` int(11) DEFAULT NULL,
+  `IdEtapaFimConcerto` int(11) DEFAULT NULL,
+  `IdEtapaCancelamentoConcerto` int(11) DEFAULT NULL,
+  `IdEtapaConclusaoOrdemServico` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_config_ordemservico_etapa` (`IdEtapaInicial`),
   KEY `FK_config_ordemservico_etapa_2` (`IdEtapaInicialSeguradora`),
@@ -80,13 +80,15 @@ CREATE TABLE IF NOT EXISTS `config_ordemservico` (
   CONSTRAINT `FK_config_ordemservico_etapa_5` FOREIGN KEY (`IdEtapaConclusaoOrdemServico`) REFERENCES `etapa` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.config_ordemservico: ~0 rows (approximately)
+# Dumping data for table sgoa2.config_ordemservico: ~0 rows (approximately)
 DELETE FROM `config_ordemservico`;
 /*!40000 ALTER TABLE `config_ordemservico` DISABLE KEYS */;
+INSERT INTO `config_ordemservico` (`Id`, `IdEtapaInicial`, `IdEtapaInicialSeguradora`, `IdEtapaFimConcerto`, `IdEtapaCancelamentoConcerto`, `IdEtapaConclusaoOrdemServico`) VALUES
+	(1, NULL, NULL, 1, 3, 2);
 /*!40000 ALTER TABLE `config_ordemservico` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.cor
+# Dumping structure for table sgoa2.cor
 DROP TABLE IF EXISTS `cor`;
 CREATE TABLE IF NOT EXISTS `cor` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -95,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `cor` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.cor: ~9 rows (approximately)
+# Dumping data for table sgoa2.cor: ~9 rows (approximately)
 DELETE FROM `cor`;
 /*!40000 ALTER TABLE `cor` DISABLE KEYS */;
 INSERT INTO `cor` (`Id`, `Descricao`, `Ativo`) VALUES
@@ -111,7 +113,7 @@ INSERT INTO `cor` (`Id`, `Descricao`, `Ativo`) VALUES
 /*!40000 ALTER TABLE `cor` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.etapa
+# Dumping structure for table sgoa2.etapa
 DROP TABLE IF EXISTS `etapa`;
 CREATE TABLE IF NOT EXISTS `etapa` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -122,23 +124,24 @@ CREATE TABLE IF NOT EXISTS `etapa` (
   `VisivelWebSite` tinyint(4) NOT NULL,
   `EnviaEmailInicio` tinyint(4) NOT NULL,
   `EnviaEmailFim` tinyint(4) NOT NULL,
-  `IdImagem` int(11) NOT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_etapa_setor` (`IdSetor`),
   KEY `FK_etapa_tiposervico` (`IdTipoServico`),
-  KEY `FK_etapa_imagem_etapa` (`IdImagem`),
-  CONSTRAINT `FK_etapa_imagem_etapa` FOREIGN KEY (`IdImagem`) REFERENCES `imagem_etapa` (`Id`),
   CONSTRAINT `FK_etapa_setor` FOREIGN KEY (`IdSetor`) REFERENCES `setor` (`Id`),
   CONSTRAINT `FK_etapa_tiposervico` FOREIGN KEY (`IdTipoServico`) REFERENCES `tiposervico` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.etapa: ~0 rows (approximately)
+# Dumping data for table sgoa2.etapa: ~0 rows (approximately)
 DELETE FROM `etapa`;
 /*!40000 ALTER TABLE `etapa` DISABLE KEYS */;
+INSERT INTO `etapa` (`Id`, `Descricao`, `Ativo`, `IdSetor`, `IdTipoServico`, `VisivelWebSite`, `EnviaEmailInicio`, `EnviaEmailFim`) VALUES
+	(1, 'Reparos finalizado', 1, 1, 1, 1, 1, 0),
+	(2, 'O.S. Concluída', 1, 1, 1, 1, 0, 0),
+	(3, 'O.S. Cancelada', 1, 1, 1, 1, 1, 0);
 /*!40000 ALTER TABLE `etapa` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.funcionario
+# Dumping structure for table sgoa2.funcionario
 DROP TABLE IF EXISTS `funcionario`;
 CREATE TABLE IF NOT EXISTS `funcionario` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -162,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `funcionario` (
   CONSTRAINT `funcionario_ibfk_1` FOREIGN KEY (`IdPessoa`) REFERENCES `pessoa` (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.funcionario: ~1 rows (approximately)
+# Dumping data for table sgoa2.funcionario: ~1 rows (approximately)
 DELETE FROM `funcionario`;
 /*!40000 ALTER TABLE `funcionario` DISABLE KEYS */;
 INSERT INTO `funcionario` (`Id`, `IdPessoa`, `Matricula`, `Obs`, `DataCadastro`, `Ativo`, `IdSetor`, `IdProfissao`, `IdPerfil`, `Senha`) VALUES
@@ -170,7 +173,7 @@ INSERT INTO `funcionario` (`Id`, `IdPessoa`, `Matricula`, `Obs`, `DataCadastro`,
 /*!40000 ALTER TABLE `funcionario` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.marca
+# Dumping structure for table sgoa2.marca
 DROP TABLE IF EXISTS `marca`;
 CREATE TABLE IF NOT EXISTS `marca` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -179,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `marca` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.marca: ~16 rows (approximately)
+# Dumping data for table sgoa2.marca: ~16 rows (approximately)
 DELETE FROM `marca`;
 /*!40000 ALTER TABLE `marca` DISABLE KEYS */;
 INSERT INTO `marca` (`Id`, `Descricao`, `Ativo`) VALUES
@@ -202,7 +205,7 @@ INSERT INTO `marca` (`Id`, `Descricao`, `Ativo`) VALUES
 /*!40000 ALTER TABLE `marca` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.modelo
+# Dumping structure for table sgoa2.modelo
 DROP TABLE IF EXISTS `modelo`;
 CREATE TABLE IF NOT EXISTS `modelo` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -214,13 +217,13 @@ CREATE TABLE IF NOT EXISTS `modelo` (
   CONSTRAINT `Fk_Modelo_Marca` FOREIGN KEY (`IdMarca`) REFERENCES `marca` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.modelo: ~0 rows (approximately)
+# Dumping data for table sgoa2.modelo: ~0 rows (approximately)
 DELETE FROM `modelo`;
 /*!40000 ALTER TABLE `modelo` DISABLE KEYS */;
 /*!40000 ALTER TABLE `modelo` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.orcamento
+# Dumping structure for table sgoa2.orcamento
 DROP TABLE IF EXISTS `orcamento`;
 CREATE TABLE IF NOT EXISTS `orcamento` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -254,13 +257,13 @@ CREATE TABLE IF NOT EXISTS `orcamento` (
   CONSTRAINT `FK_orcamento_veiculo` FOREIGN KEY (`IdVeiculo`) REFERENCES `veiculo` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.orcamento: ~0 rows (approximately)
+# Dumping data for table sgoa2.orcamento: ~0 rows (approximately)
 DELETE FROM `orcamento`;
 /*!40000 ALTER TABLE `orcamento` DISABLE KEYS */;
 /*!40000 ALTER TABLE `orcamento` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.orcamento_anexo
+# Dumping structure for table sgoa2.orcamento_anexo
 DROP TABLE IF EXISTS `orcamento_anexo`;
 CREATE TABLE IF NOT EXISTS `orcamento_anexo` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -272,13 +275,13 @@ CREATE TABLE IF NOT EXISTS `orcamento_anexo` (
   CONSTRAINT `FK_orcamento_anexo_orcamento` FOREIGN KEY (`IdOrcamento`) REFERENCES `orcamento` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.orcamento_anexo: ~0 rows (approximately)
+# Dumping data for table sgoa2.orcamento_anexo: ~0 rows (approximately)
 DELETE FROM `orcamento_anexo`;
 /*!40000 ALTER TABLE `orcamento_anexo` DISABLE KEYS */;
 /*!40000 ALTER TABLE `orcamento_anexo` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.orcamento_tiposervico
+# Dumping structure for table sgoa2.orcamento_tiposervico
 DROP TABLE IF EXISTS `orcamento_tiposervico`;
 CREATE TABLE IF NOT EXISTS `orcamento_tiposervico` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -295,13 +298,13 @@ CREATE TABLE IF NOT EXISTS `orcamento_tiposervico` (
   CONSTRAINT `FK__tiposervico` FOREIGN KEY (`IdTipoServico`) REFERENCES `tiposervico` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.orcamento_tiposervico: ~0 rows (approximately)
+# Dumping data for table sgoa2.orcamento_tiposervico: ~0 rows (approximately)
 DELETE FROM `orcamento_tiposervico`;
 /*!40000 ALTER TABLE `orcamento_tiposervico` DISABLE KEYS */;
 /*!40000 ALTER TABLE `orcamento_tiposervico` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.ordemservico
+# Dumping structure for table sgoa2.ordemservico
 DROP TABLE IF EXISTS `ordemservico`;
 CREATE TABLE IF NOT EXISTS `ordemservico` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -320,13 +323,13 @@ CREATE TABLE IF NOT EXISTS `ordemservico` (
   CONSTRAINT `FK_ordemservico_orcamento` FOREIGN KEY (`IdOrcamento`) REFERENCES `orcamento` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.ordemservico: ~0 rows (approximately)
+# Dumping data for table sgoa2.ordemservico: ~0 rows (approximately)
 DELETE FROM `ordemservico`;
 /*!40000 ALTER TABLE `ordemservico` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ordemservico` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.ordemservico_etapa
+# Dumping structure for table sgoa2.ordemservico_etapa
 DROP TABLE IF EXISTS `ordemservico_etapa`;
 CREATE TABLE IF NOT EXISTS `ordemservico_etapa` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -347,13 +350,13 @@ CREATE TABLE IF NOT EXISTS `ordemservico_etapa` (
   CONSTRAINT `FK_ordemservico_etapa_ordemservico` FOREIGN KEY (`IdOrdemServico`) REFERENCES `ordemservico` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.ordemservico_etapa: ~0 rows (approximately)
+# Dumping data for table sgoa2.ordemservico_etapa: ~0 rows (approximately)
 DELETE FROM `ordemservico_etapa`;
 /*!40000 ALTER TABLE `ordemservico_etapa` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ordemservico_etapa` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.ordemservico_evento
+# Dumping structure for table sgoa2.ordemservico_evento
 DROP TABLE IF EXISTS `ordemservico_evento`;
 CREATE TABLE IF NOT EXISTS `ordemservico_evento` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -364,6 +367,7 @@ CREATE TABLE IF NOT EXISTS `ordemservico_evento` (
   `Descricao` varchar(250) NOT NULL,
   `Ativo` tinyint(1) NOT NULL,
   `DataInicioParada` date DEFAULT NULL,
+  `NotificaViaEmail` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Id`),
   KEY `FK_ordemservico_etapa_funcionario` (`IdFuncionario`),
   KEY `FK_ordemservico_evento_ordemservico_etapa` (`IdOrdemServicoEtapa`),
@@ -371,34 +375,31 @@ CREATE TABLE IF NOT EXISTS `ordemservico_evento` (
   CONSTRAINT `ordemservico_evento_ibfk_1` FOREIGN KEY (`IdFuncionario`) REFERENCES `funcionario` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.ordemservico_evento: ~0 rows (approximately)
+# Dumping data for table sgoa2.ordemservico_evento: ~0 rows (approximately)
 DELETE FROM `ordemservico_evento`;
 /*!40000 ALTER TABLE `ordemservico_evento` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ordemservico_evento` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.ordemservico_foto
+# Dumping structure for table sgoa2.ordemservico_foto
 DROP TABLE IF EXISTS `ordemservico_foto`;
 CREATE TABLE IF NOT EXISTS `ordemservico_foto` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `IdOrdemServico` int(11) NOT NULL,
-  `IdOrdemServicoEtapa` int(11) NOT NULL,
+  `IdOrdemServicoEvento` int(11) NOT NULL,
   `NomeArquivo` varchar(250) NOT NULL,
   `Imagem` mediumblob NOT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_ordemservico_anexo_ordemservico_etapa` (`IdOrdemServicoEtapa`),
-  KEY `FK_ordemservico_foto_ordemservico` (`IdOrdemServico`),
-  CONSTRAINT `FK_ordemservico_anexo_ordemservico_etapa` FOREIGN KEY (`IdOrdemServicoEtapa`) REFERENCES `ordemservico_etapa` (`Id`),
-  CONSTRAINT `FK_ordemservico_foto_ordemservico` FOREIGN KEY (`IdOrdemServico`) REFERENCES `ordemservico` (`Id`)
+  KEY `FK_ordemservico_anexo_ordemservico_etapa` (`IdOrdemServicoEvento`),
+  CONSTRAINT `FK_ordemservico_anexo_ordemservico_etapa` FOREIGN KEY (`IdOrdemServicoEvento`) REFERENCES `ordemservico_evento` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.ordemservico_foto: ~0 rows (approximately)
+# Dumping data for table sgoa2.ordemservico_foto: ~0 rows (approximately)
 DELETE FROM `ordemservico_foto`;
 /*!40000 ALTER TABLE `ordemservico_foto` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ordemservico_foto` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.perfil
+# Dumping structure for table sgoa2.perfil
 DROP TABLE IF EXISTS `perfil`;
 CREATE TABLE IF NOT EXISTS `perfil` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -407,7 +408,7 @@ CREATE TABLE IF NOT EXISTS `perfil` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.perfil: ~2 rows (approximately)
+# Dumping data for table sgoa2.perfil: ~2 rows (approximately)
 DELETE FROM `perfil`;
 /*!40000 ALTER TABLE `perfil` DISABLE KEYS */;
 INSERT INTO `perfil` (`Id`, `Descricao`, `Ativo`) VALUES
@@ -416,7 +417,7 @@ INSERT INTO `perfil` (`Id`, `Descricao`, `Ativo`) VALUES
 /*!40000 ALTER TABLE `perfil` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.pessoa
+# Dumping structure for table sgoa2.pessoa
 DROP TABLE IF EXISTS `pessoa`;
 CREATE TABLE IF NOT EXISTS `pessoa` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -429,7 +430,7 @@ CREATE TABLE IF NOT EXISTS `pessoa` (
   UNIQUE KEY `Email` (`Email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.pessoa: ~1 rows (approximately)
+# Dumping data for table sgoa2.pessoa: ~1 rows (approximately)
 DELETE FROM `pessoa`;
 /*!40000 ALTER TABLE `pessoa` DISABLE KEYS */;
 INSERT INTO `pessoa` (`Id`, `Nome`, `Tipo`, `Email`, `TelefonePrimario`, `TelefoneSecundario`) VALUES
@@ -437,7 +438,7 @@ INSERT INTO `pessoa` (`Id`, `Nome`, `Tipo`, `Email`, `TelefonePrimario`, `Telefo
 /*!40000 ALTER TABLE `pessoa` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.pessoaendereco
+# Dumping structure for table sgoa2.pessoaendereco
 DROP TABLE IF EXISTS `pessoaendereco`;
 CREATE TABLE IF NOT EXISTS `pessoaendereco` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -454,13 +455,13 @@ CREATE TABLE IF NOT EXISTS `pessoaendereco` (
   CONSTRAINT `FK_pessoaendereco_pessoa` FOREIGN KEY (`IdPessoa`) REFERENCES `pessoa` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.pessoaendereco: ~0 rows (approximately)
+# Dumping data for table sgoa2.pessoaendereco: ~0 rows (approximately)
 DELETE FROM `pessoaendereco`;
 /*!40000 ALTER TABLE `pessoaendereco` DISABLE KEYS */;
 /*!40000 ALTER TABLE `pessoaendereco` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.pessoafisica
+# Dumping structure for table sgoa2.pessoafisica
 DROP TABLE IF EXISTS `pessoafisica`;
 CREATE TABLE IF NOT EXISTS `pessoafisica` (
   `Id` int(11) NOT NULL,
@@ -472,7 +473,7 @@ CREATE TABLE IF NOT EXISTS `pessoafisica` (
   CONSTRAINT `FK_Fisica_Pessoa` FOREIGN KEY (`Id`) REFERENCES `pessoa` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.pessoafisica: ~1 rows (approximately)
+# Dumping data for table sgoa2.pessoafisica: ~1 rows (approximately)
 DELETE FROM `pessoafisica`;
 /*!40000 ALTER TABLE `pessoafisica` DISABLE KEYS */;
 INSERT INTO `pessoafisica` (`Id`, `CPF`, `Sexo`, `DataNascimento`) VALUES
@@ -480,7 +481,7 @@ INSERT INTO `pessoafisica` (`Id`, `CPF`, `Sexo`, `DataNascimento`) VALUES
 /*!40000 ALTER TABLE `pessoafisica` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.pessoajuridica
+# Dumping structure for table sgoa2.pessoajuridica
 DROP TABLE IF EXISTS `pessoajuridica`;
 CREATE TABLE IF NOT EXISTS `pessoajuridica` (
   `Id` int(11) NOT NULL,
@@ -490,13 +491,13 @@ CREATE TABLE IF NOT EXISTS `pessoajuridica` (
   CONSTRAINT `FK_Juridica_Pessoa` FOREIGN KEY (`Id`) REFERENCES `pessoa` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Dumping data for table sgoa.pessoajuridica: ~0 rows (approximately)
+# Dumping data for table sgoa2.pessoajuridica: ~0 rows (approximately)
 DELETE FROM `pessoajuridica`;
 /*!40000 ALTER TABLE `pessoajuridica` DISABLE KEYS */;
 /*!40000 ALTER TABLE `pessoajuridica` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.profissao
+# Dumping structure for table sgoa2.profissao
 DROP TABLE IF EXISTS `profissao`;
 CREATE TABLE IF NOT EXISTS `profissao` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -505,7 +506,7 @@ CREATE TABLE IF NOT EXISTS `profissao` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.profissao: ~1 rows (approximately)
+# Dumping data for table sgoa2.profissao: ~1 rows (approximately)
 DELETE FROM `profissao`;
 /*!40000 ALTER TABLE `profissao` DISABLE KEYS */;
 INSERT INTO `profissao` (`Id`, `Descricao`, `Ativo`) VALUES
@@ -513,7 +514,7 @@ INSERT INTO `profissao` (`Id`, `Descricao`, `Ativo`) VALUES
 /*!40000 ALTER TABLE `profissao` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.seguradora
+# Dumping structure for table sgoa2.seguradora
 DROP TABLE IF EXISTS `seguradora`;
 CREATE TABLE IF NOT EXISTS `seguradora` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -522,7 +523,7 @@ CREATE TABLE IF NOT EXISTS `seguradora` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.seguradora: ~14 rows (approximately)
+# Dumping data for table sgoa2.seguradora: ~14 rows (approximately)
 DELETE FROM `seguradora`;
 /*!40000 ALTER TABLE `seguradora` DISABLE KEYS */;
 INSERT INTO `seguradora` (`Id`, `Descricao`, `Ativo`) VALUES
@@ -543,7 +544,7 @@ INSERT INTO `seguradora` (`Id`, `Descricao`, `Ativo`) VALUES
 /*!40000 ALTER TABLE `seguradora` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.setor
+# Dumping structure for table sgoa2.setor
 DROP TABLE IF EXISTS `setor`;
 CREATE TABLE IF NOT EXISTS `setor` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -552,15 +553,18 @@ CREATE TABLE IF NOT EXISTS `setor` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.setor: ~1 rows (approximately)
+# Dumping data for table sgoa2.setor: ~1 rows (approximately)
 DELETE FROM `setor`;
 /*!40000 ALTER TABLE `setor` DISABLE KEYS */;
 INSERT INTO `setor` (`Id`, `Descricao`, `Ativo`) VALUES
-	(1, 'Administrativo', 1);
+	(1, 'Setor Administrativo', 1),
+	(2, 'Setor de Pintura', 1),
+	(3, 'Setor de Funilaria', 1),
+	(4, 'Setor de Mecânica', 1);
 /*!40000 ALTER TABLE `setor` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.tiposervico
+# Dumping structure for table sgoa2.tiposervico
 DROP TABLE IF EXISTS `tiposervico`;
 CREATE TABLE IF NOT EXISTS `tiposervico` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -570,15 +574,18 @@ CREATE TABLE IF NOT EXISTS `tiposervico` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.tiposervico: ~1 rows (approximately)
+# Dumping data for table sgoa2.tiposervico: ~1 rows (approximately)
 DELETE FROM `tiposervico`;
 /*!40000 ALTER TABLE `tiposervico` DISABLE KEYS */;
 INSERT INTO `tiposervico` (`Id`, `Descricao`, `Ativo`, `ValorHoraPadrao`) VALUES
-	(1, 'Administrativo', 1, 0.00);
+	(1, 'Administração', 1, 29.00),
+	(2, 'Funilaria', 1, 0.00),
+	(3, 'Pintura', 1, 0.00),
+	(4, 'Mecânica', 1, 0.00);
 /*!40000 ALTER TABLE `tiposervico` ENABLE KEYS */;
 
 
-# Dumping structure for table sgoa.veiculo
+# Dumping structure for table sgoa2.veiculo
 DROP TABLE IF EXISTS `veiculo`;
 CREATE TABLE IF NOT EXISTS `veiculo` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -598,7 +605,7 @@ CREATE TABLE IF NOT EXISTS `veiculo` (
   CONSTRAINT `veiculo_pessoa` FOREIGN KEY (`IdPessoa`) REFERENCES `pessoa` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa.veiculo: ~0 rows (approximately)
+# Dumping data for table sgoa2.veiculo: ~0 rows (approximately)
 DELETE FROM `veiculo`;
 /*!40000 ALTER TABLE `veiculo` DISABLE KEYS */;
 /*!40000 ALTER TABLE `veiculo` ENABLE KEYS */;
