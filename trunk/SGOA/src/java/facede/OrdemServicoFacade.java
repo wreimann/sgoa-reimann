@@ -211,7 +211,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
                 util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço", 
                         "O seu veículo acaba de encerar uam atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
-            if (proximaEtapa.getEnviaEmailInicio()) {
+            if (proximaEtapa != null && proximaEtapa.getEnviaEmailInicio()) {
                 util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(),"Notificação do andamento do serviço", 
                         "O seu veículo acaba de iniciar um nova atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
