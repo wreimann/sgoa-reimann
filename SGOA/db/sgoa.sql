@@ -3,7 +3,7 @@
 # Server version:               5.5.28
 # Server OS:                    Win64
 # HeidiSQL version:             6.0.0.3603
-# Date/time:                    2013-11-21 22:55:08
+# Date/time:                    2013-11-23 12:27:01
 # --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -78,9 +78,9 @@ CREATE TABLE IF NOT EXISTS `config_ordemservico` (
   CONSTRAINT `FK_config_ordemservico_etapa_3` FOREIGN KEY (`IdEtapaFimConcerto`) REFERENCES `etapa` (`Id`),
   CONSTRAINT `FK_config_ordemservico_etapa_4` FOREIGN KEY (`IdEtapaCancelamentoConcerto`) REFERENCES `etapa` (`Id`),
   CONSTRAINT `FK_config_ordemservico_etapa_5` FOREIGN KEY (`IdEtapaConclusaoOrdemServico`) REFERENCES `etapa` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa2.config_ordemservico: ~0 rows (approximately)
+# Dumping data for table sgoa2.config_ordemservico: ~1 rows (approximately)
 DELETE FROM `config_ordemservico`;
 /*!40000 ALTER TABLE `config_ordemservico` DISABLE KEYS */;
 INSERT INTO `config_ordemservico` (`Id`, `IdEtapaInicial`, `IdEtapaInicialSeguradora`, `IdEtapaFimConcerto`, `IdEtapaCancelamentoConcerto`, `IdEtapaConclusaoOrdemServico`) VALUES
@@ -129,9 +129,9 @@ CREATE TABLE IF NOT EXISTS `etapa` (
   KEY `FK_etapa_tiposervico` (`IdTipoServico`),
   CONSTRAINT `FK_etapa_setor` FOREIGN KEY (`IdSetor`) REFERENCES `setor` (`Id`),
   CONSTRAINT `FK_etapa_tiposervico` FOREIGN KEY (`IdTipoServico`) REFERENCES `tiposervico` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa2.etapa: ~0 rows (approximately)
+# Dumping data for table sgoa2.etapa: ~3 rows (approximately)
 DELETE FROM `etapa`;
 /*!40000 ALTER TABLE `etapa` DISABLE KEYS */;
 INSERT INTO `etapa` (`Id`, `Descricao`, `Ativo`, `IdSetor`, `IdTipoServico`, `VisivelWebSite`, `EnviaEmailInicio`, `EnviaEmailFim`) VALUES
@@ -314,10 +314,15 @@ CREATE TABLE IF NOT EXISTS `ordemservico` (
   `IdFuncAprovacao` int(11) NOT NULL,
   `Obs` varchar(250) DEFAULT NULL,
   `IdEtapaAtual` int(11) DEFAULT NULL,
+  `DataCancelamento` datetime DEFAULT NULL,
+  `MotivoCancelamento` varchar(250) DEFAULT NULL,
+  `IdFuncCancelamento` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_ordemservico_orcamento` (`IdOrcamento`),
   KEY `FK_ordemservico_funcionario` (`IdFuncAprovacao`),
   KEY `FK_ordemservico_etapa` (`IdEtapaAtual`),
+  KEY `FK_ordemservico_funcionario_2` (`IdFuncCancelamento`),
+  CONSTRAINT `FK_ordemservico_funcionario_2` FOREIGN KEY (`IdFuncCancelamento`) REFERENCES `funcionario` (`Id`),
   CONSTRAINT `FK_ordemservico_etapa` FOREIGN KEY (`IdEtapaAtual`) REFERENCES `ordemservico_etapa` (`Id`),
   CONSTRAINT `FK_ordemservico_funcionario` FOREIGN KEY (`IdFuncAprovacao`) REFERENCES `funcionario` (`Id`),
   CONSTRAINT `FK_ordemservico_orcamento` FOREIGN KEY (`IdOrcamento`) REFERENCES `orcamento` (`Id`)
@@ -551,9 +556,9 @@ CREATE TABLE IF NOT EXISTS `setor` (
   `Descricao` varchar(250) NOT NULL,
   `Ativo` tinyint(1) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa2.setor: ~1 rows (approximately)
+# Dumping data for table sgoa2.setor: ~4 rows (approximately)
 DELETE FROM `setor`;
 /*!40000 ALTER TABLE `setor` DISABLE KEYS */;
 INSERT INTO `setor` (`Id`, `Descricao`, `Ativo`) VALUES
@@ -572,9 +577,9 @@ CREATE TABLE IF NOT EXISTS `tiposervico` (
   `Ativo` tinyint(1) NOT NULL,
   `ValorHoraPadrao` decimal(6,2) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-# Dumping data for table sgoa2.tiposervico: ~1 rows (approximately)
+# Dumping data for table sgoa2.tiposervico: ~4 rows (approximately)
 DELETE FROM `tiposervico`;
 /*!40000 ALTER TABLE `tiposervico` DISABLE KEYS */;
 INSERT INTO `tiposervico` (`Id`, `Descricao`, `Ativo`, `ValorHoraPadrao`) VALUES

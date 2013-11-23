@@ -3,7 +3,7 @@ package model;
 public enum SituacaoOrdemServico {
     EmExecucao("E"),
     Cancelado("C"),
-    FimReparo("R"),
+    ReparosConcluido("R"),
     Finalizado("F");
     
     private String value;

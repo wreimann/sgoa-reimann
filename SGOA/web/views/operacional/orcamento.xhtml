@@ -129,6 +129,12 @@
                     <p:outputLabel value="Aprovado" rendered="#{item.situacao == 'P'}"   />  
                     <p:outputLabel value="Finalizado" rendered="#{item.situacao == 'F'}"   />  
                 </p:column>
+                <p:column sortBy="#{item.ordemServico}" headerText="O.S.">
+                    <p:outputLabel value="Em Execução" rendered="#{item.ordemServico == 'A'}"   />  
+                    <p:outputLabel value="Cancelado" rendered="#{item.ordemServico == 'C'}"   />  
+                    <p:outputLabel value="Reparos Concluído" rendered="#{item.ordemServico == 'R'}"   />  
+                    <p:outputLabel value="Finalizado" rendered="#{item.ordemServico == 'F'}"   />
+                </p:column>
             </p:dataTable>
             <p:confirmDialog widgetVar="confirmCancelamentoDialog"
                              message="Confirma o cancelamento do orçamento selecionado ?"

@@ -102,4 +102,56 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
     public void setEtapas(List<OrdemServicoEtapa> etapas) {
         this.etapas = etapas;
     }
+    
+    @Column(name = "DataCancelamento")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataCancelamento;
+
+    public Date getDataCancelamento() {
+        return dataCancelamento;
+    }
+
+    public void setDataCancelamento(Date dataCancelamento) {
+        this.dataCancelamento = dataCancelamento;
+    }
+    
+    @JoinColumn(name = "idfuncionariocadastro")
+    @ManyToOne(optional = true)
+    private Funcionario funcionarioCadastro;
+
+    public Funcionario getFuncionarioCadastro() {
+        return funcionarioCadastro;
+    }
+
+    public void setFuncionarioCadastro(Funcionario funcionarioCadastro) {
+        this.funcionarioCadastro = funcionarioCadastro;
+    }
+    
+    @JoinColumn(name = "idfunccancelamento")
+    @ManyToOne(optional = true)
+    private Funcionario funcionarioCancelamento;
+
+    public Funcionario getFuncionarioCancelamento() {
+        return funcionarioCancelamento;
+    }
+
+    public void setFuncionarioCancelamento(Funcionario funcionarioCancelamento) {
+        this.funcionarioCancelamento = funcionarioCancelamento;
+    }
+
+    @Column(name = "motivoCancelamento")
+    private String motivoCancelamento;
+
+    public String getMotivoCancelamento() {
+        return motivoCancelamento;
+    }
+
+    public void setMotivoCancelamento(String motivoCancelamento) {
+        this.motivoCancelamento = motivoCancelamento;
+    }
+    
+    @Override
+    public String toString() {
+        return  String.valueOf(situacao);
+    }
 }

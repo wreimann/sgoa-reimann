@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import model.Cliente;
 import model.Etapa;
 import model.OrdemServicoEtapa;
@@ -32,23 +32,19 @@ public class MonitorarPatioController implements Serializable {
     private LazyDataModel<OrdemServicoEtapa> lazyModel;
     @EJB
     private OrdemServicoFacade ejbFacade;
+    @ManagedProperty(value = "#{loginController}")
+    private LoginController loginController;
+   
     // <editor-fold defaultstate="collapsed" desc="propriedades para filtro da pesquisa">
-    private String numero;
     private Cliente clienteFiltro;
     private String placaFiltro;
     private String situacaoFiltro;
+    private String situacaoAtivFiltro;
     private Etapa atividadeFiltro;
     private Setor setorFiltro;
+    private String motivo;
     private List<Etapa> etapas;
     private List<Setor> setores;
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
 
     public Cliente getClienteFiltro() {
         return clienteFiltro;
@@ -72,6 +68,22 @@ public class MonitorarPatioController implements Serializable {
 
     public void setSituacaoFiltro(String situacaoFiltro) {
         this.situacaoFiltro = situacaoFiltro;
+    }
+    
+     public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+    
+    public String getSituacaoAtivFiltro() {
+        return situacaoAtivFiltro;
+    }
+
+    public void setSituacaoAtivFiltro(String situacaoAtivFiltro) {
+        this.situacaoAtivFiltro = situacaoAtivFiltro;
     }
 
     public Etapa getAtividadeFiltro() {
@@ -117,7 +129,7 @@ public class MonitorarPatioController implements Serializable {
                 try {
                     Session sessao = HibernateFactory.currentSession();
                     resultado = ejbFacade.monitorarPatio(sessao, sortField, sortOrder, first, pageSize,
-                            getNumero(), getClienteFiltro(), getPlacaFiltro(),
+                            getSituacaoAtivFiltro(), getClienteFiltro(), getPlacaFiltro(),
                             getSituacaoFiltro(), getAtividadeFiltro(), getSetorFiltro());
                 } catch (Exception ex) {
                     JsfUtil.addErrorMessage(ex, "Erro ao consultar dados. ");
@@ -150,10 +162,18 @@ public class MonitorarPatioController implements Serializable {
     public void setCurrent(OrdemServicoEtapa current) {
         this.current = current;
     }
+    
+    public LoginController getLoginController() {
+        return loginController;
+    }
+
+    public void setLoginController(LoginController loginController) {
+        this.loginController = loginController;
+    }
 
     public void limparCampos() {
         current = null;
-        setNumero(null);
+        setSituacaoAtivFiltro(null);
         setClienteFiltro(null);
         setPlacaFiltro(null);
         setAtividadeFiltro(null);
@@ -207,5 +227,16 @@ public class MonitorarPatioController implements Serializable {
     public String editar() {
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("Etapa", current);
         return "servico?faces-redirect=true";
+    }
+     public void cancelar() {
+         try {
+            Session sessao = HibernateFactory.currentSession();
+            OrdemServicoFacade ebj = new OrdemServicoFacade();
+            ebj.cancelar(sessao, current.getOrdemServico(), getLoginController().getUsuarioSession(), getMotivo());
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de setores. ");
+        } finally {
+            HibernateFactory.closeSession();
+        }     
     }
 }
