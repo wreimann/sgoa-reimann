@@ -1,6 +1,7 @@
 package facede;
 
 import facede.base.BaseFacade;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -72,8 +73,8 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             sessao.saveOrUpdate(etapa);
             HibernateFactory.commitTransaction();
             if (notificaViaEmail) {
-                util.JsfUtil.enviarEmail(sessao, etapa.getOrdemServico().getOrcamento().getCliente().getPessoa(), 
-                        "Notificação do andamento do serviço", 
+                util.JsfUtil.enviarEmail(sessao, etapa.getOrdemServico().getOrcamento().getCliente().getPessoa(),
+                        "Notificação do andamento do serviço",
                         "A oficina acaba de incluir novas informações do serviço que esta sendo realizado em seu veículo. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
             if (tipo == TipoEvento.ContatoCliente) {
@@ -162,7 +163,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             sessao.save(item);
             HibernateFactory.commitTransaction();
             if (etapa.getEtapa().getEnviaEmailInicio()) {
-                util.JsfUtil.enviarEmail(sessao, item.getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço", 
+                util.JsfUtil.enviarEmail(sessao, item.getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço",
                         "O seu veículo acaba de iniciar um nova atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
         } catch (Exception e) {
@@ -208,11 +209,11 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             sessao.saveOrUpdate(item);
             HibernateFactory.commitTransaction();
             if (item.getEtapa().getEnviaEmailFim()) {
-                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço", 
+                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço",
                         "O seu veículo acaba de encerar uam atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
             if (proximaEtapa != null && proximaEtapa.getEnviaEmailInicio()) {
-                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(),"Notificação do andamento do serviço", 
+                util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço",
                         "O seu veículo acaba de iniciar um nova atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
             }
         } catch (Exception e) {
@@ -259,7 +260,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         OrdemServicoEtapa entidade = (OrdemServicoEtapa) sessao.get(OrdemServicoEtapa.class, id);
         return entidade;
     }
-    
+
     public List<OrdemServicoFoto> obterFotosOS(Session sessao, int id) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
@@ -267,13 +268,13 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         Criteria c = sessao.createCriteria(OrdemServicoFoto.class, "osf");
         c.createCriteria("evento", "ev").createCriteria("etapa", "et").createCriteria("ordemservico", "os");
         c.add(Restrictions.eq("os.id", id));
-        List<OrdemServicoFoto> resultado =  c.list();
+        List<OrdemServicoFoto> resultado = c.list();
         return resultado;
     }
 
     public List<OrdemServicoEtapa> monitorarPatio(Session sessao, String sort, SortOrder order,
-            Integer page, Integer maxPage, String numero, Cliente cliente, String placa,
-            String situacao, Etapa atividade, Setor setor) throws Exception {
+            Integer page, Integer maxPage, String situacaoAtiv, Cliente cliente, String placa,
+            String situacaoOS, Etapa atividade, Setor setor) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
@@ -282,12 +283,16 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         Criteria c = sessao.createCriteria(OrdemServicoEtapa.class, "ose");
         c.add(Restrictions.isNull("ose.dataSaida"));
         c.createCriteria("ordemservico", "os").createCriteria("orcamento", "o");
-        if (numero != null && !numero.isEmpty()) {
-            c.add(Restrictions.eq("o.ano", Integer.parseInt(numero.substring(0, 4))));
-            c.add(Restrictions.eq("o.numero", Integer.parseInt(numero.substring(5))));
+        List<Character> situacoes = new ArrayList<Character>();
+        situacoes.add('R');
+        situacoes.add('E');
+        c.add(Restrictions.in("os.situacao", situacoes));
+        if (situacaoOS != null && !situacaoOS.isEmpty()) {
+            c.add(Restrictions.eq("os.situacao", situacaoOS.charAt(0)));
+
         }
-        if (situacao != null && !situacao.isEmpty()) {
-            c.add(Restrictions.eq("ose.situacao", situacao.charAt(0)));
+        if (situacaoAtiv != null && !situacaoAtiv.isEmpty()) {
+            c.add(Restrictions.eq("ose.situacao", situacaoAtiv.charAt(0)));
         }
         if (cliente != null) {
             c.add(Restrictions.eq("o.cliente", cliente));
@@ -314,12 +319,13 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         c.setFirstResult(page).setMaxResults(maxPage);
         c.add(Restrictions.isNull("ose.dataSaida"));
         c.createCriteria("ordemservico", "os").createCriteria("orcamento", "o");
-        if (numero != null && !numero.isEmpty()) {
-            c.add(Restrictions.eq("o.ano", Integer.parseInt(numero.substring(0, 4))));
-            c.add(Restrictions.eq("o.numero", Integer.parseInt(numero.substring(5))));
+        c.add(Restrictions.in("os.situacao", situacoes));
+        if (situacaoOS != null && !situacaoOS.isEmpty()) {
+            c.add(Restrictions.eq("os.situacao", situacaoOS.charAt(0)));
+
         }
-        if (situacao != null && !situacao.isEmpty()) {
-            c.add(Restrictions.eq("ose.situacao", situacao.charAt(0)));
+        if (situacaoAtiv != null && !situacaoAtiv.isEmpty()) {
+            c.add(Restrictions.eq("ose.situacao", situacaoAtiv.charAt(0)));
         }
         if (cliente != null) {
             c.add(Restrictions.eq("o.cliente", cliente));
@@ -343,4 +349,42 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         return resultado;
 
     }
+    
+     public void cancelar(Session sessao, OrdemServico item, Funcionario funcExecutor, String motivo) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        try {
+            HibernateFactory.beginTransaction();
+            ConfigOrdemServicoFacade ebjConfig = new ConfigOrdemServicoFacade();
+            ConfigOrdemServico config = ebjConfig.obterPorId(sessao, 1);
+            item.setSituacao('C');
+            item.getOrcamento().setSituacao('C');
+            item.getEtapaAtual().setSituacao('P');
+             Calendar cal = Calendar.getInstance();
+            Date dataAtual = new Date();
+            cal.setTime(dataAtual);
+            item.setDataCancelamento(cal.getTime());
+            item.setFuncionarioCancelamento(funcExecutor);
+            item.setMotivoCancelamento(motivo);
+            OrdemServicoEtapa ativCanc = adicionarAtividade(funcExecutor, item, config.getEtapaCancelamentoConcerto(), false, null, null);
+            ativCanc.setDataEntrada(ativCanc.getDataCadastro());
+            ativCanc.setDataSaida(ativCanc.getDataCadastro());
+            ativCanc.setFuncionario(funcExecutor);
+            ativCanc.setSituacao('C');
+            sessao.save(ativCanc);
+            sessao.saveOrUpdate(item);
+            HibernateFactory.commitTransaction();
+            if (config.getEtapaCancelamentoConcerto().getEnviaEmailFim()) {
+                util.JsfUtil.enviarEmail(sessao, item.getOrcamento().getCliente().getPessoa(), "Cancelamento da Ordem de Serviço",
+                        "Ordem de serviço " + item.getOrcamento().toString() + " acaba de ser cancelada. \n + Motivo: " +  motivo);
+            }
+           
+        } catch (Exception e) {
+            HibernateFactory.rollbackTransaction();
+            throw e;
+        }
+
+    }
+    
 }

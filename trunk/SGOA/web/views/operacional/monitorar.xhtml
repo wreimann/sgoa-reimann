@@ -20,48 +20,16 @@
         <h:form id="frmPesquisa" prependId="false">
             <p:focus context="frmPesquisa"/>
             <h:panelGrid columns="2">
-                <p:fieldset id="NumeroPesquisaField" style="width: 190px; margin-right: 19px;">
-                    <p:outputLabel id="NumeroPesquisaLabel" value="Orçamento"/>
-                    <p:inputMask id="NumeroPesquisaInput"
-                                 value="#{monitorarPatioController.numero}" mask="9999.9?999" />
-                </p:fieldset>
-                <p:fieldset id="SituacaoPesquisaField" style="width: 195px;">
-                    <p:outputLabel id="SituacaoPesquisaLabel" value="Situação"/>
+                <p:fieldset id="SituacaoPesquisaField" style="width: 165px;">
+                    <p:outputLabel id="SituacaoPesquisaLabel" value="Situação da O.S."/>
                     <p:selectOneMenu id="SituacaoPesquisaListBox" styleClass="selectOneMenu"
                                      value="#{monitorarPatioController.situacaoFiltro}" >
+                        <f:selectItem itemLabel="Todas..." itemValue="" />
                         <f:selectItem itemLabel="Em Execução" itemValue="E" />
-                        <f:selectItem itemLabel="Parado" itemValue="P" />
-                        <f:selectItem itemLabel="Fila de espera" itemValue="F" />
+                        <f:selectItem itemLabel="Reparos concluído" itemValue="R" />
                     </p:selectOneMenu>
                 </p:fieldset>
-            </h:panelGrid>
-            <h:panelGrid columns="2">
-                <p:fieldset id="ClientePesquisaField" style="width: 490px; margin-right: 19px;">
-                    <p:outputLabel id="ClientePesquisaLabel" value="Cliente"/>
-                    <p:autoComplete value="#{monitorarPatioController.clienteFiltro}" id="ClientePesquisaInput"
-                                    completeMethod="#{monitorarPatioController.selecionarClienteAutoComplete}"
-                                    var="cliente" effect="fade"
-                                    itemLabel="#{cliente.pessoa.nome}" itemValue="#{cliente}"
-                                    converter="clienteConverter" forceSelection="true" />
-                </p:fieldset>
-                <p:fieldset id="PlacaPesquisaField" style="width: 190px;" >
-                    <p:outputLabel id="PlacaPesquisaLabel" value="Placa"/>
-                    <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" value="#{monitorarPatioController.placaFiltro}"
-                                 style="text-transform: uppercase;"/>
-                </p:fieldset>
-            </h:panelGrid>
-            <h:panelGrid columns="2">
-                <p:fieldset id="AtividadeField" style="width: 340px;" >
-                    <label id="AtividadeLabel">Atividade</label>
-                    <h:selectOneMenu id="AtividadeFieldListBox" 
-                                     value="#{monitorarPatioController.atividadeFiltro}" 
-                                     converter="etapaConverter" >
-                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
-                        <f:selectItems value="#{monitorarPatioController.etapas}" var="etapa"
-                                       itemLabel="#{etapa}" itemValue="#{etapa}"/>
-                    </h:selectOneMenu>
-                </p:fieldset>
-                <p:fieldset id="SetorField" style="width: 340px; margin-left: 19px;" >
+                <p:fieldset id="SetorField" style="margin-left: 19px;" >
                     <label id="SetorLabel">Setor</label>
                     <h:selectOneMenu id="SetorFieldListBox" 
                                      value="#{monitorarPatioController.setorFiltro}" 
@@ -71,6 +39,45 @@
                                        itemLabel="#{setor}" itemValue="#{setor}"/>
                     </h:selectOneMenu>
                 </p:fieldset>
+            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <p:fieldset id="PlacaPesquisaField" style="width: 165px; margin-right: 19px;" >
+                    <p:outputLabel id="PlacaPesquisaLabel" value="Placa"/>
+                    <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" value="#{monitorarPatioController.placaFiltro}"
+                                 style="text-transform: uppercase;"/>
+                </p:fieldset>
+                <p:fieldset id="ClientePesquisaField"  style="width: 370px;">
+                    <p:outputLabel id="ClientePesquisaLabel" value="Cliente"/>
+                    <p:autoComplete value="#{monitorarPatioController.clienteFiltro}" id="ClientePesquisaInput"
+                                    completeMethod="#{monitorarPatioController.selecionarClienteAutoComplete}"
+                                    var="cliente" effect="fade"
+                                    itemLabel="#{cliente.pessoa.nome}" itemValue="#{cliente}"
+                                    converter="clienteConverter" forceSelection="true" />
+                </p:fieldset>
+
+            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <p:fieldset id="SituacaoAtivField" style="width: 165px;">
+                    <p:outputLabel id="SituacaoAtivLabel" value="Situação da Ativ."/>
+                    <p:selectOneMenu styleClass="selectOneMenu"
+                                     value="#{monitorarPatioController.situacaoAtivFiltro}" >
+                        <f:selectItem itemLabel="Todas..." itemValue="" />
+                        <f:selectItem itemLabel="Em Execução" itemValue="E" />
+                        <f:selectItem itemLabel="Parado" itemValue="P" />
+                        <f:selectItem itemLabel="Fila de espera" itemValue="F" />
+                    </p:selectOneMenu>
+                </p:fieldset>
+                <p:fieldset id="AtividadeField" style="margin-left: 19px;" >
+                    <label id="AtividadeLabel">Atividade</label>
+                    <h:selectOneMenu id="AtividadeFieldListBox" 
+                                     value="#{monitorarPatioController.atividadeFiltro}" 
+                                     converter="etapaConverter" >
+                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                        <f:selectItems value="#{monitorarPatioController.etapas}" var="etapa"
+                                       itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                    </h:selectOneMenu>
+                </p:fieldset>
+
             </h:panelGrid>
             <p:commandButton id="btnPesquisar" value="Pesquisar" update="messages, :frmPesquisa" title="Pesquisar"/>
             <p:commandButton id="btnLimparPesquisa" value="Limpar" update=":frmPesquisa" action="#{monitorarPatioController.limparCampos}" />
@@ -89,19 +96,24 @@
                         <h:outputLabel value="Monitorar pátio" styleClass="tabs_involved" />
                     </div>
                 </f:facet>
-                <p:column headerText="Ações" width="35">
+                <p:column headerText="Ações" width="70">
                     <p:commandButton  alt="Editar" title="Editar" icon="btn_editar" 
                                       action="#{monitorarPatioController.editar}" ajax="false" >
                         <f:setPropertyActionListener value="#{item}" target="#{monitorarPatioController.current}" /> 
                     </p:commandButton>
-                </p:column>
-                <p:column sortBy="#{item.dataCadastro}" headerText="Data Cadastro">
-                    <h:outputText value="#{item.dataCadastro}" >
-                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo" />
-                    </h:outputText>
+                    <p:commandButton title="Cancelar" alt="Cancelar"
+                                     icon="btn_excluir"
+                                     oncomplete="confirmDialog.show()" 
+                                     disabled="#{item.ordemServico.situacao != 'E'}">
+                        <f:setPropertyActionListener value="#{item}" target="#{monitorarPatioController.current}" />
+                    </p:commandButton>
                 </p:column>
                 <p:column sortBy="#{item.ordemServico.orcamento.ano}" headerText="Orçamento" width="60" >
                     <h:outputText value="#{item.ordemServico.orcamento}" />
+                </p:column>
+                <p:column sortBy="#{item.ordemServico.situacao}" headerText="Situação O.S.">
+                    <p:outputLabel value="Em Execução" rendered="#{item.ordemServico.situacao == 'E'}"   />  
+                    <p:outputLabel value="Reparos concluído" rendered="#{item.ordemServico.situacao == 'R'}"   /> 
                 </p:column>
                 <p:column sortBy="#{item.ordemServico.orcamento.cliente}" headerText="Cliente">
                     <h:outputText value="#{item.ordemServico.orcamento.cliente.pessoa.nome}" />
@@ -112,19 +124,33 @@
                 <p:column sortBy="#{item.etapa}" headerText="Atividade">
                     <h:outputText value="#{item.etapa}" />
                 </p:column>
-                <p:column sortBy="#{item.etapa.setor}" headerText="Setor">
-                    <h:outputText value="#{item.etapa.setor}" />
-                </p:column>
-                <p:column sortBy="#{item.funcionario}" headerText="Funcionário">
-                    <h:outputText value="#{item.funcionario}" />
-                </p:column>
-                <p:column sortBy="#{item.situacao}" headerText="Situação">
+                <p:column sortBy="#{item.situacao}" headerText="Situação Ativ.">
                     <p:outputLabel value="Em Execução" rendered="#{item.situacao == 'E'}"   />  
                     <p:outputLabel value="Parado" rendered="#{item.situacao == 'P'}"   />  
                     <p:outputLabel value="Fila de espera" rendered="#{item.situacao == 'F'}"   />  
                 </p:column>
+                <p:column sortBy="#{item.funcionario}" headerText="Funcionário">
+                    <h:outputText value="#{item.funcionario}" />
+                </p:column>
+                <p:column sortBy="#{item.etapa.setor}" headerText="Setor">
+                    <h:outputText value="#{item.etapa.setor}" />
+                </p:column>
             </p:dataTable>
         </h:form>
+
+        <p:confirmDialog widgetVar="confirmDialog" 
+                         message="Confirma o cancelamento da Ordem de Serviço selecionada?" 
+                         showEffect="slide" hideEffect="clip" severity="alert">  
+            <p:fieldset>
+                <label>Motivo Cancelamento</label>
+                <p:inputTextarea value="#{monitorarPatioController.motivo}" />
+            </p:fieldset>
+            <p:commandButton oncomplete="confirmDialog.hide()" update=":frmPesquisa"
+                             actionListener="#{monitorarPatioController.cancelar}" 
+                             value="Sim"/> 
+            <p:commandButton value="Não" onclick="confirmDialog.hide()"/>    
+
+        </p:confirmDialog> 
     </ui:define>
 
     <ui:define name="Rodape">
