@@ -45,7 +45,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setNumero(int numero) {
         this.numero = numero;
     }
-    
     @Basic(optional = false)
     @NotNull
     @Column(name = "DataCadastro")
@@ -59,7 +58,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
-    
     @ManyToOne(optional = false)
     @JoinColumn(name = "idcliente")
     private Cliente cliente;
@@ -71,7 +69,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-    
     @ManyToOne(optional = false)
     @JoinColumn(name = "idveiculo")
     private Veiculo veiculo;
@@ -83,7 +80,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setVeiculo(Veiculo veiculo) {
         this.veiculo = veiculo;
     }
-    
     @JoinColumn(name = "idseguradora")
     @ManyToOne(optional = true)
     private Seguradora seguradora;
@@ -95,7 +91,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setSeguradora(Seguradora seguradora) {
         this.seguradora = seguradora;
     }
-    
     @Column(name = "terceiro")
     private boolean terceiro;
 
@@ -106,7 +101,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setTerceiro(boolean terceiro) {
         this.terceiro = terceiro;
     }
-    
     @Size(max = 200)
     @Column(name = "Obs")
     private String obs;
@@ -118,7 +112,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setObs(String obs) {
         this.obs = obs;
     }
-    
     @Column(name = "situacao")
     private char situacao;
 
@@ -129,7 +122,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setSituacao(char situacao) {
         this.situacao = situacao;
     }
-    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idorcamento")
     private List<OrcamentoTipoServico> servicos;
@@ -141,7 +133,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setServicos(List<OrcamentoTipoServico> servicos) {
         this.servicos = servicos;
     }
-    
     @Column(name = "valorAdicional")
     private double valorAdicional;
 
@@ -152,7 +143,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorAdicional(double valorAdicional) {
         this.valorAdicional = valorAdicional;
     }
-    
     @Column(name = "valorDesconto")
     private double valorDesconto;
 
@@ -163,7 +153,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorDesconto(double valorDesconto) {
         this.valorDesconto = valorDesconto;
     }
-    
     @Column(name = "valorTotal")
     private double valorTotal;
 
@@ -174,7 +163,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorTotal(double valorTotal) {
         this.valorTotal = valorTotal;
     }
-    
     @Column(name = "valorPecas")
     private double valorPecas;
 
@@ -185,7 +173,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setValorPecas(double valorPecas) {
         this.valorPecas = valorPecas;
     }
-    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "idorcamento")
     private List<OrcamentoAnexo> anexos;
@@ -197,7 +184,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setAnexos(List<OrcamentoAnexo> anexos) {
         this.anexos = anexos;
     }
-    
     @Column(name = "DataCancelamento")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataCancelamento;
@@ -209,7 +195,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setDataCancelamento(Date dataCancelamento) {
         this.dataCancelamento = dataCancelamento;
     }
-    
     @JoinColumn(name = "idfuncionariocadastro")
     @ManyToOne(optional = true)
     private Funcionario funcionarioCadastro;
@@ -221,7 +206,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setFuncionarioCadastro(Funcionario funcionarioCadastro) {
         this.funcionarioCadastro = funcionarioCadastro;
     }
-    
     @JoinColumn(name = "idfunccancelamento")
     @ManyToOne(optional = true)
     private Funcionario funcionarioCancelamento;
@@ -233,7 +217,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setFuncionarioCancelamento(Funcionario funcionarioCancelamento) {
         this.funcionarioCancelamento = funcionarioCancelamento;
     }
-
     @Column(name = "motivoCancelamento")
     private String motivoCancelamento;
 
@@ -244,7 +227,18 @@ public class Orcamento extends BaseEntidade<Orcamento> {
     public void setMotivoCancelamento(String motivoCancelamento) {
         this.motivoCancelamento = motivoCancelamento;
     }
-    
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idordemservico", nullable = true)
+    private OrdemServico ordemServico;
+
+    public OrdemServico getOrdemServico() {
+        return ordemServico;
+    }
+
+    public void SetOrdemServico(OrdemServico ordemServico) {
+        this.ordemServico = ordemServico;
+    }
+
     
     @OneToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name="idorcamento", nullable=true)

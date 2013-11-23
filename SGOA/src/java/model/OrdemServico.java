@@ -115,18 +115,7 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
         this.dataCancelamento = dataCancelamento;
     }
     
-    @JoinColumn(name = "idfuncionariocadastro")
-    @ManyToOne(optional = true)
-    private Funcionario funcionarioCadastro;
-
-    public Funcionario getFuncionarioCadastro() {
-        return funcionarioCadastro;
-    }
-
-    public void setFuncionarioCadastro(Funcionario funcionarioCadastro) {
-        this.funcionarioCadastro = funcionarioCadastro;
-    }
-    
+      
     @JoinColumn(name = "idfunccancelamento")
     @ManyToOne(optional = true)
     private Funcionario funcionarioCancelamento;
