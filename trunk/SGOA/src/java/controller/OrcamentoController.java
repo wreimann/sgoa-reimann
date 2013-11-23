@@ -322,6 +322,7 @@ public class OrcamentoController implements Serializable {
             OrdemServico os = new OrdemServico();
             os.setFuncionarioAprovacao(loginController.getUsuarioSession());
             os.setOrcamento(current);
+            current.SetOrdemServico(os);
             OrdemServicoFacade osFacade = new OrdemServicoFacade();
             osFacade.incluir(sessao, os);
             JsfUtil.addSuccessMessage("Ordem de Serviço gerada com sucesso!");

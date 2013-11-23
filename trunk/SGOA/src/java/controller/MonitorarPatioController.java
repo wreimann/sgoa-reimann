@@ -34,7 +34,6 @@ public class MonitorarPatioController implements Serializable {
     private OrdemServicoFacade ejbFacade;
     @ManagedProperty(value = "#{loginController}")
     private LoginController loginController;
-   
     // <editor-fold defaultstate="collapsed" desc="propriedades para filtro da pesquisa">
     private Cliente clienteFiltro;
     private String placaFiltro;
@@ -69,15 +68,15 @@ public class MonitorarPatioController implements Serializable {
     public void setSituacaoFiltro(String situacaoFiltro) {
         this.situacaoFiltro = situacaoFiltro;
     }
-    
-     public String getMotivo() {
+
+    public String getMotivo() {
         return motivo;
     }
 
     public void setMotivo(String motivo) {
         this.motivo = motivo;
     }
-    
+
     public String getSituacaoAtivFiltro() {
         return situacaoAtivFiltro;
     }
@@ -162,7 +161,7 @@ public class MonitorarPatioController implements Serializable {
     public void setCurrent(OrdemServicoEtapa current) {
         this.current = current;
     }
-    
+
     public LoginController getLoginController() {
         return loginController;
     }
@@ -228,15 +227,18 @@ public class MonitorarPatioController implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("Etapa", current);
         return "servico?faces-redirect=true";
     }
-     public void cancelar() {
-         try {
+
+    public void cancelar() {
+        try {
             Session sessao = HibernateFactory.currentSession();
             OrdemServicoFacade ebj = new OrdemServicoFacade();
             ebj.cancelar(sessao, current.getOrdemServico(), getLoginController().getUsuarioSession(), getMotivo());
+            util.JsfUtil.addSuccessMessage("Ordem de serviço " + current.toString() + " cancelada com sucesso!");
+            current = null;
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao carregar a lista de setores. ");
         } finally {
             HibernateFactory.closeSession();
-        }     
+        }
     }
 }
