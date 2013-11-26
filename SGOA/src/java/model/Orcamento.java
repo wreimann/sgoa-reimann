@@ -239,15 +239,6 @@ public class Orcamento extends BaseEntidade<Orcamento> {
         this.ordemServico = ordemServico;
     }
 
-    
-    @OneToOne(optional = true, fetch = FetchType.EAGER)
-    @JoinColumn(name="idorcamento", nullable=true)
-    private OrdemServico ordemServico;
-
-    public OrdemServico getOrdemServico() {
-        return ordemServico;
-    }
-    
     @Override
     public String toString() {
         if (getAno() > 0) {
