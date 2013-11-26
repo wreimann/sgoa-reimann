@@ -3,7 +3,7 @@
 # Server version:               5.5.28
 # Server OS:                    Win64
 # HeidiSQL version:             6.0.0.3603
-# Date/time:                    2013-11-23 13:24:50
+# Date/time:                    2013-11-26 21:21:35
 # --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -244,12 +244,15 @@ CREATE TABLE IF NOT EXISTS `orcamento` (
   `DataCancelamento` datetime DEFAULT NULL,
   `MotivoCancelamento` varchar(250) DEFAULT NULL,
   `IdFuncCancelamento` int(11) DEFAULT NULL,
+  `IdOrdemServico` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_orcamento_cliente` (`IdCliente`),
   KEY `FK_orcamento_veiculo` (`IdVeiculo`),
   KEY `FK_orcamento_funcionario_2` (`IdFuncCancelamento`),
   KEY `FK_orcamento_seguradora` (`IdSeguradora`),
   KEY `FK_orcamento_funcionario` (`IdFuncionarioCadastro`),
+  KEY `FK_orcamento_ordemservico` (`IdOrdemServico`),
+  CONSTRAINT `FK_orcamento_ordemservico` FOREIGN KEY (`IdOrdemServico`) REFERENCES `ordemservico` (`Id`),
   CONSTRAINT `FK_orcamento_cliente` FOREIGN KEY (`IdCliente`) REFERENCES `cliente` (`Id`),
   CONSTRAINT `FK_orcamento_funcionario` FOREIGN KEY (`IdFuncionarioCadastro`) REFERENCES `funcionario` (`Id`),
   CONSTRAINT `FK_orcamento_funcionario_2` FOREIGN KEY (`IdFuncCancelamento`) REFERENCES `funcionario` (`Id`),
@@ -317,14 +320,11 @@ CREATE TABLE IF NOT EXISTS `ordemservico` (
   `DataCancelamento` datetime DEFAULT NULL,
   `MotivoCancelamento` varchar(250) DEFAULT NULL,
   `IdFuncCancelamento` int(11) DEFAULT NULL,
-  `IdOrdemServico` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_ordemservico_orcamento` (`IdOrcamento`),
   KEY `FK_ordemservico_funcionario` (`IdFuncAprovacao`),
   KEY `FK_ordemservico_etapa` (`IdEtapaAtual`),
   KEY `FK_ordemservico_funcionario_2` (`IdFuncCancelamento`),
-  KEY `FK_ordemservico_ordemservico` (`IdOrdemServico`),
-  CONSTRAINT `FK_ordemservico_ordemservico` FOREIGN KEY (`IdOrdemServico`) REFERENCES `ordemservico` (`Id`),
   CONSTRAINT `FK_ordemservico_etapa` FOREIGN KEY (`IdEtapaAtual`) REFERENCES `ordemservico_etapa` (`Id`),
   CONSTRAINT `FK_ordemservico_funcionario` FOREIGN KEY (`IdFuncAprovacao`) REFERENCES `funcionario` (`Id`),
   CONSTRAINT `FK_ordemservico_funcionario_2` FOREIGN KEY (`IdFuncCancelamento`) REFERENCES `funcionario` (`Id`),
