@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="./template/master.xhtml">
+
+    <ui:define name="content">
+        <h:form></h:form> 
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div id="carousel-example-generic" class="carousel slide">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                        </ol>
+
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <h:graphicImage name="slider1.png" library="img" styleClass="img-rounded" />
+                            </div>
+                            <div class="item">
+                                <h:graphicImage name="slider2.png" library="img" styleClass="img-rounded" />  
+                            </div>
+                            <div class="item">
+                                <h:graphicImage name="slider3.png" library="img" styleClass="img-rounded" />
+                            </div>
+                        </div>
+                        <!-- Controls -->
+                        <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                            <span class="icon-prev"></span>
+                        </a>
+                        <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                            <span class="icon-next"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="well" >
+                        <h:form id="frmAcompanheSeuVeiculo" prependId="false" class="bs-example form-horizontal">
+                            <p:growl autoUpdate="true"/>
+                            <fieldset>
+                                <legend style="height: 65px;">
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-9" style="margin-left: -30px;">
+                                            <h3>Acompanhamento</h3>
+                                        </div>
+                                        <div class="col-lg-3" style="float: right; margin-top: -10px;" >
+                                            <h:graphicImage name="carro.png" library="img" />
+                                        </div>                                        
+                                    </div>                                                                                                           
+                                </legend>
+                                <p class="text-info" style="margin-bottom: 15px;">Acompanhe o reparo do seu veículo sem sair de casa.</p>
+
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <div class="col-lg-3" style="padding-right: 0px; padding-left: 0px;">
+                                        <label class="control-label" for="PlacaInput" style="float: right;width: 100%;" >Placa*</label>
+                                    </div>                                   
+                                    <div class="col-lg-9">
+                                        <h:panelGrid columns="2">  
+                                            <p:inputMask id="PlacaInput" mask="aaa9999" value="#{paginaInicialController.placa}"
+                                                         style="text-transform: uppercase; width: 90px;"
+                                                         required="true" requiredMessage="Informe a Placa do veículo." styleClass=""/>
+                                            <p:message for="DocumentoInput" display="icon"/>
+                                        </h:panelGrid>
+                                        <span class="help-block" style="font-size: 9px;">Não coloque espaço entre as letras e números</span>                                     
+                                    </div>
+                                </div>
+                                <div class="form-group"  style="margin-bottom: 0;">
+                                    <div class="col-lg-3" style="padding-right: 0px; padding-left: 0px;">
+                                        <label class="control-label" for="Email" style="float: right;width: 100%;" >CPF/CNPJ*</label>
+                                    </div> 
+                                    <div class="col-lg-9">
+                                        <h:panelGrid columns="2">  
+                                            <p:inputText id="DocumentoInput" style="width: 160px;"
+                                                         value="#{paginaInicialController.documento}"
+                                                         required="true" requiredMessage="Informe o seu CPF/CNPJ."/>                                        
+                                            <p:message for="DocumentoInput" display="icon"/> 
+                                        </h:panelGrid>
+                                        <span class="help-block" style="font-size: 9px;" >Somente números sem espaço ou ponto</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group"  style="margin-bottom: 0;">
+                                    <div class="col-lg-12 col-lg-offset-3">
+                                        <p:commandLink styleClass="btn btn-success" value="Entrar" title="Entrar"  ajax="false"
+                                                       action="#{paginaInicialController.acompanhar}" update=":frmAcompanheSeuVeiculo"/>                                    
+                                    </div>
+                                </div>    
+
+                            </fieldset>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--        <div class="row">
+                    <div class="col-lg-12">
+                        <div class="well text-center">
+                            Reiman´s Car qualidade, prezando pela comodidade e satisfação de seus clientes!
+                        </div>
+                    </div>
+                </div>-->
+
+        <div class="row">
+            <div class="col-lg-4">
+                <h2>Quem Somos</h2>
+                <p class="lead">Atuando a mais de 20 anos no mercado, a <b class="text-primary">Reiman´s Car</b> tornou-se referência na reparação de veículos.</p>
+                <div class="pull-left" >
+                    <h:link styleClass="btn btn-default" value="Saiba mais" outcome="/paginas/empresa.xhtml" title="Saiba mais" />               
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <h2>Nossos Serviços</h2>
+                <p class="lead">A <b class="text-primary">Reiman´s Car</b> é uma oficina especializada em serviços de <b>funilaria</b> e <b>pintura</b>.</p>
+                <div class="pull-left" >
+                    <h:link styleClass="btn btn-default" value="Saiba mais" outcome="/paginas/servicos.xhtml" title="Saiba mais" />    
+                </div>
+            </div>
+            <div class="col-lg-4" >
+                <h2>Seguradoras</h2>
+                <div class="col-lg-12">
+                    <div class="col-lg-8" style="margin-left: -30px !important;" >
+                        <p class="lead">Prestamos serviços para seguradoras e particulares.</p>
+                        <div class="pull-left" >
+                            <h:link  styleClass="btn btn-default" value="Saiba mais" outcome="/paginas/seguradoras.xhtml" title="Saiba mais"/>    
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="pull-right">
+                            <p style="font-size: 10px;"><b>Oficina Credenciada</b></p>
+                            <p class="pull-right">
+                                <h:outputLink target="_black" value="http://www.tokiomarine.com.br/"  title="Seguradora Tokio Marine"> 
+                                    <h:graphicImage name="tokyomarine.png" library="img" />
+                                </h:outputLink>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

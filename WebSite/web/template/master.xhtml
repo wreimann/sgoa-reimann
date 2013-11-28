@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      lang="pt-br" >
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Oficina"/>
+        <meta name="author" content="W2R Informática"/>
+        <title>Reiman´s Car - Funilaria e Pintura</title>
+        <h:outputScript library="primefaces" name="jquery/jquery.js" target="head"/>
+        <h:outputStylesheet name="bootstrap.css" library="css" value="text/css" /> 
+        <h:outputStylesheet name="bootswatch.min.css" library="css" value="text/css" />
+        <h:outputStylesheet name="boot-reimann.css" library="css" value="text/css" />
+        <h:outputScript library="js" name="bootstrap.js" />
+        <h:outputScript library="js" name="boot-business.js" />        
+    </h:head>
+
+    <h:body>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <h:link value="" outcome="/index.xhtml" title="Reiman´s Car Recuperadora de Veículos"><h:graphicImage name="logo2.png" library="img" style="margin-top: 2px;" /> </h:link>
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse" id="navbar-main" style="margin-top: 20px;" >
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active"><h:link value="Home" outcome="/index.xhtml" title="Home"/></li>
+                        <li><h:link value="Empresa" outcome="/paginas/empresa.xhtml" title="Empresa" /></li>
+                        <li><h:link value="Serviços" outcome="/paginas/servicos.xhtml" title="Serviços" /></li>
+                        <li><h:link value="Seguradoras" outcome="/paginas/seguradoras.xhtml" title="Seguradoras" /></li>
+                        <li><h:link value="Contato" outcome="/paginas/contato.xhtml" title="Contato" /></li>                       
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+        
+        <div id="wrap">
+            <div class="container">
+                <ui:insert name="content">Content</ui:insert>             
+            </div> 
+            <div id="push"></div> 
+        </div> 
+        
+        <footer id="footer">
+            <div class="container">
+                <div class="row" style="height: 95px;">
+                    <div class="col-lg-7" >
+                        <h4 style="color: white;" >Reiman´s Car Recuperadora de Veículos</h4>
+                        <p>Rua Rodolfo Bernardelli, 697 - Curitiba - Paraná </p> 
+                        <p><h:graphicImage name="phone.png" library="img" style="margin-right:1px;" />(41)3277-3031 <h:graphicImage name="mail3.png" library="img" style="margin-left: 9px; margin-right: 5px;"/>contato@reimanscar.com.br </p>
+                    </div>
+                    <div class="col-lg-5">
+                        <ul class="list-unstyled pull-right" style="font-size: 11px; font-weight:bold; margin-top: 10px;" >
+                            <li><h:link style="color: white;" value="Home" outcome="/index.xhtml" title="Home"/></li>
+                            <li><h:link style="color: white;" value="Empresa" outcome="/paginas/empresa.xhtml" title="Empresa" /></li>
+                            <li><h:link style="color: white;" value="Serviços" outcome="/paginas/servicos.xhtml" title="Serviços" /></li>
+                            <li><h:link style="color: white;" value="Seguradoras" outcome="/paginas/seguradoras.xhtml" title="Seguradoras" /></li>
+                            <li><h:link style="color: white;" value="Contato" outcome="/paginas/contato.xhtml" title="Contato" /></li>                       
+                        </ul>
+                    </div> 
+                </div>
+            </div>
+        </footer>
+        <script type="text/javascript">
+            //active menu
+            $(document).ready(function() {
+                $('ul.nav > li').each(function() {
+                    var href = $(this).find('a').attr('href');
+                    if (href === window.location.pathname) {
+                        $('ul.nav > li').removeClass("active");
+                        $(this).addClass('active');
+                    }
+                });
+            });
+        </script>
+
+    </h:body>
+</html>

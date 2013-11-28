@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="./../template/master.xhtml"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
+        <div class="row">
+            <div class="page-header">
+                <h2>Contato</h2>
+            </div>            
+        </div>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="well" style="padding-top: 0;" >
+                    <h:form id="frmMensagem" prependId="false" class="bs-example form-horizontal">
+                        <fieldset>
+                            <legend><h3>Fale Conosco</h3></legend>
+                            <p class="text-info">A sua opinião é muito importante para <b>Reiman´s Car</b>. Envie suas dúvidas, sugestões, críticas ou elogios. Teremos prazer em responder.</p>
+                            <div class="form-group" >
+                                <p:messages id="messages" autoUpdate="true" closable="true" />  
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="Nome" >Nome*</label>
+                                <div class="col-lg-10">
+                                    <p:inputText styleClass="form-control" value="#{contatoController.nome}"
+                                                 required="true" requiredMessage="Informe seu Nome."/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="Email" >E-mail*</label>
+                                <div class="col-lg-10">
+                                    <p:inputText styleClass="form-control"  value="#{contatoController.email}"
+                                                 required="true" requiredMessage="Informe seu E-mail.">
+                                        <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="Assunto" >Assunto</label>
+                                <div class="col-lg-10">
+                                    <p:inputText styleClass="form-control"  value="#{contatoController.assunto}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="Mensagem" >Mensagem*</label>
+                                <div class="col-lg-10">
+                                    <p:inputTextarea styleClass="form-control" 
+                                                     style="height: 150px;" value="#{contatoController.mensagem}"
+                                                     required="true" requiredMessage="Informe a Mensagem."/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-10 col-lg-offset-2" >
+                                    <p:commandButton value="Enviar" title="Enviar" 
+                                                     action="#{contatoController.enviar}" ajax="false"
+                                                     styleClass="btn btn-primary" />                                    
+                                </div>
+                            </div>                            
+                        </fieldset>
+                    </h:form>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="bs-example col-md-offset-1" >
+                    <fieldset>
+                        <legend><h3>Localização</h3></legend>
+                        <div class="form-group">
+                            <div class="col-lg-10">
+                                <p><b>Rua Rodolfo Bernardelli, 697 - Uberaba <br />
+                                        Curitiba - Paraná</b>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-10">
+                                <p><h:graphicImage name="phone.png" library="img" style="margin-right: 10px;" /><b class="text-info" style="font-size: 18px;">(41) 3277-3031</b><br />
+                                    <label class="text-danger" style="margin-left: 35px; margin-top: 10px; font-size: 12px;">Horários de Atendimento <br/>
+                                        Segunda a Sexta das 8h às 12h e das 13h ás 18h.
+                                    </label>
+                                </p>
+                                <p><h:graphicImage name="mail.png" library="img" style="margin-right: 9px;" />contato@reimanscar.com.br</p>                                
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-11" >
+                                <p:gmap center="-25.489707805325303,-49.22736343014833" zoom="15" type="ROADMAP" 
+                                        style="height:270px;" disableDefaultUI="true" 
+                                        model="#{contatoController.simpleModel}"  fitBounds="false" />                                    
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>          
+
+    </ui:define>
+
+</ui:composition>
