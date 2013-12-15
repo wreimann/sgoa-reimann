@@ -106,12 +106,12 @@
                 <p:tabView id="tabView" >
                     <p:tab id="tab2" title="Dados básicos">  
                         <p:fieldset id="NomeField">
-                            <label id="NomeLabel">Nome *</label>
+                            <label id="NomeLabel">Nome*</label>
                             <h:inputText id="NomeText" required="true" 
                                          requiredMessage="O campo 'Nome' é obrigatório." 
                                          value="#{clienteController.current.pessoa.nome}"/>
                         </p:fieldset>
-                        <p:panelGrid columns="2">
+                        <h:panelGrid columns="2">
                             <p:fieldset id="TipoField" style="width: 275px; margin-right: 19px;">
                                 <label id="TipoLabel">Tipo *</label>
                                 <h:selectOneMenu id="TipoListBox" value="#{clienteController.tipoPessoa}"
@@ -138,9 +138,9 @@
                                 </h:panelGroup>
 
                             </p:fieldset>
-                        </p:panelGrid>
+                        </h:panelGrid>
                         <h:panelGroup id="DetalhesPessoaFisicaPanel" >
-                            <p:panelGrid columns="2">
+                            <h:panelGrid columns="2">
                                 <p:fieldset styleClass="fieldset" id="SexoField"  style="margin-right: 19px;" 
                                             rendered="#{clienteController.tipoPessoa == 'F'}" >
                                     <p:outputLabel id="SexoLabel" value="Sexo"
@@ -162,7 +162,7 @@
                                                 value="#{clienteController.dataNasc}" converterMessage="Valor inválido!"
                                                 pattern="dd/MM/yyyy"  />  
                                 </p:fieldset>
-                            </p:panelGrid>
+                            </h:panelGrid>
                         </h:panelGroup>
                         <p:fieldset id="ObsField" >
                             <label id="ObsLabel">Observação</label>
@@ -175,7 +175,7 @@
                     </p:tab>
                     <p:tab id="tab3" title="Veículos">
                         <h:panelGroup id="pnlGrupoVeiculo" >
-                            <p:panelGrid columns="3">
+                            <h:panelGrid columns="3">
                                 <p:fieldset id="MarcaField" style="width: 170px; margin-right: 19px;">
                                     <label id="MarcaLabel">Marca *</label>
                                     <p:selectOneMenu id="MarcaListBox" styleClass="selectOneMenu" 
@@ -206,9 +206,9 @@
                                                        itemLabel="#{cor.descricao}" itemValue="#{cor}"/> 
                                     </p:selectOneMenu> 
                                 </p:fieldset>
-                            </p:panelGrid>
+                            </h:panelGrid>
 
-                            <p:panelGrid columns="3">
+                            <h:panelGrid columns="3">
                                 <p:fieldset id="PlacaField" style="width: 170px; margin-right: 19px; " >
                                     <label id="PlacaLabel">Placa *</label>
                                     <p:inputMask id="PlacaInput" mask="aaa9999" value="#{clienteController.currentVeiculo.placa}"
@@ -223,7 +223,7 @@
                                     <label id="AnoModeloLabel">Ano Modelo *</label>
                                     <p:inputMask id="AnoModeloInput" mask="9999" value="#{clienteController.currentVeiculo.anoModelo}" />
                                 </p:fieldset>
-                            </p:panelGrid>
+                            </h:panelGrid>
 
                             <p:fieldset id="VeiculoAtivo"  style="width: 170px;" >
                                 <h:selectBooleanCheckbox id="AtivoVeiculoCheck"  value="#{clienteController.currentVeiculo.ativo}" /> <b>Ativo *</b>
@@ -281,7 +281,7 @@
                         </p:fieldset>
 
                         <p:fieldset id="EmailField">
-                            <label id="EmailLabel">E-mail *</label>
+                            <label id="EmailLabel">E-mail</label>
                             <h:inputText id="EmailInput" 
                                          value="#{clienteController.current.pessoa.email}"
                                          validatorMessage="E-mail inválido.">
@@ -292,45 +292,49 @@
 
                     </p:tab>
                     <p:tab id="tab5" title="Endereço">
-
-                        <p:fieldset id="CEPField" style="width: 230px">
+                        <p:fieldset id="CEPField" style="width: 140px">
                             <label id="CEPLabel">CEP</label>
                             <p:inputMask mask="99.999-999" id="CepInput" converterMessage="Valor inválido!"
                                          value="#{clienteController.enderecoAux.cep}" />
                         </p:fieldset>
+                        <h:panelGrid columns="2">
+                            <p:fieldset id="RuaField" style="width: 400px;" >
+                                <label id="RuaLabel">Rua</label>
+                                <h:inputText id="RuaInput" value="#{clienteController.enderecoAux.logradouro}" />
+                            </p:fieldset>
 
-                        <p:fieldset id="RuaField" style="width: 400px; float: left;  margin-right: 19px" >
-                            <label id="RuaLabel">Rua</label>
-                            <h:inputText id="RuaInput" value="#{clienteController.enderecoAux.logradouro}" />
-                        </p:fieldset>
+                            <p:fieldset id="NumeroField" style="width: 140px; margin-left: 19px;">
+                                <label id="NumeroLabel">Número</label>
+                                <p:inputMask mask="9?99999" id="NumeroInput" converterMessage="Valor inválido!"
+                                             value="#{clienteController.enderecoAux.predical}"/>
+                            </p:fieldset>
+                        </h:panelGrid>
 
-                        <p:fieldset id="NumeroField" style="width: 160px; float: left;">
-                            <label id="NumeroLabel">Número</label>
-                            <p:inputMask mask="9?99999" id="NumeroInput" converterMessage="Valor inválido!"
-                                         value="#{clienteController.enderecoAux.predical}"/>
-                        </p:fieldset>
+                        <h:panelGrid columns="2">
+                            <p:fieldset id="ComplementoField" style="width: 230px; margin-right: 19px;" >
+                                <label id="ComplementoLabel">Complemento</label>
+                                <h:inputText id="ComplementoInput" value="#{clienteController.enderecoAux.complemento}" />
+                            </p:fieldset>
 
-                        <p:fieldset id="ComplementoField" style="width: 230px; float: left; margin-right: 19px;" >
-                            <label id="ComplementoLabel">Complemento</label>
-                            <h:inputText id="ComplementoInput" value="#{clienteController.enderecoAux.complemento}" />
-                        </p:fieldset>
+                            <p:fieldset id="BairroField" >
+                                <label id="BairroLabel">Bairro</label>
+                                <h:inputText id="BairroInput" value="#{clienteController.enderecoAux.bairro}" />
+                            </p:fieldset>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <p:fieldset id="MunicipioField" style="width: 400px; margin-right: 19px;">
+                                <label id="MunicipioLabel">Município</label>
+                                <h:inputText id="MunicipioInput" value="#{clienteController.enderecoAux.municipio}"/>
+                            </p:fieldset>
 
-                        <p:fieldset id="BairroField" style="width: 330px; float: left;" >
-                            <label id="BairroLabel">Bairro</label>
-                            <h:inputText id="BairroInput" value="#{clienteController.enderecoAux.bairro}" />
-                        </p:fieldset>
-
-                        <p:fieldset id="MunicipioField" style="width: 400px; float: left; margin-right:19px">
-                            <label id="MunicipioLabel">Município</label>
-                            <h:inputText id="MunicipioInput" value="#{clienteController.enderecoAux.municipio}"/>
-                        </p:fieldset>
-
-                        <p:fieldset id="UFField" style="width: 160px; ">
-                            <label id="UFabel">UF</label>
-                            <p:inputMask mask="aa" id="UFInput" value="#{clienteController.enderecoAux.uf}" 
-                                         converterMessage="Valor inválido!" style="text-transform: uppercase;" />
-                        </p:fieldset>
+                            <p:fieldset id="UFField" style="width: 140px; ">
+                                <label id="UFabel">UF</label>
+                                <p:inputMask mask="aa" id="UFInput" value="#{clienteController.enderecoAux.uf}" 
+                                             converterMessage="Valor inválido!" style="text-transform: uppercase;" />
+                            </p:fieldset>
+                        </h:panelGrid>
                     </p:tab>
+                  
                 </p:tabView>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
                     <p:commandButton id="btnSalvar" 
