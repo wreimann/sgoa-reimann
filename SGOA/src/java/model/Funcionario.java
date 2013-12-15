@@ -78,13 +78,13 @@ public class Funcionario extends BaseEntidadeAtivo<Funcionario> {
     }
     
     @Column(name = "matricula")
-    private String matricula;
+    private Integer matricula;
 
-    public String getMatricula() {
+    public Integer getMatricula() {
         return matricula;
     }
 
-    public void setMatricula(String matricula) {
+    public void setMatricula(Integer matricula) {
         this.matricula = matricula;
     }
     

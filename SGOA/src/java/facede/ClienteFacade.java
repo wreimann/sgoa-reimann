@@ -38,12 +38,14 @@ public class ClienteFacade extends BaseFacade<Cliente> {
     @Override
     public void incluir(Session sessao, Cliente item) throws Exception {
         validarDocumento(sessao, item);
+        validarEmail(sessao, item);
         super.incluir(sessao, item);
     }
 
     @Override
     public void alterar(Session sessao, Cliente item) throws Exception {
         validarDocumento(sessao, item);
+        validarEmail(sessao, item);
         super.alterar(sessao, item);
     }
 
@@ -147,5 +149,30 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         }
         List<Cliente> lista = c.list();
         return lista;
+    }
+    
+    private void validarEmail(Session sessao, Cliente item) throws Exception {
+        if (item == null) {
+            throw new EntityNotFoundException("Objeto nulo.");
+        }
+        if (item.getPessoa().getEmail()!= null && !item.getPessoa().getEmail().isEmpty()) {
+            Cliente cliente = obterPorEmail(sessao, item.getPessoa().getEmail());
+            if (cliente != null) {
+                throw new Exception("E-mail informado já eta sendo utilizado.");
+            }
+        }
+    }
+
+    private Cliente obterPorEmail(Session sessao, String email) throws Exception {
+         if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        Cliente retorno = null;
+        if (!email.isEmpty()) {
+            Criteria c = sessao.createCriteria(Cliente.class, "cliente").createCriteria("pessoa", "pes");
+            c.add(Restrictions.eq("pes.email", email));
+            retorno = (Cliente) c.uniqueResult();
+        }
+        return retorno;
     }
 }

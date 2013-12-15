@@ -1,6 +1,8 @@
 package facede;
 
 import facede.base.BaseFacade;
+import java.util.Calendar;
+import java.util.Date;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,12 +13,14 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import model.Funcionario;
 import model.PessoaFisica;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.hibernate.type.IntegerType;
 import util.CriptografiaUtil;
 import util.JsfUtil;
 
@@ -38,26 +42,29 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
     @Override
     public void incluir(Session sessao, Funcionario item) throws Exception {
         validarDocumento(sessao, item);
+        validarEmail(sessao, item);
         boolean enviarEmail = incluirAcessoAoSitema(item);
+        item.setMatricula(obterMatricula(sessao));
         super.incluir(sessao, item);
-        if (enviarEmail) {
+        if (enviarEmail && !item.getPessoa().getEmail().isEmpty()) {
             JsfUtil.enviarEmail(sessao, item.getPessoa(), "Reiman´s Car - Senha de autenticação",
-                    "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
-                    + "E-mail: " + item.getPessoa().getEmail()
-                    + "Senha: " + item.getMatricula().replaceAll("\\.", ""));
+                    "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe: "
+                    + "\nE-mail: " + item.getPessoa().getEmail()
+                    + "\nSenha: " + item.getMatricula().toString().replaceAll("\\.", ""));
         }
     }
 
     @Override
     public void alterar(Session sessao, Funcionario item) throws Exception {
         validarDocumento(sessao, item);
+        validarEmail(sessao, item);
         boolean enviarEmail = incluirAcessoAoSitema(item);
         super.alterar(sessao, item);
-        if (enviarEmail) {
+        if (enviarEmail && !item.getPessoa().getEmail().isEmpty()) {
             JsfUtil.enviarEmail(sessao, item.getPessoa(), "Reiman´s Car - Senha de autenticação",
                     "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
                     + "E-mail: " + item.getPessoa().getEmail()
-                    + "Senha: " + item.getMatricula().replaceAll("\\.", ""));
+                    + "Senha: " + item.getMatricula().toString().replaceAll("\\.", ""));
         }
     }
 
@@ -81,7 +88,7 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
             throw new EntityNotFoundException("Objeto nulo.");
         }
         if (item.getSenha() == null && item.getPerfilAcesso() != null) {
-            item.setSenha(CriptografiaUtil.encrypt(item.getMatricula()));
+            item.setSenha(CriptografiaUtil.encrypt(item.getMatricula().toString()));
             return true;
         } else {
             if (item.getPerfilAcesso() == null) {
@@ -178,12 +185,12 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
         Funcionario retorno = obterPorEmail(sessao, email);
         if (retorno != null) {
             if (retorno.getPerfilAcesso() != null) {
-                retorno.setSenha(CriptografiaUtil.encrypt(retorno.getMatricula()));
+                retorno.setSenha(CriptografiaUtil.encrypt(retorno.getMatricula().toString()));
                 alterar(sessao, retorno);
                 JsfUtil.enviarEmail(sessao, retorno.getPessoa(), "Reiman´s Car - Recuperação de senha de autenticação",
                         "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
                         + "E-mail: " + retorno.getPessoa().getEmail()
-                        + "Senha: " + retorno.getMatricula().replaceAll("\\.", ""));
+                        + "Senha: " + retorno.getMatricula().toString().replaceAll("\\.", ""));
             } else {
                 throw new Exception("Funcionário sem permissão ao sistema.");
             }
@@ -191,4 +198,37 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
             throw new Exception("E-mail não localizado.");
         }
     }
+
+    private Integer obterMatricula(Session sessao) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        Calendar cal = Calendar.getInstance();
+        Date date = new Date();
+        cal.setTime(date);
+        Integer anoCadastro = cal.get(Calendar.YEAR);
+        Criteria c = sessao.createCriteria(Funcionario.class);
+        c.add(Restrictions.sqlRestriction("YEAR(dataCadastro)", anoCadastro, IntegerType.INSTANCE));
+        Integer quantidade = ((Integer) c.setProjection(Projections.count("id")).uniqueResult());
+        if (quantidade == null) {
+            quantidade = Integer.parseInt(anoCadastro.toString() + "1");
+        } else {
+            quantidade++;
+            quantidade = Integer.parseInt(anoCadastro.toString() + quantidade.toString());
+        }
+        return quantidade;
+    }
+
+    private void validarEmail(Session sessao, Funcionario item) throws Exception {
+        if (item == null) {
+            throw new EntityNotFoundException("Objeto nulo.");
+        }
+        if (item.getPessoa().getEmail()!= null && !item.getPessoa().getEmail().isEmpty()) {
+            Funcionario func = obterPorEmail(sessao, item.getPessoa().getEmail());
+            if (func != null) {
+                throw new Exception("E-mail informado já eta sendo utilizado.");
+            }
+        }
+    }
+
 }
