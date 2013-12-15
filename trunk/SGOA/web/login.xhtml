@@ -32,17 +32,15 @@
                                         value="#{loginController.password}" maxlength="10"/>
 
                         </h:panelGrid>
-                        <h:panelGrid width="90%">
+                        <h:panelGrid columns="2" width="90%">
+                            <div class="btn_view_site" style="margin-left: 80px;">
+                                <p:commandButton title="Entrar" id="EntrarButton"
+                                                 action="#{loginController.login}" ajax="false"
+                                                 value="Entrar" />
+                            </div>
                             <p:commandLink immediate="true" value="Recuperar Senha?" title="Recuperar Senha de Acesso" style="margin-left: 180px; color: white; font-size: 9px; font-weight: bold;"
                                            oncomplete="modalPopup.show();" />
                         </h:panelGrid>
-
-                        <div class="btn_view_site" style="margin-left: 80px;">
-                            <p:commandButton title="Entrar" id="EntrarButton"
-                                             action="#{loginController.login}" ajax="false"
-                                             value="Entrar" />
-                        </div>
-
                     </h:form>
                 </div>
             </div>

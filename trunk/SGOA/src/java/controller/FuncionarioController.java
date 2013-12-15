@@ -133,7 +133,7 @@ public class FuncionarioController implements Serializable {
     public void prepararEdicao(ActionEvent event) {
         current = (Funcionario) lazyModel.getRowData();
         documento = current.getPessoa().getCpf();
-        matricula = current.getMatricula();
+        matricula = current.getMatricula().toString();
         //endereco
         enderecoAux = current.getPessoa().getEndereco();
         if (enderecoAux == null) {
@@ -183,8 +183,6 @@ public class FuncionarioController implements Serializable {
                 pesAux.setEndereco(null);
             }
             //inclusão
-            matricula = matricula.replaceAll("\\.", "");
-            current.setMatricula(matricula);
             current.setPessoa(pesAux);
             Session sessao = HibernateFactory.currentSession();
             if (current.getId() != null) {
