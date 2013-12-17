@@ -19,8 +19,7 @@ public class PaginaInicialController implements Serializable {
 
     public void acompanhar() throws IOException {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        externalContext.redirect("http://stackoverflow.com?te=1&te1=2");
-
+        externalContext.redirect("http://sgoa.reimanscar.com.br/acompanharservico?placa="+placa+"&doc="+documento);
     }
 
   

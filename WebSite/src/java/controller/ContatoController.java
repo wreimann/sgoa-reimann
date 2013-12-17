@@ -9,6 +9,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -35,44 +37,40 @@ public class ContatoController implements Serializable {
 
     public void enviar() {
         FacesContext context = FacesContext.getCurrentInstance();
-        try {
-            enviarEmail(getMensagem(), getAssunto(), getEmail(), getNome());
-            setNome(null);
-            setEmail(null);
-            setAssunto(null);
-            setMensagem(null);
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Mensagem enviado com sucesso!", ""));
-        } catch (Exception ex) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Infelizmente ocorreu um erro ao enviar sua mensagem. Tente novamente mais tarde.", ""));
-            Logger.getLogger(ContatoController.class.getName()).log(Level.SEVERE, null, ex);
+        if (getMensagem().isEmpty() || getAssunto().isEmpty() || getEmail().isEmpty() || getNome().isEmpty()) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campos obrigatórios não preenchidos.", ""));
+        } else {
+            try {
+                enviarEmail(getMensagem(), getAssunto(), getEmail(), getNome());
+                setNome(null);
+                setEmail(null);
+                setAssunto(null);
+                setMensagem(null);
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Mensagem enviado com sucesso!", ""));
+            } catch (Exception ex) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Infelizmente ocorreu um erro ao enviar sua mensagem. Tente novamente mais tarde.", ""));
+            }
         }
-
     }
 
     public static void enviarEmail(String mensagem, String assunto, String email, String Nome) throws Exception {
         try {
-            java.util.Properties props = new Properties();
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.host", "mail.reimanscar.com.br");
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.starttls.enable", "true");
-            props.setProperty("mail.smtp.port", "21");
-            props.setProperty("mail.mime.charset", "ISO-8859-1");
-            // Cria a sessao passando as propriedades e a autenticação
-            //javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, auth);
-            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props);
-            // Gera um log no console referente ao processo de envio
-            session.setDebug(false);
-            Message msg = new MimeMessage(session);
-            //remetente
-            msg.setFrom(new InternetAddress("suporte@reimanscar.com.br", "Reiman´s Car"));
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress("contato@reimanscar.com.br"));
-            msg.setSubject("Contato WebSite - " + assunto);
-            msg.setText("Contato enviado por: " + Nome + "\nE-mail: " + email + "\nMensagem: \n" + mensagem);
-            Transport transportTLS = session.getTransport();
-            transportTLS.connect("mail.reimanscar.com.br", 541, "suporte@reimancar.com.br", "suporteReimansCar");
-            transportTLS.sendMessage(msg, msg.getAllRecipients());
-            transportTLS.close();
+            Properties props = new Properties();
+            props.put("mail.smtp.host", "mail.reimanscar.com.br");
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.auth", "true");
+            Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication("contato@reimanscar.com.br", "taxi1010");
+                }
+            });
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("contato@reimanscar.com.br"));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress("contato@reimanscar.com.br"));
+            message.setSubject("Contato WebSite / " + assunto);
+            message.setText("Contato enviado por: " + Nome + "\nE-mail: " + email + "\nMensagem: \n" + mensagem);
+            Transport.send(message);
         } catch (Exception ex) {
             throw ex;
         }
