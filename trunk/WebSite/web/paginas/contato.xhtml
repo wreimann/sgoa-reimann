@@ -17,48 +17,53 @@
             <div class="col-lg-7">
                 <div class="well">
                     <h:form id="frmMensagem" prependId="false" class="bs-example form-horizontal" >
+                        <p:growl id="messages" autoUpdate="true" /> 
                         <fieldset>
                             <legend><h3>Fale Conosco</h3></legend>
                             <p class="text-info">A sua opinião é muito importante para <b>Reiman´s Car</b>. Envie suas dúvidas, sugestões, críticas ou elogios. Teremos prazer em responder.</p>
-                            <div class="form-group" >
-                                <p:messages id="messages" autoUpdate="true" closable="true" />  
-                            </div>
                             <div class="form-group">
                                 <label class="col-lg-2 control-label" for="Nome" >Nome*</label>
-                                <div class="col-lg-10">
-                                    <p:inputText styleClass="form-control" value="#{contatoController.nome}"
+                                <h:panelGrid columns="2" styleClass="col-lg-10" >
+                                    <p:inputText styleClass="form-control" id="NomeInput" value="#{contatoController.nome}"
                                                  required="true" requiredMessage="Informe seu Nome."/>
-                                </div>
+                                    <p:message for="NomeInput" display="icon"/>
+                                </h:panelGrid>
+
                             </div>
                             <div class="form-group">
                                 <label class="col-lg-2 control-label" for="Email" >E-mail*</label>
-                                <div class="col-lg-10">
-                                    <p:inputText styleClass="form-control"  value="#{contatoController.email}"
-                                                 required="true" requiredMessage="Informe seu E-mail.">
+                                <h:panelGrid columns="2" styleClass="col-lg-10" >
+                                    <p:inputText styleClass="form-control"  id="EmailInput" value="#{contatoController.email}"
+                                                 required="true" requiredMessage="Informe seu E-mail." validatorMessage="E-mail inválido." >
                                         <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
                                     </p:inputText>
-                                </div>
+                                    <p:message for="EmailInput" display="icon"/>
+                                </h:panelGrid>
                             </div>
                             <div class="form-group">
-                                <label class="col-lg-2 control-label" for="Assunto" >Assunto</label>
-                                <div class="col-lg-10">
-                                    <p:inputText styleClass="form-control"  value="#{contatoController.assunto}" />
-                                </div>
+                                <label class="col-lg-2 control-label" for="Assunto" >Assunto*</label>
+                                <h:panelGrid columns="2" styleClass="col-lg-10" >
+                                    <p:inputText styleClass="form-control" id="AssuntoInput"
+                                                 required="true" requiredMessage="Informe o Assunto."
+                                                 value="#{contatoController.assunto}" />
+                                    <p:message for="AssuntoInput" display="icon"/>
+                                </h:panelGrid>
                             </div>
                             <div class="form-group">
                                 <label class="col-lg-2 control-label" for="Mensagem" >Mensagem*</label>
-                                <div class="col-lg-10">
-                                    <p:inputTextarea styleClass="form-control" 
+                                <h:panelGrid columns="2" styleClass="col-lg-10" >
+                                    <p:inputTextarea styleClass="form-control" id="MensagemInput"
                                                      style="height: 150px;" value="#{contatoController.mensagem}"
                                                      required="true" requiredMessage="Informe a Mensagem."/>
-                                </div>
+                                    <p:message for="MensagemInput" display="icon"/>
+                                </h:panelGrid>
                             </div>
                             <div class="form-group">
-                                <div class="col-lg-10 col-lg-offset-2" >
+                                <h:panelGrid columns="2" styleClass="col-lg-10 col-lg-offset-2" >
                                     <p:commandButton value="Enviar" title="Enviar" 
                                                      action="#{contatoController.enviar}" ajax="false"
-                                                     styleClass="btn btn-primary" />                                    
-                                </div>
+                                                     styleClass="btn btn-primary" />     
+                                </h:panelGrid>
                             </div>                            
                         </fieldset>
                     </h:form>
