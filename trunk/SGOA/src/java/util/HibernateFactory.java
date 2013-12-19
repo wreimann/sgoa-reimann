@@ -16,7 +16,7 @@ public class HibernateFactory {
     static {
         try {
             final Configuration configuration = new Configuration();
-            configuration.configure("hibernate.cfg.xml");
+            configuration.configure("/hibernate.cfg.xml");
             ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
             sessionFactory = configuration.buildSessionFactory(serviceRegistry);
         } catch (Throwable e) {
