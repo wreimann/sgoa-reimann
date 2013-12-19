@@ -3,6 +3,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
       lang="pt-br" >
 
     <h:head>
@@ -42,21 +43,21 @@
                 </div>
             </div>
         </div>
-        
+
         <div id="wrap">
             <div class="container">
                 <ui:insert name="content">Content</ui:insert>             
             </div> 
             <div id="push"></div> 
         </div> 
-        
+
         <footer id="footer">
             <div class="container">
                 <div class="row" style="height: 95px;">
                     <div class="col-lg-7" >
                         <h4 style="color: white;" >Reiman´s Car Recuperadora de Veículos</h4>
                         <p>Rua Rodolfo Bernardelli, 697 - Curitiba - Paraná </p> 
-                        <p><h:graphicImage name="phone.png" library="img" style="margin-right:1px;" />(41)3277-3031 <h:graphicImage name="mail3.png" library="img" style="margin-left: 9px; margin-right: 5px;"/>contato@reimanscar.com.br </p>
+                        <p><h:graphicImage name="phone.png" library="img" style="margin-right:1px;"/>(41)3277-3031 <h:graphicImage name="mail3.png" library="img" style="margin-left: 9px; margin-right: 5px;"/>contato@reimanscar.com.br </p>
                     </div>
                     <div class="col-lg-5">
                         <ul class="list-unstyled pull-right" style="font-size: 11px; font-weight:bold; margin-top: 10px;" >
@@ -65,6 +66,10 @@
                             <li><h:link style="color: white;" value="Serviços" outcome="/paginas/servicos.xhtml" title="Serviços" /></li>
                             <li><h:link style="color: white;" value="Seguradoras" outcome="/paginas/seguradoras.xhtml" title="Seguradoras" /></li>
                             <li><h:link style="color: white;" value="Contato" outcome="/paginas/contato.xhtml" title="Contato" /></li>                       
+                        </ul>
+                        <ul class="list-unstyled pull-right" style="font-size: 11px; font-weight:bold; margin-bottom: 0px; margin-top: 5px;" >
+                            <li><h:graphicImage name="key.png" library="img" style="margin-right:3px;" alt="Acesso" title="Acesso Restrito"/><h:outputLink style="color: #317eac;" value="http://sgoa.reimanscar.com.br/" title="Acesso Restrito" >Acesso Restrito</h:outputLink></li>
+                            <li><h:graphicImage name="webmail.png" library="img" style="margin-right:3px;" alt="WebMail" title="WebMail" /><h:outputLink style="color: #317eac;" value="https://webmail.reimanscar.com.br:2096/" title="WebMail" >WebMail</h:outputLink></li>
                         </ul>
                     </div> 
                 </div>
