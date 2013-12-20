@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -18,11 +19,16 @@ public class PaginaInicialController implements Serializable {
     }
 
     public void acompanhar() throws IOException {
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        externalContext.redirect("http://sgoa.reimanscar.com.br/acompanharservico?placa="+placa+"&doc="+documento);
+        if (placa.isEmpty() || documento.isEmpty()) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Paramêtros inválidos. Informe a placa e o documento.", ""));
+        } else {
+
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://reimanscar.com.br/SGOA/faces/acompanharservico.xhtml?placa=" + placa + "&doc=" + documento);
+        }
     }
 
-  
     /**
      * @return the placa
      */
