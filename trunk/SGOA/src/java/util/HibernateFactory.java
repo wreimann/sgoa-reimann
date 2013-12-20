@@ -4,8 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 
 public class HibernateFactory {
 
@@ -17,8 +15,7 @@ public class HibernateFactory {
         try {
             final Configuration configuration = new Configuration();
             configuration.configure("/hibernate.cfg.xml");
-            ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
-            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+            sessionFactory = configuration.buildSessionFactory();
         } catch (Throwable e) {
             throw new ExceptionInInitializerError(e);
         }

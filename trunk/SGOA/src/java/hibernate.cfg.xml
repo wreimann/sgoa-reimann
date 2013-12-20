@@ -1,37 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-  <session-factory>
-    <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
-    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sgoa</property>
-    <property name="show_sql">false</property>
-    <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">root</property>
-    <mapping class="model.Cor"/>
-    <mapping class="model.Marca"/>
-    <mapping class="model.Modelo"/>
-    <mapping class="model.Profissao"/>
-    <mapping class="model.TipoServico"/>
-    <mapping class="model.Setor"/>
-    <mapping class="model.Cliente"/>
-    <mapping class="model.Pessoa"/>
-    <mapping class="model.PessoaEndereco"/>
-    <mapping class="model.PessoaFisica"/>
-    <mapping class="model.PessoaJuridica"/>
-    <mapping class="model.Veiculo"/>
-    <mapping class="model.Perfil"/>
-    <mapping class="model.Funcionario"/>
-    <mapping class="model.OrcamentoTipoServico"/>
-    <mapping class="model.Orcamento"/>
-    <mapping class="model.Seguradora"/>
-    <mapping class="model.Etapa"/>
-    <mapping class="model.OrcamentoAnexo"/>
-    <mapping class="model.OrdemServico"/>
-    <mapping class="model.OrdemServicoEtapa"/>
-    <mapping class="model.OrdemServicoFoto"/>
-    <mapping class="model.OrdemServicoEvento"/>
-    <mapping class="model.ConfigOrdemServico"/>
-    <mapping class="model.ConfigEmail"/>
-  </session-factory>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://reimanscar.com.br:3306/reimansc_sgoa?zeroDateTimeBehavior=convertToNull</property>
+        <property name="hibernate.connection.username">reimansc_root</property>
+        <property name="hibernate.connection.password">rootweb</property>
+        <mapping class="model.Cor"/>
+        <mapping class="model.Marca"/>
+        <mapping class="model.Modelo"/>
+        <mapping class="model.Profissao"/>
+        <mapping class="model.TipoServico"/>
+        <mapping class="model.Setor"/>
+        <mapping class="model.Cliente"/>
+        <mapping class="model.Pessoa"/>
+        <mapping class="model.PessoaEndereco"/>
+        <mapping class="model.PessoaFisica"/>
+        <mapping class="model.PessoaJuridica"/>
+        <mapping class="model.Veiculo"/>
+        <mapping class="model.Perfil"/>
+        <mapping class="model.Funcionario"/>
+        <mapping class="model.OrcamentoTipoServico"/>
+        <mapping class="model.Orcamento"/>
+        <mapping class="model.Seguradora"/>
+        <mapping class="model.Etapa"/>
+        <mapping class="model.OrcamentoAnexo"/>
+        <mapping class="model.OrdemServico"/>
+        <mapping class="model.OrdemServicoEtapa"/>
+        <mapping class="model.OrdemServicoFoto"/>
+        <mapping class="model.OrdemServicoEvento"/>
+        <mapping class="model.ConfigOrdemServico"/>
+        <mapping class="model.ConfigEmail"/>
+    </session-factory>
 </hibernate-configuration>
