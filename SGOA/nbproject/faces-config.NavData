@@ -2,10 +2,10 @@
 <Scene Scope="Project" version="2">
     <Scope Scope="Faces Configuration Only"/>
     <Scope Scope="Project">
-        <Node id="views/operacional/orcamento.xhtml" x="4132" y="32" zoom="true"/>
-        <Node id="erroPadrao.xhtml" x="756" y="32" zoom="true"/>
         <Node id="template/master.xhtml" x="1027" y="32" zoom="true"/>
         <Node id="views/tabelasBasicas/cor.xhtml" x="4876" y="32" zoom="true"/>
+        <Node id="erroPadrao.xhtml" x="756" y="32" zoom="true"/>
+        <Node id="views/operacional/orcamento.xhtml" x="4132" y="32" zoom="true"/>
         <Node id="views/tabelasBasicas/marca.xhtml" x="4506" y="32" zoom="true"/>
         <Node id="views/ferramentas/etapa.xhtml" x="2099" y="32" zoom="true"/>
         <Node id="login.xhtml" x="3214" y="32" zoom="true"/>
@@ -17,8 +17,8 @@
         <Node id="views/tabelasBasicas/funcionario.xhtml" x="1327" y="32" zoom="true"/>
         <Node id="views/operacional/servico.xhtml" x="402" y="32" zoom="true"/>
         <Node id="index.xhtml" x="6359" y="32" zoom="false"/>
-        <Node id="views/tabelasBasicas/modelo.xhtml" x="1724" y="32" zoom="true"/>
         <Node id="views/ferramentas/configuracao.xhtml" x="5615" y="32" zoom="true"/>
+        <Node id="views/tabelasBasicas/modelo.xhtml" x="1724" y="32" zoom="true"/>
         <Node id="views/tabelasBasicas/setor.xhtml" x="6596" y="32" zoom="true"/>
         <Node id="views/tabelasBasicas/profissao.xhtml" x="5228" y="32" zoom="true"/>
         <Node id="views/config/alterarsenha.xhtml" x="6006" y="32" zoom="true"/>
