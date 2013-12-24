@@ -13,7 +13,6 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import model.Funcionario;
 import model.PessoaFisica;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
@@ -43,8 +42,8 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
     public void incluir(Session sessao, Funcionario item) throws Exception {
         validarDocumento(sessao, item);
         validarEmail(sessao, item);
-        boolean enviarEmail = incluirAcessoAoSitema(item);
         item.setMatricula(obterMatricula(sessao));
+        boolean enviarEmail = incluirAcessoAoSitema(item);
         super.incluir(sessao, item);
         if (enviarEmail && !item.getPessoa().getEmail().isEmpty()) {
             JsfUtil.enviarEmail(sessao, item.getPessoa(), "Reiman´s Car - Senha de autenticação",
