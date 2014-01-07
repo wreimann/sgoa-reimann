@@ -20,6 +20,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.hibernate.type.IntegerType;
+import org.hibernate.type.LongType;
 import util.CriptografiaUtil;
 import util.JsfUtil;
 
@@ -207,15 +208,15 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
         cal.setTime(date);
         Integer anoCadastro = cal.get(Calendar.YEAR);
         Criteria c = sessao.createCriteria(Funcionario.class);
-        c.add(Restrictions.sqlRestriction("YEAR(dataCadastro)", anoCadastro, IntegerType.INSTANCE));
-        Integer quantidade = ((Integer) c.setProjection(Projections.count("id")).uniqueResult());
+        c.add(Restrictions.sqlRestriction("YEAR(dataCadastro) = ?", anoCadastro, IntegerType.INSTANCE));
+        Long quantidade = ((Long) c.setProjection(Projections.count("id")).uniqueResult());
         if (quantidade == null) {
-            quantidade = Integer.parseInt(anoCadastro.toString() + "1");
+            quantidade = Long.parseLong(anoCadastro.toString() + "1");
         } else {
             quantidade++;
-            quantidade = Integer.parseInt(anoCadastro.toString() + quantidade.toString());
+            quantidade = Long.parseLong(anoCadastro.toString() + quantidade.toString());
         }
-        return quantidade;
+        return (int) (long)quantidade;
     }
 
     private void validarEmail(Session sessao, Funcionario item) throws Exception {
