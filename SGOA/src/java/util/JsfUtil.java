@@ -11,6 +11,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -78,31 +79,24 @@ public class JsfUtil {
 
     public static void enviarEmail(Session sessao, Pessoa pessoa, String assuntoEmail, String mensagem) {
         try {
+            Properties props = new Properties();
             ConfigEmailFacade ebjEmail = new ConfigEmailFacade();
             final ConfigEmail config = ebjEmail.obterPorId(sessao, 1);
-            java.util.Properties props = new Properties();
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.host", config.getServidorSMTP());
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.starttls.enable", "true");
-            props.setProperty("mail.smtp.port", config.getPorta().toString());
-            props.setProperty("mail.mime.charset", "ISO-8859-1");
-            // Cria a sessao passando as propriedades e a autenticação
-            //javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, auth);
-            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props);
-            // Gera um log no console referente ao processo de envio
-            session.setDebug(true);
-            //cria a mensagem setando o remetente e seus destinatários
-            Message msg = new MimeMessage(session);
-            //aqui seta o remetente
-            msg.setFrom(new InternetAddress(config.getEmailEnvio(), config.getIdentificacaoEmail()));
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(pessoa.getEmail(), pessoa.getNome()));
-            msg.setSubject(assuntoEmail);
-            msg.setText(mensagem);
-            Transport transportTLS = session.getTransport();
-            transportTLS.connect(config.getServidorSMTP(), config.getPorta(), config.getEmailEnvio(), config.getSenha());
-            transportTLS.sendMessage(msg, msg.getAllRecipients());
-            transportTLS.close();
+            props.put("mail.smtp.host", config.getServidorSMTP());
+            props.put("mail.smtp.port", config.getPorta().toString());
+            props.put("mail.smtp.auth", "true");
+            javax.mail.Session session = javax.mail.Session.getInstance(props, new javax.mail.Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(config.getEmailEnvio(), config.getSenha());
+                }
+            });
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(config.getEmailEnvio(), config.getIdentificacaoEmail()));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(pessoa.getEmail(), pessoa.getNome()));
+            message.setSubject(assuntoEmail);
+            message.setText(mensagem);
+            Transport.send(message);
         } catch (Exception ex) {
             Logger.getLogger(JsfUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -110,31 +104,24 @@ public class JsfUtil {
 
     public static void enviarEmailOficina(Session sessao, String placa, String mensagem) {
         try {
+            Properties props = new Properties();
             ConfigEmailFacade ebjEmail = new ConfigEmailFacade();
             final ConfigEmail config = ebjEmail.obterPorId(sessao, 1);
-            java.util.Properties props = new Properties();
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.host", config.getServidorSMTP());
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.starttls.enable", "true");
-            props.setProperty("mail.smtp.port", config.getPorta().toString());
-            props.setProperty("mail.mime.charset", "ISO-8859-1");
-            // Cria a sessao passando as propriedades e a autenticação
-            //javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, auth);
-            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props);
-            // Gera um log no console referente ao processo de envio
-            session.setDebug(true);
-            //cria a mensagem setando o remetente e seus destinatários
+            props.put("mail.smtp.host", config.getServidorSMTP());
+            props.put("mail.smtp.port", config.getPorta().toString());
+            props.put("mail.smtp.auth", "true");
+            javax.mail.Session session = javax.mail.Session.getInstance(props, new javax.mail.Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(config.getEmailEnvio(), config.getSenha());
+                }
+            });
             Message msg = new MimeMessage(session);
-            //aqui seta o remetente
             msg.setFrom(new InternetAddress(config.getEmailEnvio(), config.getIdentificacaoEmail()));
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(config.getEmailRecebCliente()));
             msg.setSubject("Interação do cliente no serviço");
             msg.setText(mensagem + "<br/>" + "Mensagem enviado pelo cliente com veículo de placa: " + placa);
-            Transport transportTLS = session.getTransport();
-            transportTLS.connect(config.getServidorSMTP(), config.getPorta(), config.getEmailEnvio(), config.getSenha());
-            transportTLS.sendMessage(msg, msg.getAllRecipients());
-            transportTLS.close();
+            Transport.send(msg);
         } catch (Exception ex) {
             Logger.getLogger(JsfUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
