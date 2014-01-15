@@ -28,7 +28,7 @@ public class ClienteConverter implements Converter {
             ClienteFacade ebjCliente = new ClienteFacade();
             return ebjCliente.obterPorId(sessao, getKey(value));
         } catch (Exception ex) {
-            Logger.getLogger(ClienteConverter.class.getName()).log(Level.SEVERE, null, ex);
+            HibernateFactory.closeSession();
             return null;
         } finally {
             HibernateFactory.closeSession();
