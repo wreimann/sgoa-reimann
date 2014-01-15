@@ -43,6 +43,7 @@ public class LoginController implements Serializable {
             usuario = ebjUsario.login(sessao, getEmail(), senha);
         } catch (Exception ex) {
             JsfUtil.addErrorMessageExterna("Erro ao buscar dados.\n" + ex.getMessage());
+            HibernateFactory.closeSession();
             return "/login?faces-redirect=true";
         } finally {
             HibernateFactory.closeSession();
@@ -158,10 +159,10 @@ public class LoginController implements Serializable {
             if (usuarioLogadoIsGerente()) {
                 acesso = true;
             } else if ("Operacional".equals(getUsuarioSession().getPerfilAcesso().getDescricao())) {
-                if (pagina.contains("setor.xhtml") || 
-                    pagina.contains("tiposervico.xhtml") ||
-                    pagina.contains("configuracao.xhtml") ||
-                    pagina.contains("etapa.xhtml")) {
+                if (pagina.contains("setor.xhtml")
+                        || pagina.contains("tiposervico.xhtml")
+                        || pagina.contains("configuracao.xhtml")
+                        || pagina.contains("etapa.xhtml")) {
                     acesso = false;
                 } else {
                     acesso = true;

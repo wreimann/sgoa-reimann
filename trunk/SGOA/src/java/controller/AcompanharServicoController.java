@@ -312,7 +312,6 @@ public class AcompanharServicoController implements Serializable {
                 criaArquivo(f.getImagem(), arquivo);
             }
         } catch (Exception ex) {
-            Logger.getLogger(OrdemServicoController.class.getName()).log(Level.SEVERE, null, ex);
             JsfUtil.addErrorMessage(ex, "Erro ao carregar as fotos. Tente novamente");
         } finally {
             HibernateFactory.closeSession();

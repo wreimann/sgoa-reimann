@@ -29,7 +29,7 @@ public class CorConverter implements Converter {
             CorFacade ebjCor = new CorFacade();
             return ebjCor.obterPorId(sessao, getKey(value));
         } catch (Exception ex) {
-            Logger.getLogger(CorConverter.class.getName()).log(Level.SEVERE, null, ex);
+            HibernateFactory.closeSession();
             return null;
         } finally {
             HibernateFactory.closeSession();
