@@ -42,7 +42,7 @@ public class LoginController implements Serializable {
             Session sessao = HibernateFactory.currentSession();
             usuario = ebjUsario.login(sessao, getEmail(), senha);
         } catch (Exception ex) {
-            JsfUtil.addErrorMessageExterna("Erro ao buscar dados.");
+            JsfUtil.addErrorMessageExterna("Erro ao buscar dados.\n" + ex.getMessage());
             return "/login?faces-redirect=true";
         } finally {
             HibernateFactory.closeSession();
