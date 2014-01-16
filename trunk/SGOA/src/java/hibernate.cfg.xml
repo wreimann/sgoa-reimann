@@ -9,8 +9,7 @@
         <property name="hibernate.connection.url">jdbc:mysql://reimanscar.com.br:3306/reimansc_sgoa?zeroDateTimeBehavior=convertToNull</property>
         <property name="hibernate.connection.username">reimansc_root</property>
         <property name="hibernate.connection.password">rootweb</property>		
-        <property name="transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</property>
-        <property name="jta.UserTransaction">java:comp/UserTransaction</property>
+        <property name="hibernate.show_sql">false</property>
         <mapping class="model.Cor"/>
         <mapping class="model.Marca"/>
         <mapping class="model.Modelo"/>
