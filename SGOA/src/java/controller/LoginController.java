@@ -3,6 +3,8 @@ package controller;
 import facede.FuncionarioFacade;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import model.Funcionario;
@@ -42,6 +44,7 @@ public class LoginController implements Serializable {
             Session sessao = HibernateFactory.currentSession();
             usuario = ebjUsario.login(sessao, getEmail(), senha);
         } catch (Exception ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
             JsfUtil.addErrorMessageExterna("Erro ao buscar dados.\n" + ex);
             return "/login?faces-redirect=true";
         } finally {

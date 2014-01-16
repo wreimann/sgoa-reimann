@@ -16,8 +16,9 @@ public class HibernateFactory {
             final Configuration configuration = new Configuration();
             configuration.configure("/hibernate.cfg.xml");
             sessionFactory = configuration.buildSessionFactory();
-        } catch (Throwable e) {
-            throw new ExceptionInInitializerError(e);
+        } catch (Throwable ex) {
+            System.err.println("Initial SessionFactory creation failed." + ex);
+            throw new ExceptionInInitializerError(ex);
         }
     }
 
