@@ -2,6 +2,7 @@ package controller;
 
 import facede.FuncionarioFacade;
 import facede.PerfilFacade;
+import facede.PessoaFacade;
 import facede.ProfissaoFacade;
 import facede.SetorFacade;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import model.Funcionario;
 import model.Perfil;
+import model.Pessoa;
 import model.PessoaEndereco;
 import model.PessoaFisica;
 import model.Profissao;
@@ -36,7 +38,7 @@ public class FuncionarioController implements Serializable {
     private LazyDataModel<Funcionario> lazyModel;
     @EJB
     private facede.FuncionarioFacade ejbFacade;
-    @ManagedProperty(value="#{loginController}")
+    @ManagedProperty(value = "#{loginController}")
     private LoginController loginController;
     //propriedades para filtro da pesquisa
     private String nomeFiltro;
@@ -155,18 +157,25 @@ public class FuncionarioController implements Serializable {
 
     public void salvar(ActionEvent actionEvent) {
         try {
+            Session sessao = HibernateFactory.currentSession();
             PessoaFisica pesAux = null;
+            PessoaFacade pessoaFacade = new PessoaFacade();
+            documento = documento.replaceAll("\\.", "").replaceAll("-", "").replace("/", "");
             if (current.getId() != null) {
-                pesAux = current.getPessoa();
+                pesAux = (PessoaFisica) pessoaFacade.obterPorId(sessao, current.getPessoa().getId());
             } else {
                 Calendar cal = Calendar.getInstance();
                 current.setDataCadastro(cal.getTime());
-                pesAux = new PessoaFisica();
+                Pessoa pessoa = pessoaFacade.selecionarPorNumeroDocumento(sessao, true, documento);
+                if (pessoa != null) {
+                    pesAux = (PessoaFisica) pessoa;
+                } else {
+                    pesAux = new PessoaFisica();
+                }
             }
             //dados basicos
             pesAux.setNome(current.getPessoa().getNome());
             pesAux.setTipo('F');
-            documento = documento.replaceAll("\\.", "").replaceAll("-", "").replace("/", "");
             pesAux.setDataNascimento(current.getPessoa().getDataNascimento());
             pesAux.setCpf(documento);
             pesAux.setSexo(current.getPessoa().getSexo());
@@ -176,15 +185,26 @@ public class FuncionarioController implements Serializable {
             pesAux.setEmail(current.getPessoa().getEmail());
             //endereco
             if (!enderecoAux.getLogradouro().isEmpty()) {
-                enderecoAux.setCep(enderecoAux.getCep().replaceAll("\\.", "").replaceAll("-", ""));
-                enderecoAux.setPessoa(pesAux);
-                pesAux.setEndereco(enderecoAux);
+                PessoaEndereco endereco = null;
+                if (pesAux.getEndereco() != null && pesAux.getEndereco().getId() > 0) {
+                    endereco = pessoaFacade.obterPorIdEndereco(sessao, pesAux.getEndereco().getId());
+                } else {
+                    endereco = new PessoaEndereco();
+                    enderecoAux.setPessoa(pesAux);
+                }
+                endereco.setCep(enderecoAux.getCep().replaceAll("\\.", "").replaceAll("-", ""));
+                endereco.setBairro(enderecoAux.getBairro());
+                endereco.setComplemento(enderecoAux.getComplemento());
+                endereco.setLogradouro(enderecoAux.getLogradouro());
+                endereco.setMunicipio(enderecoAux.getMunicipio());
+                endereco.setPredical(enderecoAux.getPredical());
+                endereco.setUf(enderecoAux.getUf());
+                pesAux.setEndereco(endereco);
             } else {
                 pesAux.setEndereco(null);
             }
             //inclusão
             current.setPessoa(pesAux);
-            Session sessao = HibernateFactory.currentSession();
             if (current.getId() != null) {
                 ejbFacade.alterar(sessao, current);
                 JsfUtil.addSuccessMessage("Funcionário alterado com sucesso!");

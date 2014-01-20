@@ -74,20 +74,20 @@
                     </p:fieldset>
                 </p:tab>
                 <p:tab id="tab2" title="E-mail">
-                    <h:panelGrid columns="3">
-                        <p:fieldset>
-                            <p:outputLabel style="width: 100%;" value="E-mail utilizado para o envio de mensagens"/>
-                            <p:inputText id="IdInput2" value="#{configOrdemServicoController.configEmail.emailEnvio}" validatorMessage="E-mail inválido." >
-                                <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
-                                                 for="IdInput2"  />
-                            </p:inputText>
-                        </p:fieldset>   
-                        <p:fieldset style="width: 150px; margin-left: 19px;" >
+                    <p:fieldset style="width: 430px;">
+                        <p:outputLabel style="width: 100%;" value="E-mail utilizado para o envio de mensagens"/>
+                        <p:inputText id="IdInput2" value="#{configOrdemServicoController.configEmail.emailEnvio}" validatorMessage="E-mail inválido." >
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
+                                             for="IdInput2"  />
+                        </p:inputText>
+                    </p:fieldset>   
+                    <h:panelGrid columns="2">
+                        <p:fieldset style="width: 150px;margin-right: 19px;" >
                             <p:outputLabel value="Senha"/>
                             <p:inputText value="#{configOrdemServicoController.configEmail.senha}" maxlength="15"  />
                         </p:fieldset>  
-                        <p:fieldset style="width: 280px; margin-left: 19px;">
-                            <p:outputLabel value="Identificador do E-mail"/>
+                        <p:fieldset style="width: 340px;">
+                            <p:outputLabel style="width: 100%;" value="Identificador do E-mail"/>
                             <p:inputText value="#{configOrdemServicoController.configEmail.identificacaoEmail}" />
                         </p:fieldset>
                     </h:panelGrid>

@@ -37,12 +37,11 @@ public class JsfUtil {
     }
 
     public static void addErrorMessage(Exception ex, String defaultMsg) {
-        /*String msg = ex.getLocalizedMessage();
-         if (msg != null && msg.length() > 0) {
-         addErrorMessage(msg);
-         } else {*/
         addErrorMessage(defaultMsg);
-        //}
+        String msg = ex.getLocalizedMessage();
+        if (msg != null && msg.length() > 0) {
+            addErrorMessage(msg);
+        }
         RequestContext.getCurrentInstance().addCallbackParam("exceptionThrown", ex);
     }
 

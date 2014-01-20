@@ -102,9 +102,8 @@
                 <p:fieldset id="ValorPadrao">
                     <label id="ValorLabel">Valor Hora Padrão</label>
                     <p:inputText id="ValorPadraoInput"  
-                                 value="#{tipoServicoController.current.valorHoraPadrao}"
-                                 onkeypress="mascara(this, valor);">
-                        <f:convertNumber pattern="#,##0.00" minFractionDigits="2" type="currency" />
+                                 value="#{tipoServicoController.current.valorHoraPadrao}">
+                        <f:convertNumber pattern="#,##0.00" minFractionDigits="2" maxFractionDigits="2" type="currency" />
                     </p:inputText>
                 </p:fieldset>
                 <p:fieldset id="Ativo">
