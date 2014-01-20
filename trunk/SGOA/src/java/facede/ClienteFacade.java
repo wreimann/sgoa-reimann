@@ -37,43 +37,27 @@ public class ClienteFacade extends BaseFacade<Cliente> {
 
     @Override
     public void incluir(Session sessao, Cliente item) throws Exception {
-        validarDocumento(sessao, item);
+        if (item.getPessoa() instanceof PessoaFisica) {
+            validarDocumento(sessao, ((PessoaFisica) item.getPessoa()).getCpf(), true);
+        } else {
+            validarDocumento(sessao, ((PessoaJuridica) item.getPessoa()).getCnpj(), false);
+        }
         validarEmail(sessao, item);
         super.incluir(sessao, item);
     }
 
     @Override
     public void alterar(Session sessao, Cliente item) throws Exception {
-        validarDocumento(sessao, item);
         validarEmail(sessao, item);
         super.alterar(sessao, item);
     }
 
-    private void validarDocumento(Session sessao, Cliente item) throws Exception {
-        if (item == null) {
-            throw new EntityNotFoundException("Objeto nulo.");
+    private void validarDocumento(Session sessao, String numeroDocumento, boolean pessoaFisica) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
         }
-        if (item.getPessoa() instanceof PessoaFisica) {
-            if (!util.Comum.isValidoCPF(((PessoaFisica) item.getPessoa()).getCpf())) {
-                throw new Exception("CPF inválido.");
-            }
-            if (item.getId() == null || item.getId() == 0) {
-                List<Cliente> clientes = selecionarPorNumeroDocumento(sessao, true, ((PessoaFisica) item.getPessoa()).getCpf());
-                if (clientes != null && !clientes.isEmpty()) {
-                    throw new Exception("Já existe um cliente cadastrado com o mesmo número de CPF.");
-                }
-            }
-        } else {
-            if (!util.Comum.isValidoCNPJ(((PessoaJuridica) item.getPessoa()).getCnpj())) {
-                throw new Exception("CNPJ inválido.");
-            }
-            if (item.getId() == null || item.getId() == 0) {
-                List<Cliente> clientes = selecionarPorNumeroDocumento(sessao, false, ((PessoaJuridica) item.getPessoa()).getCnpj());
-                if (clientes != null && !clientes.isEmpty()) {
-                    throw new Exception("Já existe um cliente cadastrado com o mesmo número de CNPJ.");
-                }
-            }
-        }
+        PessoaFacade pessoaFacade = new PessoaFacade();
+        pessoaFacade.validarDocumento(sessao, numeroDocumento, pessoaFisica);
     }
 
     public List<Cliente> selecionarPorParametros(Session sessao, String sort, SortOrder order, Integer page, Integer maxPage, String nomeFiltro, String placaFiltro) throws Exception {
@@ -116,27 +100,6 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         return lista;
     }
 
-    public List<Cliente> selecionarPorNumeroDocumento(Session sessao, boolean pessoaFisica, String numero) throws Exception {
-        if (sessao == null) {
-            throw new Exception("Sessão não iniciada.");
-        }
-        Criteria c = sessao.createCriteria(Cliente.class, "cli");
-        if (pessoaFisica) {
-            DetachedCriteria dc = DetachedCriteria.forClass(PessoaFisica.class, "pf");
-            dc.add(Restrictions.eq("cpf", numero));
-            dc.add(Restrictions.eqProperty("pf.id", "cli.pessoa.id"));
-            c.add(Subqueries.exists(dc.setProjection(Projections.property("pf.id"))));
-
-        } else {
-            DetachedCriteria dc = DetachedCriteria.forClass(PessoaJuridica.class, "pj");
-            dc.add(Restrictions.eq("cnpj", numero));
-            dc.add(Restrictions.eqProperty("pj.id", "cli.pessoa.id"));
-            c.add(Subqueries.exists(dc.setProjection(Projections.property("pj.id"))));
-        }
-        List<Cliente> lista = c.list();
-        return lista;
-    }
-    
     public List<Cliente> selecionarPorNomeAutoComplete(Session sessao, String query) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
@@ -150,29 +113,15 @@ public class ClienteFacade extends BaseFacade<Cliente> {
         List<Cliente> lista = c.list();
         return lista;
     }
-    
+
     private void validarEmail(Session sessao, Cliente item) throws Exception {
         if (item == null) {
             throw new EntityNotFoundException("Objeto nulo.");
         }
-        if (item.getPessoa().getEmail()!= null && !item.getPessoa().getEmail().isEmpty()) {
-            Cliente cliente = obterPorEmail(sessao, item.getPessoa().getEmail());
-            if (cliente != null) {
-                throw new Exception("E-mail informado já eta sendo utilizado.");
-            }
-        }
-    }
-
-    private Cliente obterPorEmail(Session sessao, String email) throws Exception {
-         if (sessao == null) {
+        if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
-        Cliente retorno = null;
-        if (!email.isEmpty()) {
-            Criteria c = sessao.createCriteria(Cliente.class, "cliente").createCriteria("pessoa", "pes");
-            c.add(Restrictions.eq("pes.email", email));
-            retorno = (Cliente) c.uniqueResult();
-        }
-        return retorno;
+        PessoaFacade pessoaFacade = new PessoaFacade();
+        pessoaFacade.validarEmail(sessao, item.getPessoa().getEmail(), item.getPessoa().getId());
     }
 }

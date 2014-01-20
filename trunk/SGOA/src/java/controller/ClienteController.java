@@ -4,6 +4,7 @@ import facede.ClienteFacade;
 import facede.CorFacade;
 import facede.MarcaFacade;
 import facede.ModeloFacade;
+import facede.PessoaFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -153,7 +154,6 @@ public class ClienteController implements Serializable {
     public ClienteController() {
         limparCampos();
         lazyModel = new LazyDataModel<Cliente>() {
-
             @Override
             public List<Cliente> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 List<Cliente> resultado = new ArrayList<Cliente>();
@@ -202,8 +202,8 @@ public class ClienteController implements Serializable {
         }
         //endereco
         enderecoAux = current.getPessoa().getEndereco();
-        if(enderecoAux == null){
-        enderecoAux = new PessoaEndereco();
+        if (enderecoAux == null) {
+            enderecoAux = new PessoaEndereco();
         }
         //veiculos
         veiculos = new ArrayList<Veiculo>();
@@ -237,22 +237,33 @@ public class ClienteController implements Serializable {
 
     public void salvar(ActionEvent actionEvent) {
         try {
+            Session sessao = HibernateFactory.currentSession();
             Pessoa pesAux = null;
+            PessoaFacade pessoaFacade = new PessoaFacade();
+            documento = documento.replaceAll("\\.", "").replaceAll("-", "").replace("/", "");
             if (current.getId() != null) {
-                pesAux = current.getPessoa();
+                pesAux = pessoaFacade.obterPorId(sessao, current.getPessoa().getId());
             } else {
                 Calendar cal = Calendar.getInstance();
                 current.setDataCadastro(cal.getTime());
-                if (tipoPessoa.equals("F")) {
-                    pesAux = new PessoaFisica();
+                Pessoa pessoa = pessoaFacade.selecionarPorNumeroDocumento(sessao, tipoPessoa.equals("F"), documento);
+                if (pessoa != null) {
+                    if (tipoPessoa.equals("F")) {
+                        pesAux = (PessoaFisica) pessoa;
+                    } else {
+                        pesAux = (PessoaJuridica) pessoa;
+                    }
                 } else {
-                    pesAux = new PessoaJuridica();
+                    if (tipoPessoa.equals("F")) {
+                        pesAux = new PessoaFisica();
+                    } else {
+                        pesAux = new PessoaJuridica();
+                    }
                 }
             }
             //dados basicos
             pesAux.setNome(current.getPessoa().getNome());
             pesAux.setTipo(tipoPessoa.charAt(0));
-            documento = documento.replaceAll("\\.", "").replaceAll("-", "").replace("/", "");
             if (tipoPessoa.equals("F")) {
                 ((PessoaFisica) pesAux).setDataNascimento(dataNasc);
                 ((PessoaFisica) pesAux).setCpf(documento);
@@ -287,15 +298,27 @@ public class ClienteController implements Serializable {
             pesAux.setEmail(current.getPessoa().getEmail());
             //endereco
             if (!enderecoAux.getLogradouro().isEmpty()) {
-                enderecoAux.setCep(enderecoAux.getCep().replaceAll("\\.", "").replaceAll("-", ""));
-                enderecoAux.setPessoa(pesAux);
-                pesAux.setEndereco(enderecoAux);
+                PessoaEndereco endereco = null;
+                if (pesAux.getEndereco() != null && pesAux.getEndereco().getId() > 0) {
+                    endereco = pessoaFacade.obterPorIdEndereco(sessao, pesAux.getEndereco().getId());
+                } else {
+                    endereco = new PessoaEndereco();
+                    enderecoAux.setPessoa(pesAux);
+                }
+                endereco.setCep(enderecoAux.getCep().replaceAll("\\.", "").replaceAll("-", ""));
+                endereco.setBairro(enderecoAux.getBairro());
+                endereco.setComplemento(enderecoAux.getComplemento());
+                endereco.setLogradouro(enderecoAux.getLogradouro());
+                endereco.setMunicipio(enderecoAux.getMunicipio());
+                endereco.setPredical(enderecoAux.getPredical());
+                endereco.setUf(enderecoAux.getUf());
+                pesAux.setEndereco(endereco);
             } else {
                 pesAux.setEndereco(null);
             }
             //inclusão
             current.setPessoa(pesAux);
-            Session sessao = HibernateFactory.currentSession();
+
             if (current.getId() != null) {
                 ejbFacade.alterar(sessao, current);
                 JsfUtil.addSuccessMessage("Cliente alterado com sucesso!");
@@ -305,8 +328,7 @@ public class ClienteController implements Serializable {
             }
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, "Erro ao salvar o registro. ");
-        }
-        finally {
+        } finally {
             HibernateFactory.closeSession();
         }
     }

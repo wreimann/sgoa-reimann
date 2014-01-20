@@ -146,7 +146,7 @@
                 <p:commandButton oncomplete="confirmCancelamentoDialog.hide()" update=":frmPesquisa"
                                  actionListener="#{orcamentoController.cancelar}"
                                  value="Sim"/>
-                <p:commandButton value="Não" onclick="confirmCancelamentoDialog.hide()"/>
+                <p:commandButton value="Não" onclick="confirmCancelamentoDialog.hide();"/>
 
             </p:confirmDialog>
         </h:form>
@@ -379,11 +379,12 @@
                                       update="tab5" fileLimit="1"
                                       cancelLabel="Cancelar"
                                       label="Procurar..."
+                                      uploadLabel="Enviar"
                                       invalidFileMessage="Tipo de imagem inválido"
                                       invalidSizeMessage="Imagem muito grande"
                                       rendered="#{orcamentoController.file == null}"/>
 
-                        <p:commandButton id="downloadLink" value="Baixar Anexo" 
+                        <p:commandButton id="downloadLink" value="Baixar Docummento Anexado" 
                                          onclick="PrimeFaces.monitorDownload(start, stop);"
                                          disabled="#{orcamentoController.bloqueado}"
                                          icon="ui-icon-arrowthichk-s" style="margin: 20px;"
@@ -396,14 +397,16 @@
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
                     <p:commandButton id="btnSalvar"
                                      actionListener="#{orcamentoController.salvar}"
-                                     update=":frmCadastro" value="Salvar"
+                                     update=":frmCadastro,:frmPesquisa" value="Salvar"
                                      disabled="#{orcamentoController.bloqueado}"/>
                     <p:commandButton id="btnOS" 
                                      value="Aprovar" alt="Aprovar"
                                      disabled="#{!orcamentoController.gerarOS}"
-                                     oncomplete="confirmOSDialog.show()"/>
+                                     oncomplete="confirmOSDialog.show()"
+                                     />
                     <p:commandButton id="btnCancelar" value="Sair"
-                                     oncomplete="fecharFormDialog()" />
+                                     oncomplete="fecharFormDialog()"
+                                     update=":frmPesquisa"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>
@@ -418,8 +421,8 @@
                     <p:commandButton update=":frmOS,:frmCadastro,:frmPesquisa"
                                      actionListener="#{orcamentoController.ordemServico}"
                                      value="Sim"
-                                     oncomplete="confirmOSDialog.hide()"/>
-                    <p:commandButton value="Não" onclick="confirmOSDialog.hide()"/>
+                                     oncomplete="confirmOSDialog.hide();"/>
+                    <p:commandButton value="Não" onclick="confirmOSDialog.hide();"/>
                 </h:panelGroup>
             </h:form>
         </p:confirmDialog> 

@@ -75,41 +75,32 @@ public class LoginController implements Serializable {
             try {
                 Session sessao = HibernateFactory.currentSession();
                 usuarioSession = ebjUsario.obterPorId(sessao, usuarioSession.getId());
-            } catch (Exception ex) {
-                JsfUtil.addErrorMessage(ex, "Erro ao buscar dados.");
-            } finally {
-                HibernateFactory.closeSession();
-            }
-            String senhaAntiga;
-            String senhaNova;
-            try {
-                senhaAntiga = CriptografiaUtil.encrypt(password);
-                senhaNova = CriptografiaUtil.encrypt(newpassword);
-            } catch (NoSuchAlgorithmException ex) {
-                JsfUtil.addErrorMessage(ex, "Erro ao criptografar dados.");
-                return;
-            }
-            if (!senhaAntiga.equals(usuarioSession.getSenha())) {
-                JsfUtil.addErrorMessageExterna("Senha atual não confere.");
-                return;
-            }
-            if (senhaAntiga.equals(senhaNova)) {
-                JsfUtil.addErrorMessageExterna("A nova senha deve ser diferente da senha anterior.");
-                return;
-            }
-            try {
-                usuarioSession.setSenha(senhaNova);
+                String senhaAntiga;
+                String senhaNova;
                 try {
-                    Session sessao = HibernateFactory.currentSession();
-                    ebjUsario.alterar(sessao, usuarioSession);
-                } finally {
-                    HibernateFactory.closeSession();
+                    senhaAntiga = CriptografiaUtil.encrypt(password);
+                    senhaNova = CriptografiaUtil.encrypt(newpassword);
+                } catch (NoSuchAlgorithmException ex) {
+                    JsfUtil.addErrorMessage(ex, "Erro ao criptografar dados.");
+                    return;
                 }
+                if (!senhaAntiga.equals(usuarioSession.getSenha())) {
+                    JsfUtil.addErrorMessageExterna("Senha atual não confere.");
+                    return;
+                }
+                if (senhaAntiga.equals(senhaNova)) {
+                    JsfUtil.addErrorMessageExterna("A nova senha deve ser diferente da senha anterior.");
+                    return;
+                }
+                usuarioSession.setSenha(senhaNova);
+                ebjUsario.alterar(sessao, usuarioSession);
                 setPassword(null);
                 setNewpassword(newpassword);
                 JsfUtil.addSuccessMessage("Senha alterada com sucesso!");
             } catch (Exception ex) {
                 JsfUtil.addErrorMessage(ex, "Não foi possivel alterar a senha. Tente novamente.");
+            } finally {
+                HibernateFactory.closeSession();
             }
         } else {
             JsfUtil.addErrorMessage("Sessão encerrada.");
