@@ -38,7 +38,9 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
 
     @Override
     public void incluir(Session sessao, Funcionario item) throws Exception {
-        validarDocumento(sessao, item.getPessoa().getCpf());
+        if (item.getPessoa().getId() == null) {
+            validarDocumento(sessao, item.getPessoa().getCpf());
+        }
         validarEmail(sessao, item);
         item.setMatricula(obterMatricula(sessao));
         boolean enviarEmail = incluirAcessoAoSitema(item);
@@ -199,7 +201,7 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
             throw new Exception("Sessão não iniciada.");
         }
         PessoaFacade pessoaFacade = new PessoaFacade();
-        pessoaFacade.validarDocumento(sessao, numeroCPF, true);
+        pessoaFacade.validarDocumento(sessao, numeroCPF, true, "funcionário");
     }
 
     public Funcionario obterPorPessoa(Session sessao, int idPessoa) throws Exception {

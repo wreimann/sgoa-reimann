@@ -16,7 +16,7 @@ public class PessoaEndereco extends BaseEntidade<PessoaEndereco> {
     public PessoaEndereco() {
     }
 
-    @OneToOne(optional=false, cascade= CascadeType.ALL, orphanRemoval=true)
+    @OneToOne(optional=false, orphanRemoval=true)
     @JoinColumn(name="idpessoa")
     private Pessoa pessoa;
 
