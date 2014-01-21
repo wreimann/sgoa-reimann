@@ -410,7 +410,7 @@
                 </h:panelGroup>
             </h:form>
         </p:dialog>
-        <p:dialog modal="true" widgetVar="statusDialog" header="Status do download" draggable="false" closable="false" resizable="false">  
+        <p:dialog modal="true" widgetVar="statusDialogPDF" header="Status do download" draggable="false" closable="false" resizable="false">  
             <p:graphicImage value="/images/ajax-loader.gif" />  
         </p:dialog>  
         <p:confirmDialog widgetVar="confirmOSDialog"
@@ -429,15 +429,12 @@
 
         <script type="text/javascript">
                 function start() {
-                    PF('statusDialog').show();
+                    PF('statusDialogPDF').show();
                 }
 
                 function stop() {
-                    PF('statusDialog').hide();
+                    PF('statusDialogPDF').hide();
                 }
-
-
-
         </script>  
     </ui:define>
 
