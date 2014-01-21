@@ -1,6 +1,8 @@
 package util;
 
 import facede.ConfigEmailFacade;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -41,6 +43,10 @@ public class JsfUtil {
         String msg = ex.getLocalizedMessage();
         if (msg != null && msg.length() > 0) {
             addErrorMessage(msg);
+        } else {
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            addErrorMessage(sw.toString());
         }
         RequestContext.getCurrentInstance().addCallbackParam("exceptionThrown", ex);
     }

@@ -127,7 +127,9 @@
                                 <p:inputMask id="CpfInput" required="true" 
                                              requiredMessage="O campo 'CPF' é obrigatório." 
                                              value="#{funcionarioController.documento}" mask="999.999.999-99" 
-                                             disabled="#{funcionarioController.current.id > 0}"/>
+                                             disabled="#{funcionarioController.current.id > 0}">
+                                    <p:ajax event="change" update=":frmCadastro" listener="#{funcionarioController.changeDocumento}" />
+                                </p:inputMask>
                             </p:fieldset>
                             <p:fieldset styleClass="fieldset" id="SexoField"  style="width: 160px; margin-right: 19px;" >
                                 <p:outputLabel id="SexoLabel" value="Sexo"/>

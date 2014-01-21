@@ -37,10 +37,12 @@ public class ClienteFacade extends BaseFacade<Cliente> {
 
     @Override
     public void incluir(Session sessao, Cliente item) throws Exception {
-        if (item.getPessoa() instanceof PessoaFisica) {
-            validarDocumento(sessao, ((PessoaFisica) item.getPessoa()).getCpf(), true);
-        } else {
-            validarDocumento(sessao, ((PessoaJuridica) item.getPessoa()).getCnpj(), false);
+        if (item.getPessoa().getId() == null) {
+            if (item.getPessoa() instanceof PessoaFisica) {
+                validarDocumento(sessao, ((PessoaFisica) item.getPessoa()).getCpf(), true);
+            } else {
+                validarDocumento(sessao, ((PessoaJuridica) item.getPessoa()).getCnpj(), false);
+            }
         }
         validarEmail(sessao, item);
         super.incluir(sessao, item);
@@ -57,7 +59,7 @@ public class ClienteFacade extends BaseFacade<Cliente> {
             throw new Exception("Sessão não iniciada.");
         }
         PessoaFacade pessoaFacade = new PessoaFacade();
-        pessoaFacade.validarDocumento(sessao, numeroDocumento, pessoaFisica);
+        pessoaFacade.validarDocumento(sessao, numeroDocumento, pessoaFisica, "cliente");
     }
 
     public List<Cliente> selecionarPorParametros(Session sessao, String sort, SortOrder order, Integer page, Integer maxPage, String nomeFiltro, String placaFiltro) throws Exception {

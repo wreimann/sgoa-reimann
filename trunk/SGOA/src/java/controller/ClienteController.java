@@ -28,6 +28,7 @@ import model.PessoaJuridica;
 import model.Veiculo;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import util.HibernateFactory;
@@ -201,9 +202,15 @@ public class ClienteController implements Serializable {
             documento = ((PessoaJuridica) current.getPessoa()).getCnpj();
         }
         //endereco
-        enderecoAux = current.getPessoa().getEndereco();
-        if (enderecoAux == null) {
-            enderecoAux = new PessoaEndereco();
+        enderecoAux = new PessoaEndereco();
+        if (current.getPessoa().getEndereco() != null) {
+            enderecoAux.setCep(current.getPessoa().getEndereco().getCep().replaceAll("\\.", "").replaceAll("-", ""));
+            enderecoAux.setBairro(current.getPessoa().getEndereco().getBairro());
+            enderecoAux.setComplemento(current.getPessoa().getEndereco().getComplemento());
+            enderecoAux.setLogradouro(current.getPessoa().getEndereco().getLogradouro());
+            enderecoAux.setMunicipio(current.getPessoa().getEndereco().getMunicipio());
+            enderecoAux.setPredical(current.getPessoa().getEndereco().getPredical());
+            enderecoAux.setUf(current.getPessoa().getEndereco().getUf());
         }
         //veiculos
         veiculos = new ArrayList<Veiculo>();
@@ -297,25 +304,23 @@ public class ClienteController implements Serializable {
             pesAux.setTelefoneSecundario(current.getPessoa().getTelefoneSecundario());
             pesAux.setEmail(current.getPessoa().getEmail());
             //endereco
-            if (!enderecoAux.getLogradouro().isEmpty()) {
-                PessoaEndereco endereco = null;
-                if (pesAux.getEndereco() != null && pesAux.getEndereco().getId() > 0) {
-                    endereco = pessoaFacade.obterPorIdEndereco(sessao, pesAux.getEndereco().getId());
-                } else {
-                    endereco = new PessoaEndereco();
-                    enderecoAux.setPessoa(pesAux);
-                }
-                endereco.setCep(enderecoAux.getCep().replaceAll("\\.", "").replaceAll("-", ""));
-                endereco.setBairro(enderecoAux.getBairro());
-                endereco.setComplemento(enderecoAux.getComplemento());
-                endereco.setLogradouro(enderecoAux.getLogradouro());
-                endereco.setMunicipio(enderecoAux.getMunicipio());
-                endereco.setPredical(enderecoAux.getPredical());
-                endereco.setUf(enderecoAux.getUf());
-                pesAux.setEndereco(endereco);
+
+            PessoaEndereco endereco = null;
+            if (pesAux.getEndereco() != null && pesAux.getEndereco().getId() > 0) {
+                endereco = pessoaFacade.obterPorIdEndereco(sessao, pesAux.getEndereco().getId());
             } else {
-                pesAux.setEndereco(null);
+                endereco = new PessoaEndereco();
+                endereco.setPessoa(pesAux);
             }
+            endereco.setCep(enderecoAux.getCep().replaceAll("\\.", "").replaceAll("-", ""));
+            endereco.setBairro(enderecoAux.getBairro());
+            endereco.setComplemento(enderecoAux.getComplemento());
+            endereco.setLogradouro(enderecoAux.getLogradouro());
+            endereco.setMunicipio(enderecoAux.getMunicipio());
+            endereco.setPredical(enderecoAux.getPredical());
+            endereco.setUf(enderecoAux.getUf());
+            pesAux.setEndereco(endereco);
+
             //inclusão
             current.setPessoa(pesAux);
 
@@ -352,6 +357,44 @@ public class ClienteController implements Serializable {
     public void changeMarca() {
         currentVeiculo.setModelo(null);
         montaListaModelo();
+    }
+
+    public void changeDocumento() {
+        try {
+            Session sessao = HibernateFactory.currentSession();
+            PessoaFacade pessoaFacade = new PessoaFacade();
+            String numDoc = documento;
+            Pessoa pessoa = pessoaFacade.selecionarPorNumeroDocumento(sessao, tipoPessoa.equals("F"), numDoc.replaceAll("\\.", "").replaceAll("-", "").replace("/", ""));
+            if (pessoa != null) {
+                prepararInclusao(null);
+                if (tipoPessoa.equals("F")) {
+                    sexo = String.valueOf(((PessoaFisica) pessoa).getSexo());
+                    dataNasc = ((PessoaFisica) pessoa).getDataNascimento();
+                }
+                documento = numDoc;
+                current.getPessoa().setNome(pessoa.getNome());
+                current.getPessoa().setTelefonePrimario(pessoa.getTelefonePrimario());
+                current.getPessoa().setTelefoneSecundario(pessoa.getTelefoneSecundario());
+                current.getPessoa().setEmail(pessoa.getEmail());
+                this.enderecoAux = new PessoaEndereco();
+                if (pessoa.getEndereco() != null) {
+                    enderecoAux.setCep(pessoa.getEndereco().getCep());
+                    enderecoAux.setBairro(pessoa.getEndereco().getBairro());
+                    enderecoAux.setComplemento(pessoa.getEndereco().getComplemento());
+                    enderecoAux.setLogradouro(pessoa.getEndereco().getLogradouro());
+                    enderecoAux.setMunicipio(pessoa.getEndereco().getMunicipio());
+                    enderecoAux.setPredical(pessoa.getEndereco().getPredical());
+                    enderecoAux.setUf(pessoa.getEndereco().getUf());
+                }
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso", "Já existe uma pessoa cadastrada no sistema com o número do documento informado. Os dados foram recuperados com sucesso!");
+                RequestContext.getCurrentInstance().showMessageInDialog(message);
+            }
+        } catch (Exception ex) {
+            JsfUtil.addErrorMessage(ex, "Erro ao carregar dados da pessoa.");
+        } finally {
+            HibernateFactory.closeSession();
+        }
+
     }
 
     public void limparCampos() {

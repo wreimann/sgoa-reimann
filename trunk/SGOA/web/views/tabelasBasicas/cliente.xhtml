@@ -129,12 +129,16 @@
                                     <p:inputMask id="CpfInput" required="true" rendered="#{clienteController.tipoPessoa == 'F'}"
                                                  requiredMessage="O campo 'CPF' é obrigatório." 
                                                  value="#{clienteController.documento}" mask="999.999.999-99" 
-                                                 disabled="#{clienteController.current.pessoa.id > 0}"/>
+                                                 disabled="#{clienteController.current.pessoa.id > 0}">
+                                        <p:ajax event="change" update=":frmCadastro" listener="#{clienteController.changeDocumento}" />
+                                    </p:inputMask>
 
                                     <p:inputMask id="CnpjInput" required="true" rendered="#{clienteController.tipoPessoa == 'J'}"
                                                  requiredMessage="O campo 'CNPJ' é obrigatório." 
                                                  value="#{clienteController.documento}" mask="99.999.999/9999-99"
-                                                 disabled="#{clienteController.current.pessoa.id > 0}"/>
+                                                 disabled="#{clienteController.current.pessoa.id > 0}">
+                                        <p:ajax event="change" update=":frmCadastro" listener="#{clienteController.changeDocumento}" />
+                                    </p:inputMask>
                                 </h:panelGroup>
 
                             </p:fieldset>
@@ -334,7 +338,7 @@
                             </p:fieldset>
                         </h:panelGrid>
                     </p:tab>
-                  
+
                 </p:tabView>
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
                     <p:commandButton id="btnSalvar" 

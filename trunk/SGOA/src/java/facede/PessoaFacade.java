@@ -85,7 +85,7 @@ public class PessoaFacade extends BaseFacade<Pessoa> {
         }
     }
 
-    public void validarDocumento(Session sessao, String doc, boolean pessoaFisica) throws Exception {
+    public void validarDocumento(Session sessao, String doc, boolean pessoaFisica, String desc) throws Exception {
         if (doc != null && !doc.isEmpty()) {
             if (pessoaFisica) {
                 if (!util.Comum.isValidoCPF(doc)) {
@@ -98,7 +98,7 @@ public class PessoaFacade extends BaseFacade<Pessoa> {
             }
             Pessoa pessoa = selecionarPorNumeroDocumento(sessao, pessoaFisica, doc);
             if (pessoa != null) {
-                throw new Exception("Já existe uma pessoa cadastrada com o número de documento informado.");
+                throw new Exception("Já existe um " + desc + " cadastrada com o número de documento informado.");
             }
         }
     }

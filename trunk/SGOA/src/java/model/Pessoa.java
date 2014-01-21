@@ -50,7 +50,7 @@ public class Pessoa extends BaseEntidade<Pessoa> {
     @Column(name = "TelefoneSecundario")
     private String telefoneSecundario;
     
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, mappedBy="pessoa", fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, mappedBy="pessoa")
     @PrimaryKeyJoinColumn
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private PessoaEndereco endereco;

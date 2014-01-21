@@ -10,7 +10,7 @@
         <property name="hibernate.connection.username">reimansc_root</property>
         <property name="hibernate.connection.password">rootweb</property>	
         <!-- Propriedades adicionais	-->
-        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.show_sql">true</property>
         <!-- c3p0 -->
         <property name="connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property>        
         <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
