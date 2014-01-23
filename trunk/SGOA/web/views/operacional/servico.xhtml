@@ -239,10 +239,10 @@
                 </p:fieldset>
                 <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"
                               cancelLabel="Cancelar"
-                              sizeLimit="100000"
+                              sizeLimit="2800000"
                               label="Adicionar fotos"
-                              invalidFileMessage="Tipo de imagem inválido"
-                              invalidSizeMessage="Imagem muito grande"
+                              invalidFileMessage="Tipo de imagem inválido. A foto deve estar no formato JPG."
+                              invalidSizeMessage="Imagem muito grande. Tamanho máximo 2,5 MB"
                               uploadLabel="Enviar"
                               allowTypes="/(\.|\/)(jpe?g)$/"
                               dragDropSupport="false" fileLimit="3"
