@@ -47,7 +47,7 @@ public class OrcamentoController implements Serializable {
     private LazyDataModel<Orcamento> lazyModel;
     @EJB
     private facede.OrcamentoFacade ejbFacade;
-    @ManagedProperty(value="#{loginController}")
+    @ManagedProperty(value = "#{loginController}")
     private LoginController loginController;
     // <editor-fold defaultstate="collapsed" desc="propriedades para filtro da pesquisa">
     private String numero;
@@ -158,6 +158,7 @@ public class OrcamentoController implements Serializable {
     public void setFileDownload(StreamedContent fileDownload) {
         this.fileDownload = fileDownload;
     }
+
     public List<Veiculo> getVeiculos() {
         return veiculos;
     }
@@ -281,13 +282,14 @@ public class OrcamentoController implements Serializable {
                     current.getAnexos().add(anexo);
                 }
             }
+            //serviços
             current.setServicos(servicos);
             if (current.getId() != null) {
                 ejbFacade.alterar(sessao, current);
                 JsfUtil.addSuccessMessage("Orçamento alterado com sucesso!");
             } else {
-                current.setFuncionarioCancelamento(getLoginController().getUsuarioSession());
                 ejbFacade.incluir(sessao, current);
+                servicos = current.getServicos();
                 JsfUtil.addSuccessMessage("Orçamento incluído com sucesso!");
             }
         } catch (Exception e) {
@@ -297,7 +299,7 @@ public class OrcamentoController implements Serializable {
         }
 
     }
-
+    
     public void cancelar(ActionEvent actionEvent) {
         try {
             Session sessao = HibernateFactory.currentSession();
@@ -409,8 +411,6 @@ public class OrcamentoController implements Serializable {
         }
         return resultado;
     }
-
-    
 
     public void changeTipoServico() {
         totalDescoto = 0;

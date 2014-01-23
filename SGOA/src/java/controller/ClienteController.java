@@ -386,7 +386,7 @@ public class ClienteController implements Serializable {
                     enderecoAux.setPredical(pessoa.getEndereco().getPredical());
                     enderecoAux.setUf(pessoa.getEndereco().getUf());
                 }
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso", "Já existe uma pessoa cadastrada no sistema com o número do documento informado. Os dados foram recuperados com sucesso!");
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso", "Já existe uma pessoa cadastrada no sistema com o número do documento informado. <br />Os dados foram recuperados com sucesso!");
                 RequestContext.getCurrentInstance().showMessageInDialog(message);
             }
         } catch (Exception ex) {

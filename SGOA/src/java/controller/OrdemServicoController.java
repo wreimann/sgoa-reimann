@@ -247,10 +247,6 @@ public final class OrdemServicoController implements Serializable {
             return;
         }
         if (atividades.size() > 1) {
-            if (current.getFuncionario() == null) {
-                JsfUtil.addErrorMessage(null, "O campo 'Funcionário Executor' é obrigatório.");
-                return;
-            }
             //atividades ordenadas por maior data de cadastro
             if (atividades.size() > 2 && atividades.get(1).getDataSaida().after(current.getDataEntrada())) {
                 JsfUtil.addErrorMessage(null, "A data de entrada deve ser maior que a data de saída da atividade anterior.");
@@ -263,9 +259,14 @@ public final class OrdemServicoController implements Serializable {
         }
         try {
             Session sessao = HibernateFactory.currentSession();
-            current = ejbFacade.obterEtapa(sessao, current.getId());
-            Hibernate.initialize(current.getEventos());
-            ejbFacade.atualizarServico(sessao, getLoginController().getUsuarioSession(), current, proximaEtapa, inicioImediato, funcProximaEtapa);
+            OrdemServicoEtapa etapaAtual = ejbFacade.obterEtapa(sessao, current.getId());
+            Hibernate.initialize(etapaAtual.getEventos());
+            //atualiza com os valores informado pelo usuario
+            etapaAtual.setDataSaida(current.getDataSaida());
+            etapaAtual.setHorasTrabalhadas(current.getHorasTrabalhadas());
+            etapaAtual.setFuncionario(current.getFuncionario());
+            //salva no banco de dados
+            ejbFacade.atualizarServico(sessao, getLoginController().getUsuarioSession(), etapaAtual, proximaEtapa, inicioImediato, funcProximaEtapa);
             JsfUtil.addSuccessMessage("Atividade atualizada com sucesso!");
             setProximaEtapa(null);
             setInicioImediato(false);

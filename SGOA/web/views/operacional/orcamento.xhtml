@@ -151,8 +151,9 @@
             </p:confirmDialog>
         </h:form>
 
-        <p:dialog  widgetVar="modalPopup" modal="true" width="750" height="480" resizable="false"
-                   showEffect="fade" header="Cadastro de Orçamento" id="dialog" >
+        <p:dialog  widgetVar="modalPopup" modal="true" width="750" resizable="false"
+                   showEffect="fade" header="Cadastro de Orçamento" id="dialog"
+                   closable="false" closeOnEscape="false" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmCadastro" prependId="false" enctype="multipart/form-data">
                 <p:tabView id="tabView">
@@ -188,7 +189,8 @@
                                                 var="c" itemLabel="#{c.pessoa.nome}"
                                                 itemValue="#{c}" converter="clienteConverter"
                                                 forceSelection="true" effect="fade" 
-                                                immediate="true" 
+                                                immediate="true"  emptyMessage="Cliente não localizado."
+                                                minQueryLength="3" queryDelay="600"
                                                 disabled="#{orcamentoController.bloqueado}">
                                     <p:ajax event="itemSelect" update="VeiculoPanel" 
                                             listener="#{orcamentoController.changeCliente}" immediate="true" />
@@ -234,7 +236,7 @@
                         </p:fieldset>
 
                     </p:tab>
-                    <p:tab id="tab3" title="Resumo">
+                    <p:tab id="tab3" title="Resumo do Orçamento">
                         <h:panelGroup id="PanelResumo">
                             <p:dataTable id="dataTableTipoServico" var="item" 
                                          value="#{orcamentoController.servicos}" lazy="false"
@@ -372,21 +374,21 @@
                             </h:panelGrid>
                         </h:panelGroup>
                     </p:tab>
-                    <p:tab  id="tab5" title="Anexo">
+                    <p:tab  id="tab5" title="Anexar Orçamento Original">
                         <p:fileUpload fileUploadListener="#{orcamentoController.handleFileUpload}" 
                                       mode="advanced" dragDropSupport="true"   
-                                      sizeLimit="3000000" allowTypes="/(\.|\/)(pdf)$/"
+                                      sizeLimit="2800000" allowTypes="/(\.|\/)(pdf)$/"
                                       update="tab5" fileLimit="1"
                                       cancelLabel="Cancelar"
                                       label="Procurar..."
                                       uploadLabel="Enviar"
-                                      invalidFileMessage="Tipo de imagem inválido"
-                                      invalidSizeMessage="Imagem muito grande"
-                                      rendered="#{orcamentoController.file == null}"/>
+                                      invalidFileMessage="Tipo de imagem inválido. O orçamento star no formato PDF"
+                                      invalidSizeMessage="Imagem muito grande. Tamanho máximo 2,5 MB"
+                                      rendered="#{orcamentoController.file == null}"
+                                      disabled="#{orcamentoController.bloqueado}"/>
 
-                        <p:commandButton id="downloadLink" value="Baixar Docummento Anexado" 
+                        <p:commandButton id="downloadLink" value="Baixar Orçamento Original" 
                                          onclick="PrimeFaces.monitorDownload(start, stop);"
-                                         disabled="#{orcamentoController.bloqueado}"
                                          icon="ui-icon-arrowthichk-s" style="margin: 20px;"
                                          rendered="#{orcamentoController.file != null}"
                                          immediate="true" ajax="false" > 
@@ -397,7 +399,7 @@
                 <h:panelGroup id="pnlToolbar" layout="block" style="margin-top: 10px" >
                     <p:commandButton id="btnSalvar"
                                      actionListener="#{orcamentoController.salvar}"
-                                     update=":frmCadastro,:frmPesquisa" value="Salvar"
+                                     update=":frmCadastro" value="Salvar"
                                      disabled="#{orcamentoController.bloqueado}"/>
                     <p:commandButton id="btnOS" 
                                      value="Aprovar" alt="Aprovar"
