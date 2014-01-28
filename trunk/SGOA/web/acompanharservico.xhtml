@@ -30,7 +30,7 @@
                             <p:messages id="growl" />
                             <div class="ui-messages-warn ui-corner-all" style="padding-bottom: 0px; padding-top: 0px; ">
                                 <span class="ui-messages-warn-icon" style="margin-right: 10px; margin-top: 10px;" ></span>
-                                <p>O veículo não possui nenhuma ordem de serviço pendente.</p>
+                                <p>O veículo não possui nenhuma ordem de serviço em andamento.</p>
                             </div>
                         </h:panelGroup>
                         <h:panelGroup rendered="#{acompanharServicoController.etapa!=null}" layout="block" style="margin-top: 20px;">
@@ -125,8 +125,8 @@
                                         </div>
                                     </h:panelGroup>
                                     <p:galleria value="#{acompanharServicoController.fotosOS}" 
-                                                var="galeria" effect="slide" effectSpeed="2000" showCaption="false" 
-                                                showFilmstrip="true" panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
+                                                var="galeria" effect="slide" effectSpeed="1000" showCaption="false" 
+                                                showFilmstrip="false" panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
                                                 rendered="#{acompanharServicoController.fotosOS.size()>0}">
                                         <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 
                                                         title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"  />
@@ -162,7 +162,7 @@
                         <p:column headerText="Mensagem">
                             <h:outputText value="#{evento.descricao}" />
                         </p:column>
-                        <p:column headerText="Data" width="125">
+                        <p:column headerText="Data Parada/Reinicio" width="125">
                             <h:outputText value="#{evento.dataInicioParada}">
                                 <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                             </h:outputText>
@@ -190,8 +190,8 @@
                         </div>
                     </h:panelGroup>
                     <p:galleria value="#{acompanharServicoController.fotos}" id="galeriaModal"
-                                var="galeria" effect="slide" effectSpeed="2000" showCaption="false" 
-                                showFilmstrip="true"  
+                                var="galeria" effect="slide" effectSpeed="1000" showCaption="false" 
+                                showFilmstrip="false"  
                                 panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
                                 rendered="#{acompanharServicoController.fotos.size()>0}">
                         <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 

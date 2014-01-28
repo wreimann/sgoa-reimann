@@ -47,22 +47,22 @@
 
             <h:panelGroup id="AtividadePainel" rendered="#{ordemServicoController.current.id > 0}" >
                 <h:panelGrid columns="2">
-                    <p:fieldset id="VeiculoField" style="width: 220px; margin-right: 19px;">
+                    <p:fieldset id="VeiculoField" style="width: 270px; margin-right: 19px;">
                         <label id="VeiculoLabel">Veículo</label>
                         <p:inputText id="VeiculoText" disabled="true" value="#{ordemServicoController.veiculo}" />
                     </p:fieldset>
-                    <p:fieldset id="ClienteField" style="width: 330px;">
+                    <p:fieldset id="ClienteField" style="width: 350px;">
                         <label id="ClienteLabel">Cliente</label>
                         <p:inputText id="ClienteText" disabled="true" value="#{ordemServicoController.cliente}" />
                     </p:fieldset>
                 </h:panelGrid>
                 <h:panelGrid columns="3">
-                    <p:fieldset id="EtapaAtualField" style="width: 250px; margin-right: 19px;">
+                    <p:fieldset id="EtapaAtualField" style="width: 270px; margin-right: 19px;">
                         <label id="EtapaAtualLabel">Atividade Atual*</label>
                         <p:inputText id="EtapaAtualText" disabled="true" 
                                      value="#{ordemServicoController.current.etapa}"/>
                     </p:fieldset>
-                    <p:fieldset id="SituacaoField" style="width: 180px; margin-right: 19px;">
+                    <p:fieldset id="SituacaoField" style="width: 220px; margin-right: 19px;">
                         <label id="SituacaoLabel">Situação</label>
                         <h:selectOneMenu id="SituacaoListBox" disabled="true"
                                          value="#{ordemServicoController.current.situacao}">
@@ -211,8 +211,8 @@
                    showEffect="fade" header="Cadastro de Eventos" id="dialog" >
             <p:messages id="growl" autoUpdate="true" closable="true"  />
             <h:form id="frmEvento" prependId="false" enctype="multipart/form-data">
-                <h:panelGrid columns="3">
-                    <p:fieldset style="width: 180px;">
+                <h:panelGrid columns="2">
+                    <p:fieldset style="width: 220px;">
                         <label>Tipo Evento*</label>
                         <h:selectOneMenu value="#{ordemServicoController.tipoEvento}" required="true"
                                          requiredMessage="O campo 'Tipo Evento' é obrigatório.">
@@ -222,20 +222,24 @@
                             <p:ajax event="change" update=":frmEvento,:ajaxStatusMaster"/>
                         </h:selectOneMenu>                   
                     </p:fieldset>
-                    <p:fieldset style="width: 180px; margin-left: 19px;" rendered="#{ordemServicoController.exibirData}" >
-                        <p:outputLabel value="Data Evento"/>
+                    <p:fieldset style="width: 220px; margin-left: 19px;" rendered="#{ordemServicoController.exibirData}" >
+                        <p:outputLabel value="Data Parada/Reinicio" style="width: 100%;"/>
                         <p:calendar showButtonPanel="true" navigator="true" 
                                     value="#{ordemServicoController.dataInicioParada}" 
                                     converterMessage="Valor inválido!" 
                                     pattern="dd/MM/yyyy HH:mm" locale="pt"
                                     timeZone="America/Sao_Paulo" />
                     </p:fieldset>
-                    <h:selectBooleanCheckbox value="#{ordemServicoController.inicioImediato}"/><b>Notifica o cliente via e-mail?</b>
+                </h:panelGrid>
+                <h:panelGrid columns="1">
+                    <p:fieldset>
+                        <h:selectBooleanCheckbox value="#{ordemServicoController.inicioImediato}"/><b>Notifica o cliente via e-mail?</b>
+                    </p:fieldset>
                 </h:panelGrid>
                 <p:fieldset>
-                    <label>Descrição*</label>
+                    <label>Mensagem*</label>
                     <p:inputTextarea value="#{ordemServicoController.descEvento}" required="true"
-                                     requiredMessage="O campo 'Descrição' é obrigatório."/>
+                                     requiredMessage="O campo 'Mensagem' é obrigatório."/>
                 </p:fieldset>
                 <p:fileUpload fileUploadListener="#{ordemServicoController.handleFileUpload}"
                               cancelLabel="Cancelar"
@@ -277,10 +281,10 @@
                     <p:column headerText="Evento" width="100">
                         <h:outputText value="#{evento.tipoEvento.toString()}" />
                     </p:column>
-                    <p:column headerText="Descrição">
+                    <p:column headerText="Mensagem">
                         <h:outputText value="#{evento.descricao}" />
                     </p:column>
-                    <p:column headerText="Data" width="125">
+                    <p:column headerText="Data Parada/Reinicio" width="125">
                         <h:outputText value="#{evento.dataInicioParada}">
                             <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                         </h:outputText>
@@ -308,8 +312,8 @@
                     </div>
                 </h:panelGroup>
                 <p:galleria value="#{ordemServicoController.fotos}" id="galeriaModal"
-                            var="galeria" effect="slide" effectSpeed="2000" showCaption="false" 
-                            showFilmstrip="true"  
+                            var="galeria" effect="slide" effectSpeed="1000" showCaption="false" 
+                            showFilmstrip="false"  
                             panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
                             rendered="#{ordemServicoController.fotos.size()>0}">
                     <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 

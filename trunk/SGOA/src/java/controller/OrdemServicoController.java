@@ -230,31 +230,31 @@ public final class OrdemServicoController implements Serializable {
     public void atualizar(ActionEvent event) {
         if (current.getDataEntrada() != null && current.getDataSaida() != null) {
             if (current.getDataEntrada().after(current.getDataSaida())) {
-                JsfUtil.addErrorMessage(null, "A data de saída deve ser maior que a data de entrada na atividade.");
+                JsfUtil.addErrorMessage("A data de saída deve ser maior que a data de entrada na atividade.");
                 return;
             }
         }
         if (current.getDataSaida() != null && proximaEtapa == null) {
-            JsfUtil.addErrorMessage(null, "Informe a próxima atividade.");
+            JsfUtil.addErrorMessage("Informe a próxima atividade.");
             return;
         }
         if (current.getDataSaida() != null && current.getFuncionario() == null) {
-            JsfUtil.addErrorMessage(null, "Informe o funcionário executor da atividade.");
+            JsfUtil.addErrorMessage("Informe o funcionário executor da atividade.");
             return;
         }
-        if (current.getDataSaida() != null && current.getHorasTrabalhadas() == 0) {
-            JsfUtil.addErrorMessage(null, "Informe as horas de trabalho.");
-            return;
-        }
+//        if (current.getDataSaida() != null && current.getHorasTrabalhadas() == 0) {
+//            JsfUtil.addErrorMessage("Informe as horas de trabalho.");
+//            return;
+//        }
         if (atividades.size() > 1) {
             //atividades ordenadas por maior data de cadastro
             if (atividades.size() > 2 && atividades.get(1).getDataSaida().after(current.getDataEntrada())) {
-                JsfUtil.addErrorMessage(null, "A data de entrada deve ser maior que a data de saída da atividade anterior.");
+                JsfUtil.addErrorMessage("A data de entrada deve ser maior que a data de saída da atividade anterior.");
                 return;
             }
         }
         if (inicioImediato && getFuncProximaEtapa() == null) {
-            JsfUtil.addErrorMessage(null, "Informe o funcionário da próxima etapa.");
+            JsfUtil.addErrorMessage("Informe o funcionário da próxima etapa.");
             return;
         }
         try {
@@ -262,9 +262,10 @@ public final class OrdemServicoController implements Serializable {
             OrdemServicoEtapa etapaAtual = ejbFacade.obterEtapa(sessao, current.getId());
             Hibernate.initialize(etapaAtual.getEventos());
             //atualiza com os valores informado pelo usuario
+            etapaAtual.setDataEntrada(current.getDataEntrada());
+            etapaAtual.setFuncionario(current.getFuncionario());
             etapaAtual.setDataSaida(current.getDataSaida());
             etapaAtual.setHorasTrabalhadas(current.getHorasTrabalhadas());
-            etapaAtual.setFuncionario(current.getFuncionario());
             //salva no banco de dados
             ejbFacade.atualizarServico(sessao, getLoginController().getUsuarioSession(), etapaAtual, proximaEtapa, inicioImediato, funcProximaEtapa);
             JsfUtil.addSuccessMessage("Atividade atualizada com sucesso!");
@@ -330,7 +331,7 @@ public final class OrdemServicoController implements Serializable {
     public void adicionarEvento(ActionEvent event) {
         if (getTipoEvento() == TipoEvento.InterrupcaoAtividade
                 && current.getDataEntrada().after(getDataInicioParada())) {
-            JsfUtil.addErrorMessage(null, "A data da interrupção da atividade deve ser maior que a data de início da atividade.");
+            JsfUtil.addErrorMessage("A data da interrupção da atividade deve ser maior que a data de início da atividade.");
             return;
         }
         if (getTipoEvento() == TipoEvento.ReinicioAtividade) {
@@ -342,7 +343,7 @@ public final class OrdemServicoController implements Serializable {
                 }
             }
             if (dataInterrupcao != null && dataInterrupcao.after(getDataInicioParada())) {
-                JsfUtil.addErrorMessage(null, "A data de reinício da atividade deve ser maior que a data de interrupção.");
+                JsfUtil.addErrorMessage("A data de reinício da atividade deve ser maior que a data de interrupção.");
                 return;
             }
         }
@@ -403,7 +404,7 @@ public final class OrdemServicoController implements Serializable {
                 etapasAtivas = montaListaEtapas();
                 etapasAtivas.remove(current.getEtapa());
             } else {
-                JsfUtil.addErrorMessage(null, "Nenhuma ordem de serviço localiza para a placa informada.");
+                JsfUtil.addErrorMessage("Nenhuma ordem de serviço localiza para a placa informada.");
             }
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Nenhuma ordem de serviço localiza para a placa informada.");

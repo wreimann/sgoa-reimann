@@ -91,9 +91,7 @@ public class AcompanharServicoController implements Serializable {
                     if (fotosOS == null) {
                         fotosOS = new ArrayList<OrdemServicoFoto>();
                     }
-                } else {
-                    JsfUtil.addErrorMessage("Veículo não localizado.");
-                }
+                } 
             } catch (Exception ex) {
                 JsfUtil.addErrorMessage(ex, "Erro ao carregar o andamento do serviço. Tente novamente.");
             } finally {
