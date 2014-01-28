@@ -41,7 +41,7 @@ public class AcompanharServicoController implements Serializable {
                 Session sessao = HibernateFactory.currentSession();
                 ejbFacade = new OrdemServicoFacade();
                 OrdemServico os = ejbFacade.ObterOrdemServicoPorPlaca(sessao, placa);
-                if (os != null) {
+                if (os != null && os.getSituacao() == 'E') {
                     if (os.getOrcamento().getCliente().getPessoa() instanceof PessoaFisica) {
                         if (!((PessoaFisica) os.getOrcamento().getCliente().getPessoa()).getCpf().equals(doc)) {
                             JsfUtil.addErrorMessage("Veículo não localizado.");
