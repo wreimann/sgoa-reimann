@@ -272,7 +272,7 @@ public final class OrdemServicoController implements Serializable {
             setProximaEtapa(null);
             setInicioImediato(false);
             setFuncProximaEtapa(null);
-            OrdemServico resultado = ejbFacade.ObterOrdemServicoPorPlaca(sessao, placa);
+            OrdemServico resultado = ejbFacade.ObterOrdemServicoPorId(sessao, etapaAtual.getOrdemServico().getId());
             if (resultado != null) {
                 setCliente(resultado.getOrcamento().getCliente().toString());
                 setVeiculo(resultado.getOrcamento().getVeiculo().toString());

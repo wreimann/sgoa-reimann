@@ -228,7 +228,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             throw new Exception("Sessão não iniciada.");
         }
         Criteria c = sessao.createCriteria(OrdemServico.class, "os");
-        c.add(Restrictions.eq("os.situacao", 'E'));//em execução
+        c.add(Restrictions.in("os.situacao", new Character[]{'E', 'R'}));//em execução/ reparos finalizado
         c.createCriteria("orcamento", "orc").createCriteria("veiculo", "v");
         c.add(Restrictions.like("v.placa", placa, MatchMode.EXACT).ignoreCase());
         OrdemServico resultado = (OrdemServico) c.uniqueResult();
@@ -244,6 +244,27 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         }
         return resultado;
     }
+    
+    public OrdemServico ObterOrdemServicoPorId(Session sessao, int idOS) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+        Criteria c = sessao.createCriteria(OrdemServico.class, "os");
+        c.add(Restrictions.eq("os.id", idOS));
+        OrdemServico resultado = (OrdemServico) c.uniqueResult();
+        if (resultado != null) {
+            Hibernate.initialize(resultado.getEtapaAtual());
+            for (OrdemServicoEtapa item : resultado.getEtapas()) {
+                Hibernate.initialize(item);
+                Hibernate.initialize(item.getEtapa());
+                for (OrdemServicoEvento evento : item.getEventos()) {
+                    Hibernate.initialize(evento);
+                }
+            }
+        }
+        return resultado;
+    }
+
 
     public OrdemServicoEvento obterEvento(Session sessao, int id) throws Exception {
         if (sessao == null) {
@@ -349,8 +370,8 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         return resultado;
 
     }
-    
-     public void cancelar(Session sessao, OrdemServico item, Funcionario funcExecutor, String motivo) throws Exception {
+
+    public void cancelar(Session sessao, OrdemServico item, Funcionario funcExecutor, String motivo) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
         }
@@ -361,7 +382,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             item.setSituacao('C');
             item.getOrcamento().setSituacao('C');
             item.getEtapaAtual().setSituacao('P');
-             Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance();
             Date dataAtual = new Date();
             cal.setTime(dataAtual);
             item.setDataCancelamento(cal.getTime());
@@ -377,14 +398,13 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             HibernateFactory.commitTransaction();
             if (config.getEtapaCancelamentoConcerto().getEnviaEmailFim()) {
                 util.JsfUtil.enviarEmail(sessao, item.getOrcamento().getCliente().getPessoa(), "Cancelamento da Ordem de Serviço",
-                        "Ordem de serviço " + item.getOrcamento().toString() + " acaba de ser cancelada. \n + Motivo: " +  motivo);
+                        "Ordem de serviço " + item.getOrcamento().toString() + " acaba de ser cancelada. \n + Motivo: " + motivo);
             }
-           
+
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
             throw e;
         }
 
     }
-    
 }
