@@ -3,7 +3,7 @@
 # Server version:               5.5.35-cll
 # Server OS:                    Linux
 # HeidiSQL version:             6.0.0.3603
-# Date/time:                    2014-02-13 11:57:03
+# Date/time:                    2014-02-13 12:48:12
 # --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -251,6 +251,7 @@ CREATE TABLE IF NOT EXISTS `ordemservico` (
   `DataCancelamento` datetime DEFAULT NULL,
   `MotivoCancelamento` varchar(250) DEFAULT NULL,
   `IdFuncCancelamento` int(11) DEFAULT NULL,
+  `DataPrevEntrega` datetime DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_ordemservico_orcamento` (`IdOrcamento`),
   KEY `FK_ordemservico_funcionario` (`IdFuncAprovacao`),
