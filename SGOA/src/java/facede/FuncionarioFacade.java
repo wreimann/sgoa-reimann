@@ -78,9 +78,10 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
     private void enviarEmail(Session sessao, Pessoa pessoa, String senha) {
         if (pessoa != null && !pessoa.getEmail().isEmpty()) {
             JsfUtil.enviarEmail(sessao, pessoa, "Reiman´s Car - Senha de autenticação",
-                    "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
+                    "Para acessar o Sistema Gerenciador de Oficinas Automotivas (www.reimanscar.com.br/SGOA) informe: <br/>"
                     + "E-mail: " + pessoa.getEmail()
-                    + "Senha: " + senha.replaceAll("\\.", ""));
+                    + "<br/>Senha: " + senha.replaceAll("\\.", "")
+                    + "<br/><br /><br/><br /> Essa é uma mensagem automática. Por favor, não responda a esse e-mail.");
         }
     }
 
@@ -150,10 +151,11 @@ public class FuncionarioFacade extends BaseFacade<Funcionario> {
                 if (retorno.getPerfilAcesso() != null && retorno.getAtivo()) {
                     retorno.setSenha(CriptografiaUtil.encrypt(retorno.getMatricula().toString()));
                     alterar(sessao, retorno);
-                    JsfUtil.enviarEmail(sessao, retorno.getPessoa(), "Reiman´s Car - Recuperação de senha de autenticação",
-                            "Para acessar o Sistema Gerenciador de Oficinas Automotivas informe:"
+                    JsfUtil.enviarEmail(sessao, pessoa, "Reiman´s Car - Recuperação de senha de autenticação",
+                            "Para acessar o Sistema Gerenciador de Oficinas Automotivas (www.reimanscar.com.br/SGOA) informe: <br/>"
                             + "E-mail: " + retorno.getPessoa().getEmail()
-                            + "Senha: " + retorno.getMatricula().toString().replaceAll("\\.", ""));
+                            + "Senha: " + retorno.getMatricula().toString().replaceAll("\\.", "")
+                            + "<br/><br /><br/><br /> Essa é uma mensagem automática. Por favor, não responda a esse e-mail.");
                 } else {
                     throw new Exception("Funcionário sem permissão ao sistema.");
                 }

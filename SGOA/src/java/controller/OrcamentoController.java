@@ -118,6 +118,7 @@ public class OrcamentoController implements Serializable {
     private String motivoCancelamento;
     private Boolean bloqueado;
     private Boolean gerarOS;
+    private Date dataPrevEntrega;
 
     public Boolean getBloqueado() {
         bloqueado = false;
@@ -299,7 +300,7 @@ public class OrcamentoController implements Serializable {
         }
 
     }
-    
+
     public void cancelar(ActionEvent actionEvent) {
         try {
             Session sessao = HibernateFactory.currentSession();
@@ -325,15 +326,18 @@ public class OrcamentoController implements Serializable {
             os.setFuncionarioAprovacao(loginController.getUsuarioSession());
             os.setOrcamento(current);
             current.SetOrdemServico(os);
+            os.setDataPrevEntrega(dataPrevEntrega);
             OrdemServicoFacade osFacade = new OrdemServicoFacade();
             osFacade.incluir(sessao, os);
             JsfUtil.addSuccessMessage("Ordem de Serviço gerada com sucesso!");
+            setDataPrevEntrega(null);
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao aprovar o orçamento tente novamente.");
             current.setSituacao(situacaoAnterior);
         } finally {
             HibernateFactory.closeSession();
         }
+
     }
 
     public void changeCliente(SelectEvent event) {
@@ -356,6 +360,7 @@ public class OrcamentoController implements Serializable {
         veiculos = new ArrayList<Veiculo>();
         seguradoras = montaListaSeguradoras();
         tipoServicos = montaListaTipoServicos();
+        setDataPrevEntrega(null);
         file = null;
         totalDescoto = 0;
         totalHoras = 0;
@@ -445,5 +450,13 @@ public class OrcamentoController implements Serializable {
 
     public void setLoginController(LoginController loginController) {
         this.loginController = loginController;
+    }
+
+    public Date getDataPrevEntrega() {
+        return dataPrevEntrega;
+    }
+
+    public void setDataPrevEntrega(Date dataPrevEntrega) {
+        this.dataPrevEntrega = dataPrevEntrega;
     }
 }

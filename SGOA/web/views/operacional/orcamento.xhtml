@@ -20,6 +20,7 @@
                 jQuery(function($) {
                     $("#DataInicioPesquisa_input").mask("99/99/9999");
                     $("#DataFinalPesquisa_input").mask("99/99/9999");
+                    $("#DataPrevEntregaInput_input").mask("99/99/9999");
                 });
 
 
@@ -63,14 +64,14 @@
                     <p:outputLabel id="DataInicioPesquisaLabel" value="Data Inicial"/>
                     <p:calendar showButtonPanel="true" navigator="true" id="DataInicioPesquisa"
                                 value="#{orcamentoController.dataInicial}" converterMessage="Valor inválido!"
-                                pattern="dd/MM/yyyy" />
+                                pattern="dd/MM/yyyy"  locale="pt" timeZone="America/Sao_Paulo"/>
                 </p:fieldset>
 
                 <p:fieldset id="DataFinalPesquisaField" style="width: 190px; margin-right: 19px; display: inline-block;">
                     <p:outputLabel id="DataFinalPesquisaLabel" value="Data Final"/>
                     <p:calendar showButtonPanel="true" navigator="true" id="DataFinalPesquisa"
                                 value="#{orcamentoController.dataFinal}" converterMessage="Valor inválido!"
-                                pattern="dd/MM/yyyy" />
+                                pattern="dd/MM/yyyy" locale="pt" timeZone="America/Sao_Paulo" />
                 </p:fieldset>
             </h:panelGrid>
 
@@ -85,6 +86,7 @@
                          paginator="true" paginatorPosition="bottom"
                          emptyMessage="Nenhum resultado encontrado."
                          rows="#{orcamentoController.pageSize}"
+                         sortBy="ano"
                          currentPageReportTemplate="Total de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
                 <f:facet name="header">
@@ -167,7 +169,7 @@
                                 <p:outputLabel id="DataCadastroLabel" value="Data Cadastro"/>
                                 <p:calendar showButtonPanel="true" navigator="true" id="DataCadastroInput"
                                             value="#{orcamentoController.current.dataCadastro}" pattern="dd/MM/yyyy" 
-                                            disabled="true"/>
+                                            disabled="true" locale="pt"/>
                             </p:fieldset>
 
                             <p:fieldset id="SituacaoField" style="width: 185px; margin-left: 19px;">
@@ -419,6 +421,14 @@
                          message="Confirma a aprovação do Orçamento?" 
                          showEffect="slide" hideEffect="clip" severity="alert">  
             <h:form prependId="false" id="frmOS">
+                <p:focus context="frmOS" />
+                <p:fieldset id="DataPrevEntregaField" >
+                    <p:outputLabel id="DataPrevEntregaLabel" value="Previsão de Entrega*" style="width:100%"/>
+                    <p:calendar showButtonPanel="true" navigator="true" id="DataPrevEntregaInput"
+                                value="#{orcamentoController.dataPrevEntrega}" 
+                                converterMessage="Valor inválido!" timeZone="America/Sao_Paulo" 
+                                pattern="dd/MM/yyyy" locale="pt"/>
+                </p:fieldset>
                 <h:panelGroup layout="block" style="margin-top: 10px; float: right;" >
                     <p:commandButton update=":frmOS,:frmCadastro,:frmPesquisa"
                                      actionListener="#{orcamentoController.ordemServico}"

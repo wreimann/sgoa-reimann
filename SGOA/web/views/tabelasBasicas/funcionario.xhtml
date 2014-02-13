@@ -142,9 +142,9 @@
                                 <p:outputLabel id="NascLabel" value="Data de Nascimento *"/>
                                 <p:calendar showButtonPanel="true" navigator="true" id="pnlDataNasc"
                                             value="#{funcionarioController.current.pessoa.dataNascimento}" 
-                                            converterMessage="Valor inválido!"
+                                            converterMessage="Valor inválido!" locale="pt"
                                             pattern="dd/MM/yyyy" required="true"  widgetVar="dataNascimento"
-                                            requiredMessage="O campo 'Data Nascimento' é obrigatório."  />  
+                                            requiredMessage="O campo 'Data Nascimento' é obrigatório." timeZone="America/Sao_Paulo"  />  
                             </p:fieldset>
                         </h:panelGrid>
                         <h:panelGrid columns="2">
@@ -193,7 +193,8 @@
 
                         <p:fieldset id="EmailField">
                             <label id="EmailLabel">E-mail</label>
-                            <h:inputText id="EmailInput" 
+                            <h:inputText id="EmailInput" required="true"
+                                         requiredMessage="O campo 'E-mail' é obrigatório."
                                          value="#{funcionarioController.current.pessoa.email}"
                                          validatorMessage="E-mail inválido.">
                                 <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]"
