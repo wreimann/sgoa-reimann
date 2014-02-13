@@ -87,11 +87,16 @@ public class AcompanharServicoController implements Serializable {
                     setPlaca(os.getOrcamento().getVeiculo().getPlaca());
                     setOrcamento(os.getOrcamento().toString());
                     setDataAprovacao(new SimpleDateFormat("dd/MM/yyyy hh:mm").format(os.getDataAprovacao()));
+                    if (os.getDataPrevEntrega() != null) {
+                        setDataPrevEntrega(new SimpleDateFormat("dd/MM/yyyy hh:mm").format(os.getDataPrevEntrega()));
+                    } else {
+                        setDataPrevEntrega("Não informado.");
+                    }
                     fotosOS = ejbFacade.obterFotosOS(sessao, os.getId());
                     if (fotosOS == null) {
                         fotosOS = new ArrayList<OrdemServicoFoto>();
                     }
-                } 
+                }
             } catch (Exception ex) {
                 JsfUtil.addErrorMessage(ex, "Erro ao carregar o andamento do serviço. Tente novamente.");
             } finally {
@@ -110,6 +115,7 @@ public class AcompanharServicoController implements Serializable {
         setVeiculo(null);
         setOrcamento(null);
         setDataAprovacao(null);
+        setDataPrevEntrega(null);
         setSituacao(null);
         setEtapa(null);
         setAtividade(null);
@@ -132,6 +138,7 @@ public class AcompanharServicoController implements Serializable {
     private String situacao;
     private String orcamento;
     private String dataAprovacao;
+    private String dataPrevEntrega;
     private String informacao;
     private List<OrdemServicoEtapa> atividades;
     private List<OrdemServicoEvento> eventos;
@@ -207,6 +214,14 @@ public class AcompanharServicoController implements Serializable {
 
     public void setDataAprovacao(String dataAprovacao) {
         this.dataAprovacao = dataAprovacao;
+    }
+
+    public String getDataPrevEntrega() {
+        return dataPrevEntrega;
+    }
+
+    public void setDataPrevEntrega(String dataPrevEntrega) {
+        this.dataPrevEntrega = dataPrevEntrega;
     }
 
     public String getSituacao() {

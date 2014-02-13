@@ -143,4 +143,17 @@ public class OrdemServico extends BaseEntidade<OrdemServico> {
     public String toString() {
         return  String.valueOf(situacao);
     }
+    
+    @Basic(optional = true)
+    @Column(name = "DataPrevEntrega")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataPrevEntrega;
+
+    public Date getDataPrevEntrega() {
+        return dataPrevEntrega;
+    }
+
+    public void setDataPrevEntrega(Date dataPrevEntrega) {
+        this.dataPrevEntrega = dataPrevEntrega;
+    }
 }

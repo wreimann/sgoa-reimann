@@ -37,31 +37,47 @@
                             <p:messages id="grow" />
                             <p:panelGrid styleClass="semBorda">
                                 <p:row>  
+                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Cliente: " style="font-weight: bold;" for="ClienteLabel"/>
+                                        <p:outputLabel id="ClienteLabel" value="#{acompanharServicoController.cliente}" style="width: 16px;"/>
+                                    </p:column>
+                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Veículo: " style="font-weight: bold;" for="VeiculoLabel"/>
+                                        <p:outputLabel id="VeiculoLabel" value="#{acompanharServicoController.veiculo}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>  
                                     <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column>  
-                                    <p:column><p:outputLabel value="Orçamento" style="font-weight: bold" for="OrcamentoLabel" /></p:column>
-                                    <p:column><p:outputLabel id="OrcamentoLabel" value="#{acompanharServicoController.orcamento}"/></p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Orçamento: " style="font-weight: bold" for="OrcamentoLabel" />
+                                        <p:outputLabel id="OrcamentoLabel" value="#{acompanharServicoController.orcamento}"/> 
+                                    </p:column>
                                     <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
-                                    <p:column><p:outputLabel value="Data Aprovação" style="font-weight: bold;" for="DataLabel"/></p:column>
-                                    <p:column><p:outputLabel id="DataLabel" value="#{acompanharServicoController.dataAprovacao}"/></p:column>
-                                </p:row>
-                                <p:row>  
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
-                                    <p:column><p:outputLabel value="Cliente" style="font-weight: bold;" for="ClienteLabel"/></p:column>
-                                    <p:column><p:outputLabel id="ClienteLabel" value="#{acompanharServicoController.cliente}" style="width: 16px;"/></p:column>
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
-                                    <p:column><p:outputLabel value="Veículo" style="font-weight: bold;" for="VeiculoLabel"/></p:column>
-                                    <p:column><p:outputLabel id="VeiculoLabel" value="#{acompanharServicoController.veiculo}"/></p:column>
-                                </p:row>
-                                <p:row>  
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
-                                    <p:column><p:outputLabel value="Atividade Atual" style="font-weight: bold;color: blue;" for="AtividadeLabel"/></p:column>
-                                    <p:column><p:outputLabel id="AtividadeLabel" value="#{acompanharServicoController.etapa}" /></p:column>
-
+                                    <p:column>
+                                        <p:outputLabel value="Data Aprovação: " style="font-weight: bold;" for="DataLabel"/>
+                                        <p:outputLabel id="DataLabel" value="#{acompanharServicoController.dataAprovacao}"/>
+                                    </p:column>
                                 </p:row>
                                 <p:row>
+                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Previsão Entrega: " style="font-weight: bold;" for="DataLabel"/>
+                                        <p:outputLabel id="DataLabel" value="#{acompanharServicoController.dataPrevEntrega}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>  
                                     <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
-                                    <p:column><p:outputLabel value="Situação" style="font-weight: bold;color: blue;" for="SituacaoLabel"/></p:column>
-                                    <p:column><p:outputLabel id="SituacaoLabel" value="#{acompanharServicoController.situacao}" /></p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Atividade Atual: " style="font-weight: bold;" for="AtividadeLabel"/>
+                                        <p:outputLabel id="AtividadeLabel" value="#{acompanharServicoController.etapa}" style="color: blue;" />
+                                    </p:column>
+                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
+                                    <p:column>
+                                        <p:outputLabel value="Situação: " style="font-weight: bold;" for="SituacaoLabel"/>
+                                        <p:outputLabel id="SituacaoLabel" value="#{acompanharServicoController.situacao}" style="color: blue;"/>
+                                    </p:column>
                                 </p:row>
 
                             </p:panelGrid>
@@ -104,9 +120,6 @@
                                             <p:outputLabel value="Concluído" rendered="#{atividade.situacao == 'C'}"   /> 
                                         </p:column>
 
-                                        <p:column headerText="Horas Trab." width="80">
-                                            <h:outputText value="#{atividade.horasTrabalhadas}" />
-                                        </p:column>
                                         <p:column headerText="Detalhes" width="60">
                                             <p:commandButton alt="Detalhes" title="Detalhes" icon="ui-icon-search"
                                                              oncomplete="modalHistoricoPopup.show()" immediate="true"

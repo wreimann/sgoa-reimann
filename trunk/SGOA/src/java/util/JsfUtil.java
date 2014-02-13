@@ -3,6 +3,7 @@ package util;
 import facede.ConfigEmailFacade;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -18,7 +19,10 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import model.ConfigEmail;
+import model.Orcamento;
 import model.Pessoa;
+import model.PessoaFisica;
+import model.PessoaJuridica;
 import org.hibernate.Session;
 import org.primefaces.context.RequestContext;
 
@@ -83,27 +87,30 @@ public class JsfUtil {
     }
 
     public static void enviarEmail(Session sessao, Pessoa pessoa, String assuntoEmail, String mensagem) {
-        try {
-            Properties props = new Properties();
-            ConfigEmailFacade ebjEmail = new ConfigEmailFacade();
-            final ConfigEmail config = ebjEmail.obterPorId(sessao, 1);
-            props.put("mail.smtp.host", config.getServidorSMTP());
-            props.put("mail.smtp.port", config.getPorta().toString());
-            props.put("mail.smtp.auth", "true");
-            javax.mail.Session session = javax.mail.Session.getInstance(props, new javax.mail.Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(config.getEmailEnvio(), config.getSenha());
-                }
-            });
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(config.getEmailEnvio(), config.getIdentificacaoEmail()));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(pessoa.getEmail(), pessoa.getNome()));
-            message.setSubject(assuntoEmail);
-            message.setText(mensagem);
-            Transport.send(message);
-        } catch (Exception ex) {
-            Logger.getLogger(JsfUtil.class.getName()).log(Level.SEVERE, null, ex);
+        if (!pessoa.getEmail().isEmpty()) {
+            try {
+
+                Properties props = new Properties();
+                ConfigEmailFacade ebjEmail = new ConfigEmailFacade();
+                final ConfigEmail config = ebjEmail.obterPorId(sessao, 1);
+                props.put("mail.smtp.host", config.getServidorSMTP());
+                props.put("mail.smtp.port", config.getPorta().toString());
+                props.put("mail.smtp.auth", "true");
+                javax.mail.Session session = javax.mail.Session.getInstance(props, new javax.mail.Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(config.getEmailEnvio(), config.getSenha());
+                    }
+                });
+                MimeMessage message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(config.getEmailEnvio(), config.getIdentificacaoEmail()));
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(pessoa.getEmail(), pessoa.getNome()));
+                message.setSubject(assuntoEmail);
+                message.setContent(mensagem, "text/html");
+                Transport.send(message);
+            } catch (Exception ex) {
+                Logger.getLogger(JsfUtil.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -125,10 +132,25 @@ public class JsfUtil {
             msg.setFrom(new InternetAddress(config.getEmailEnvio(), config.getIdentificacaoEmail()));
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(config.getEmailRecebCliente()));
             msg.setSubject("Interação do cliente no serviço");
-            msg.setText(mensagem + "<br/>" + "Mensagem enviado pelo cliente com veículo de placa: " + placa);
+            msg.setContent(mensagem + "<br />" + "Mensagem enviado pelo cliente com veículo de placa: " + placa, "text/html");
             Transport.send(msg);
         } catch (Exception ex) {
             Logger.getLogger(JsfUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static String obterUrlAcompanhamentodoServico(Orcamento orcamento) {
+        String url = "<a href=\"http://reimanscar.com.br/SGOA/faces/acompanharservico.xhtml?placa={0}&doc={1}\">www.reimanscar.com.br</a>";
+        MessageFormat fmt = new MessageFormat(url);
+        String urlFormatada;
+        if (orcamento.getCliente().getPessoa() instanceof PessoaFisica) {
+            urlFormatada = fmt.format(new Object[]{orcamento.getVeiculo().getPlaca(),
+                ((PessoaFisica) orcamento.getCliente().getPessoa()).getCpf()});
+        } else {
+            urlFormatada = fmt.format(new Object[]{orcamento.getVeiculo().getPlaca(),
+                ((PessoaJuridica) orcamento.getCliente().getPessoa()).getCnpj()});
+        }
+        return urlFormatada;
+
     }
 }

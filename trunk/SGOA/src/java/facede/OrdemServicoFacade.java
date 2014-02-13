@@ -75,7 +75,11 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             if (notificaViaEmail) {
                 util.JsfUtil.enviarEmail(sessao, etapa.getOrdemServico().getOrcamento().getCliente().getPessoa(),
                         "Notificação do andamento do serviço",
-                        "A oficina acaba de incluir novas informações do serviço que esta sendo realizado em seu veículo. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
+                        "A oficina acaba de incluir novas informações do serviço que esta sendo realizado em seu veículo. <br /> "
+                        + "Mensagem: <br /><br /> " + descricao.replaceAll("\r\n", "<br />") + " <br /><br />"
+                        + "Acompanhe o andamento do serviço pelo site da oficina: " + util.JsfUtil.obterUrlAcompanhamentodoServico(etapa.getOrdemServico().getOrcamento())
+                        + "<br /><br /> Obrigado <br /> Reiman´s Car Recuperadora de Veículos"
+                        + "<br/><br /><br/><br /> Essa é uma mensagem automática. Por favor, não responda a esse e-mail.");
             }
             if (tipo == TipoEvento.ContatoCliente) {
                 util.JsfUtil.enviarEmailOficina(sessao, etapa.getOrdemServico().getOrcamento().getVeiculo().getPlaca(), descricao);
@@ -164,7 +168,11 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             HibernateFactory.commitTransaction();
             if (etapa.getEtapa().getEnviaEmailInicio()) {
                 util.JsfUtil.enviarEmail(sessao, item.getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço",
-                        "O seu veículo acaba de iniciar um nova atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
+                        "O seu veículo acaba de iniciar uma nova atividade na oficina. <br />"
+                        + "Atividade atual: " + etapa.toString() + "<br />"
+                        + "Acompanhe o andamento do serviço pelo site da oficina: " + util.JsfUtil.obterUrlAcompanhamentodoServico(item.getOrcamento())
+                        + "<br /><br /> Obrigado <br /> Reiman´s Car Recuperadora de Veículos"
+                        + "<br/><br /><br/><br /> Essa é uma mensagem automática. Por favor, não responda a esse e-mail.");
             }
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
@@ -210,11 +218,18 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             HibernateFactory.commitTransaction();
             if (item.getEtapa().getEnviaEmailFim()) {
                 util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço",
-                        "O seu veículo acaba de encerar uam atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
+                        "O seu veículo acaba de encerar uma atividade na oficina. <br />"
+                       + "Acompanhe o andamento do serviço pelo site da oficina: " + util.JsfUtil.obterUrlAcompanhamentodoServico(item.getOrdemServico().getOrcamento())
+                        + "<br /><br /> Obrigado <br /> Reiman´s Car Recuperadora de Veículos"
+                        + "<br/><br /><br/><br /> Essa é uma mensagem automática. Por favor, não responda a esse e-mail.");
             }
             if (proximaEtapa != null && proximaEtapa.getEnviaEmailInicio()) {
                 util.JsfUtil.enviarEmail(sessao, item.getOrdemServico().getOrcamento().getCliente().getPessoa(), "Notificação do andamento do serviço",
-                        "O seu veículo acaba de iniciar um nova atividade na oficina. <br /> Acompanhe o andamento do serviço pelo site da oficina. <br /> Obrigado.");
+                        "O seu veículo acaba de iniciar uma nova atividade na oficina. <br />"
+                        + "Atividade atual: " + proximaEtapa.toString() + "<br />"
+                        + "Acompanhe o andamento do serviço pelo site da oficina: " + util.JsfUtil.obterUrlAcompanhamentodoServico(item.getOrdemServico().getOrcamento())
+                        + "<br /><br /> Obrigado <br /> Reiman´s Car Recuperadora de Veículos"
+                        + "<br/><br /><br/><br /> Essa é uma mensagem automática. Por favor, não responda a esse e-mail.");
             }
         } catch (Exception e) {
             HibernateFactory.rollbackTransaction();
@@ -244,7 +259,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         }
         return resultado;
     }
-    
+
     public OrdemServico ObterOrdemServicoPorId(Session sessao, int idOS) throws Exception {
         if (sessao == null) {
             throw new Exception("Sessão não iniciada.");
@@ -264,7 +279,6 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         }
         return resultado;
     }
-
 
     public OrdemServicoEvento obterEvento(Session sessao, int id) throws Exception {
         if (sessao == null) {
@@ -398,7 +412,7 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
             HibernateFactory.commitTransaction();
             if (config.getEtapaCancelamentoConcerto().getEnviaEmailFim()) {
                 util.JsfUtil.enviarEmail(sessao, item.getOrcamento().getCliente().getPessoa(), "Cancelamento da Ordem de Serviço",
-                        "Ordem de serviço " + item.getOrcamento().toString() + " acaba de ser cancelada. \n + Motivo: " + motivo);
+                        "Ordem de serviço " + item.getOrcamento().toString() + " acaba de ser cancelada. <br/> + Motivo: " + motivo);
             }
 
         } catch (Exception e) {
