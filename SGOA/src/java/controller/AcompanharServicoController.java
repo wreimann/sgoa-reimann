@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -30,7 +32,7 @@ import util.JsfUtil;
 
 @ManagedBean
 @ViewScoped
-public class AcompanharServicoController implements Serializable {
+public final class AcompanharServicoController implements Serializable {
 
     public AcompanharServicoController() {
         limparCampos();
@@ -96,6 +98,7 @@ public class AcompanharServicoController implements Serializable {
                     if (fotosOS == null) {
                         fotosOS = new ArrayList<OrdemServicoFoto>();
                     }
+                    changeFoto();
                 }
             } catch (Exception ex) {
                 JsfUtil.addErrorMessage(ex, "Erro ao carregar o andamento do serviço. Tente novamente.");
@@ -144,8 +147,7 @@ public class AcompanharServicoController implements Serializable {
     private List<OrdemServicoEvento> eventos;
     private OrdemServicoEtapa atividade;
     private OrdemServicoEvento evento;
-    private List<OrdemServicoFoto> fotos;
-    private List<OrdemServicoFoto> fotosOS;
+     private List<OrdemServicoFoto> fotosOS;
 
     // <editor-fold defaultstate="collapsed" desc="gets e sets">
     public OrdemServicoEvento getEvento() {
@@ -170,14 +172,6 @@ public class AcompanharServicoController implements Serializable {
 
     public List<OrdemServicoFoto> getFotosOS() {
         return fotosOS;
-    }
-
-    public List<OrdemServicoFoto> getFotos() {
-        return fotos;
-    }
-
-    public void setFotos(List<OrdemServicoFoto> fotos) {
-        this.fotos = fotos;
     }
 
     public List<OrdemServicoEtapa> getAtividades() {
@@ -310,14 +304,10 @@ public class AcompanharServicoController implements Serializable {
             Logger.getLogger(OrdemServicoController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+  
     public void changeFoto() {
         try {
-            Session sessao = HibernateFactory.currentSession();
-            evento = ejbFacade.obterEvento(sessao, evento.getId());
-            Hibernate.initialize(evento.getFotos());
-            setFotos(evento.getFotos());
-            for (OrdemServicoFoto f : getFotos()) {
+            for (OrdemServicoFoto f : fotosOS) {
                 FacesContext facesContext = FacesContext.getCurrentInstance();
                 ServletContext scontext = (ServletContext) facesContext.getExternalContext().getContext();
                 String nomeArquivo = f.getId().toString() + ".jpg";
@@ -326,8 +316,6 @@ public class AcompanharServicoController implements Serializable {
             }
         } catch (Exception ex) {
             JsfUtil.addErrorMessage(ex, "Erro ao carregar as fotos. Tente novamente");
-        } finally {
-            HibernateFactory.closeSession();
-        }
+        } 
     }
 }

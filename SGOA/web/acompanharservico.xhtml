@@ -11,11 +11,20 @@
         <h:outputScript name="jquery.equalHeight.js" library="js" />
     </h:head>
     <h:body>
+        <p:ajaxStatus id="ajaxStatusMaster" onstart="statusDialog.show();" oncomplete="statusDialog.hide();"/>  
+
+        <p:dialog modal="true" widgetVar="statusDialog" header="Carregando..." 
+                  draggable="false" closable="false">  
+            <p:graphicImage value="/images/ajax-loader.gif" />  
+        </p:dialog>
         <header id="header" >
             <hgroup>
                 <h1 class="site_title">
                     <h:graphicImage id="logoMaster" url="/images/logoReimansCar.png"  style="margin-top: 5px;"/>
                 </h1>
+                <div class="btn_view_site" style="float: right;">
+                    <h:outputLink value="http://www.reimanscar.com.br">Sair</h:outputLink>
+                </div>
             </hgroup>
         </header> 
         <section id="main" class="full"  >
@@ -33,59 +42,61 @@
                                 <p>O veículo não possui nenhuma ordem de serviço em andamento.</p>
                             </div>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{acompanharServicoController.etapa!=null}" layout="block" style="margin-top: 20px;">
+                        <h:panelGroup rendered="#{acompanharServicoController.etapa!=null}" layout="block" >
                             <p:messages id="grow" />
-                            <p:panelGrid styleClass="semBorda">
-                                <p:row>  
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
-                                    <p:column>
-                                        <p:outputLabel value="Cliente: " style="font-weight: bold;" for="ClienteLabel"/>
-                                        <p:outputLabel id="ClienteLabel" value="#{acompanharServicoController.cliente}" style="width: 16px;"/>
-                                    </p:column>
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
-                                    <p:column>
-                                        <p:outputLabel value="Veículo: " style="font-weight: bold;" for="VeiculoLabel"/>
-                                        <p:outputLabel id="VeiculoLabel" value="#{acompanharServicoController.veiculo}"/>
-                                    </p:column>
-                                </p:row>
-                                <p:row>  
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column>  
-                                    <p:column>
-                                        <p:outputLabel value="Orçamento: " style="font-weight: bold" for="OrcamentoLabel" />
-                                        <p:outputLabel id="OrcamentoLabel" value="#{acompanharServicoController.orcamento}"/> 
-                                    </p:column>
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
-                                    <p:column>
-                                        <p:outputLabel value="Data Aprovação: " style="font-weight: bold;" for="DataLabel"/>
-                                        <p:outputLabel id="DataLabel" value="#{acompanharServicoController.dataAprovacao}"/>
-                                    </p:column>
-                                </p:row>
-                                <p:row>
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
-                                    <p:column>
-                                        <p:outputLabel value="Previsão Entrega: " style="font-weight: bold;" for="DataLabel"/>
-                                        <p:outputLabel id="DataLabel" value="#{acompanharServicoController.dataPrevEntrega}"/>
-                                    </p:column>
-                                </p:row>
-                                <p:row>  
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
-                                    <p:column>
-                                        <p:outputLabel value="Atividade Atual: " style="font-weight: bold;" for="AtividadeLabel"/>
-                                        <p:outputLabel id="AtividadeLabel" value="#{acompanharServicoController.etapa}" style="color: blue;" />
-                                    </p:column>
-                                    <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
-                                    <p:column>
-                                        <p:outputLabel value="Situação: " style="font-weight: bold;" for="SituacaoLabel"/>
-                                        <p:outputLabel id="SituacaoLabel" value="#{acompanharServicoController.situacao}" style="color: blue;"/>
-                                    </p:column>
-                                </p:row>
+                            <div style="width: 100%; display:block; height: 400px; min-height: 400px;">
+                                <div style="width: 65%; float: left;">
+                                    <p:panelGrid styleClass="semBorda" >
+                                        <p:row>  
+                                            <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
+                                            <p:column>
+                                                <p:outputLabel value="Cliente: " style="font-weight: bold;" for="ClienteLabel"/>
+                                                <p:outputLabel id="ClienteLabel" value="#{acompanharServicoController.cliente}" style="width: 16px;"/>
+                                            </p:column>
+                                            <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
+                                            <p:column>
+                                                <p:outputLabel value="Veículo: " style="font-weight: bold;" for="VeiculoLabel"/>
+                                                <p:outputLabel id="VeiculoLabel" value="#{acompanharServicoController.veiculo}"/>
+                                            </p:column>
+                                        </p:row>
+                                        <p:row>  
+                                            <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column>  
+                                            <p:column>
+                                                <p:outputLabel value="Orçamento: " style="font-weight: bold" for="OrcamentoLabel" />
+                                                <p:outputLabel id="OrcamentoLabel" value="#{acompanharServicoController.orcamento}"/> 
+                                            </p:column>
+                                            <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
+                                            <p:column>
+                                                <p:outputLabel value="Data Aprovação: " style="font-weight: bold;" for="DataLabel"/>
+                                                <p:outputLabel id="DataLabel" value="#{acompanharServicoController.dataAprovacao}"/>
+                                            </p:column>
+                                        </p:row>
+                                        <p:row>
+                                            <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span> </p:column>
+                                            <p:column>
+                                                <p:outputLabel value="Previsão Entrega: " style="font-weight: bold;" for="DataLabel1"/>
+                                                <p:outputLabel id="DataLabel1" value="#{acompanharServicoController.dataPrevEntrega}"/>
+                                            </p:column>
+                                        </p:row>
+                                        <p:row>  
+                                            <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
+                                            <p:column>
+                                                <p:outputLabel value="Atividade Atual: " style="font-weight: bold;" for="AtividadeLabel"/>
+                                                <p:outputLabel id="AtividadeLabel" value="#{acompanharServicoController.etapa}" style="color: blue;" />
+                                            </p:column>
+                                            <p:column><span class="ui-button-icon-left ui-icon ui-c ui-icon-arrow-1-e"></span></p:column> 
+                                            <p:column>
+                                                <p:outputLabel value="Situação: " style="font-weight: bold;" for="SituacaoLabel"/>
+                                                <p:outputLabel id="SituacaoLabel" value="#{acompanharServicoController.situacao}" style="color: blue;"/>
+                                            </p:column>
+                                        </p:row>
 
-                            </p:panelGrid>
-                            <p:commandButton title="Entre em Contato"  icon="ui-icon-circle-plus" 
-                                             value="Entre em Contato" oncomplete="modalPopup.show()"
-                                             style="margin-top: 25px;"/>
-                            <p:tabView id="tabView" style="margin-top: 25px;"  dynamic="true">
-                                <p:tab id="tab2" title="Atividades">  
+                                    </p:panelGrid>
+
+                                    <p:commandButton title="Entre em Contato"  icon="ui-icon-circle-plus" 
+                                                     value="Entre em Contato" oncomplete="modalPopup.show()"
+                                                     style="margin-top: 15px; margin-bottom: 15px;"/>
+
                                     <p:dataTable var="atividade" 
                                                  value="#{acompanharServicoController.atividades}" lazy="false"
                                                  widgetVar="dataTableAtividade" rowIndexVar="rowIx"
@@ -96,7 +107,7 @@
                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
                                         <f:facet name="header">
                                             <div class="tabs_involved">
-                                                <h:outputLabel value="Histórico" styleClass="tabs_involved" />                               
+                                                <h:outputLabel value="Histórico do Serviço" styleClass="tabs_involved" />                               
                                             </div>
                                         </f:facet>
                                         <p:column headerText="Data Entrada" width="125">
@@ -129,39 +140,47 @@
                                             </p:commandButton>
                                         </p:column>
                                     </p:dataTable>
-                                </p:tab>
-                                <p:tab id="tab3" title="Fotos" >
-                                    <h:panelGroup rendered="#{acompanharServicoController.fotosOS.size()==0}" layout="block" style="margin-top: 20px;">
+                                </div>
+                                <div id="fotosDiv" style="width: 35%; float: right;">
+                                    <h:panelGroup rendered="#{acompanharServicoController.fotosOS.size() == 0}" 
+                                                  layout="block" style="margin-left: 20px;" >
                                         <div class="ui-messages-warn ui-corner-all" style="padding-bottom: 0px; padding-top: 0px; ">
                                             <span class="ui-messages-warn-icon" style="margin-right: 10px; margin-top: 10px;" ></span>
-                                            <p>Nenhuma foto encontrada.</p>
+                                            <p>Nenhuma foto do veículo foi adicionada.</p>
                                         </div>
                                     </h:panelGroup>
-                                    <p:galleria value="#{acompanharServicoController.fotosOS}" 
-                                                var="galeria" effect="slide" effectSpeed="1000" showCaption="false" 
-                                                showFilmstrip="false" panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
-                                                rendered="#{acompanharServicoController.fotosOS.size()>0}">
-                                        <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 
-                                                        title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"  />
+                                    <h:panelGroup layout="block" style="margin-left: 20px; position: absolute !important;" >
+                                        <p:galleria value="#{acompanharServicoController.fotosOS}" autoPlay="false"
+                                                    rendered="#{acompanharServicoController.fotosOS.size() > 0}"
+                                                    var="galeria" effect="slide" effectSpeed="50" showCaption="false" 
+                                                    showFilmstrip="true" panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50">
+                                            <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 
+                                                            title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"  />
 
-                                    </p:galleria>
-                                </p:tab>
-                            </p:tabView>
+                                        </p:galleria>
+                                    </h:panelGroup>
+                                </div>
+                            </div>
+
                         </h:panelGroup>
                     </h:form>
                 </div>
-                <footer>
+                <footer style="height: 35px;">
+                    <p style="text-align: center; margin: 0px; margin-top: 5px;">
+                        <b>Rua Rodolfo Bernardelli, 697 - Curitiba - Paraná / Telefone: (41)3277-3031 / contato@reimanscar.com.br 
+                     </b>
+                    </p>
                 </footer>
             </article>
 
             <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="750" height="340" resizable="false"
-                       showEffect="fade" header="Detalhes da atividade" id="dialogHistorico" >
+                       showEffect="fade" header="Detalhes da atividade" >
                 <h:form id="frmHistoricoEvento" prependId="false">
                     <p:dataTable var="evento" value="#{acompanharServicoController.eventos}" lazy="false"
                                  widgetVar="dataTableEventos" rowIndexVar="rowIx"
                                  paginatorPosition="bottom"  
                                  emptyMessage="Nenhum resultado encontrado."                   
-                                 rows="6" paginator="true"
+                                 rows="5" paginator="true"
                                  currentPageReportTemplate="Total de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
                         <p:column headerText="Ocorrência" width="125">
@@ -180,40 +199,11 @@
                                 <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Fotos"  width="40">
-                            <p:commandButton alt="Fotos" title="Fotos" icon="ui-icon-search" 
-                                             oncomplete="dialogGaleria.show();" 
-                                             update=":frmGaleria"
-                                             action="#{acompanharServicoController.changeFoto}">
-                                <f:setPropertyActionListener value="#{evento}" target="#{acompanharServicoController.evento}" /> 
-                            </p:commandButton>
-                        </p:column>
                     </p:dataTable>
                 </h:form>
             </p:dialog>
 
-            <p:dialog widgetVar="dialogGaleria" modal="true" id="dGaleria"
-                      width="440"  dynamic="true" position="center" resizable="false" appendToBody="false"
-                      header="Fotos">
-                <h:form id="frmGaleria" prependId="false"  >
-                    <h:panelGroup rendered="#{acompanharServicoController.fotos.size()==0}" layout="block" style="margin-top: 20px;">
-                        <div class="ui-messages-warn ui-corner-all" style="padding-bottom: 0px; padding-top: 0px; ">
-                            <span class="ui-messages-warn-icon" style="margin-right: 10px; margin-top: 10px;" ></span>
-                            <p>Nenhuma foto encontrada.</p>
-                        </div>
-                    </h:panelGroup>
-                    <p:galleria value="#{acompanharServicoController.fotos}" id="galeriaModal"
-                                var="galeria" effect="slide" effectSpeed="1000" showCaption="false" 
-                                showFilmstrip="false"  
-                                panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50"
-                                rendered="#{acompanharServicoController.fotos.size()>0}">
-                        <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 
-                                        title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"  />
 
-                    </p:galleria>
-                </h:form>
-
-            </p:dialog>
             <p:dialog widgetVar="modalPopup" modal="true" width="450"  resizable="false"
                       showEffect="fade" header="Contato" id="dialog">
                 <h:form id="frmEvento">
@@ -241,6 +231,7 @@
                 }
             </script> 
         </section>
+
     </h:body>
 </html>
 
