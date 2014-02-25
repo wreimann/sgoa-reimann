@@ -1,0 +1,341 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                template="./../../template/form.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="Navagador">
+        <a class="current">Operacional</a>
+        <div class="breadcrumb_divider"></div>
+        <a class="current">Ordens de Serviços</a>
+    </ui:define>
+
+    <ui:define name="Titulo">
+        <h2>Ordens de Serviços</h2>
+    </ui:define>
+
+    <ui:define name="Conteudo">
+        <h:form id="frmPesquisa" prependId="false">
+
+            <h:panelGrid columns="3">
+                <p:fieldset id="NumeroPesquisaField" style="width: 190px; margin-right: 19px;">
+                    <p:outputLabel id="NumeroPesquisaLabel" value="Orçamento"/>
+                    <p:inputMask id="NumeroPesquisaInput"
+                                 value="#{oSController.orcamentoFiltro}" mask="9999.9?999" />
+                </p:fieldset>
+                <p:fieldset id="SituacaoPesquisaField" style="width: 195px;">
+                    <p:outputLabel id="SituacaoPesquisaLabel" value="Situação"/>
+                    <p:selectOneMenu id="SituacaoPesquisaListBox" styleClass="selectOneMenu"
+                                     value="#{oSController.situacaoFiltro}" >
+                        <f:selectItem itemLabel="Selecione..." itemValue="" />
+                        <f:selectItem itemLabel="Em Execução" itemValue="E" />
+                        <f:selectItem itemLabel="Cancelado" itemValue="C" />
+                        <f:selectItem itemLabel="Reparos Concluído" itemValue="R" />
+                        <f:selectItem itemLabel="Finalizado" itemValue="F" />
+                    </p:selectOneMenu>
+                </p:fieldset>
+                <p:fieldset style="width: 270px; margin-left:19px;">
+                    <p:outputLabel value="Atividade Atual" style="width: 100%;"/>
+                    <p:selectOneMenu value="#{oSController.etapaFiltro}" styleClass="selectOneMenu"
+                                     converter="etapaConverter" >
+                        <f:selectItem itemValue="#{null}" itemLabel="Selecione..." noSelectionOption="true" />
+                        <f:selectItems value="#{oSController.etapasAtivas}" var="etapa"
+                                       itemLabel="#{etapa}" itemValue="#{etapa}"/>
+                    </p:selectOneMenu>
+                </p:fieldset>
+            </h:panelGrid>
+            <h:panelGrid columns="2">
+                <p:fieldset id="ClientePesquisaField" style="width: 350px; margin-right: 19px;">
+                    <p:outputLabel id="ClientePesquisaLabel" value="Cliente"/>
+                    <p:autoComplete value="#{oSController.clienteFiltro}" id="ClientePesquisaInput"
+                                    completeMethod="#{oSController.selecionarClienteAutoComplete}"
+                                    var="cliente" effect="fade"
+                                    itemLabel="#{cliente.pessoa.nome}" itemValue="#{cliente}"
+                                    converter="clienteConverter" forceSelection="true" />
+                </p:fieldset>
+                <p:fieldset id="PlacaPesquisaField" style="width: 170px;" >
+                    <p:outputLabel id="PlacaPesquisaLabel" value="Placa"/>
+                    <p:inputMask id="PlacaPesquisaInput" mask="aaa9999" value="#{oSController.placaFiltro}"
+                                 style="text-transform: uppercase;"/>
+                </p:fieldset>
+            </h:panelGrid>
+            <h:panelGroup layout="block" style="margin-top: 10px;" >
+                <p:commandButton id="btnPesquisar" value="Pesquisar"
+                                 update="messages, :frmPesquisa" title="Pesquisar"/>
+                <p:commandButton id="btnLimparPesquisa" value="Limpar" update=":frmPesquisa"
+                                 action="#{oSController.limparCampos}" />
+            </h:panelGroup>
+
+
+            <p:messages id="messages" autoUpdate="true" closable="true"  />
+            <h:panelGroup layout="block" style="margin-top: 25px;" >
+                <p:dataTable id="dataTable" var="item"
+                             value="#{oSController.lazyModel}" lazy="true"
+                             paginator="true" paginatorPosition="bottom"
+                             emptyMessage="Nenhum resultado encontrado."
+                             rows="#{oSController.pageSize}"
+                             sortBy="ano"
+                             currentPageReportTemplate="Total de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                    <f:facet name="header">
+                        <div class="tabs_involved">
+                            <h:outputLabel value="Listagem de Ordem de Serviço" styleClass="tabs_involved" />
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Ações" width="40">
+                        <p:commandButton actionListener="#{oSController.prepararEdicao}"
+                                         alt="Editar" title="Editar" icon="btn_editar"
+                                         style="margin-right: 5px;"
+                                         oncomplete="modalPopup.show()" update=":frmCadastro, :growl"/>
+                    </p:column>
+                    <p:column sortBy="#{item.orcamento.ano}" headerText="Orçamento"  width="60" >
+                        <h:outputText value="#{item.orcamento}" />
+                    </p:column>
+                    <p:column sortBy="#{item.orcamento.cliente}" headerText="Cliente">
+                        <h:outputText value="#{item.orcamento.cliente.pessoa.nome}" />
+                    </p:column>
+                    <p:column sortBy="#{item.orcamento.veiculo}" headerText="Veículo">
+                        <h:outputText value="#{item.orcamento.veiculo}" />
+                    </p:column>
+                    <p:column sortBy="#{item.dataAprovacao}" headerText="Data Aprovação">
+                        <h:outputText value="#{item.dataAprovacao}" >
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column sortBy="#{item.dataPrevEntrega}" headerText="Prev. Entrega">
+                        <h:outputText value="#{item.dataPrevEntrega}" >
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Atividade Atual">
+                        <h:outputText value="#{item.etapaAtual.etapa}" />
+                    </p:column>
+                    <p:column headerText="Situação Atividade">
+                        <p:outputLabel value="Em Execução" rendered="#{item.etapaAtual.situacao == 'E'}"/>
+                        <p:outputLabel value="Cancelado" rendered="#{item.etapaAtual.situacao == 'C'}"/>
+                        <p:outputLabel value="Parado" rendered="#{item.etapaAtual.situacao == 'P'}"/>
+                        <p:outputLabel value="Fila de espera" rendered="#{item.etapaAtual.situacao == 'F'}"/>
+                        <p:outputLabel value="Concluído" rendered="#{item.etapaAtual.situacao == 'C'}"/>
+                    </p:column>
+                    <p:column sortBy="#{item.situacao}" headerText="Situação OS">
+                        <p:outputLabel value="Em Execução" rendered="#{item.situacao == 'E'}"   />  
+                        <p:outputLabel value="Cancelado" rendered="#{item.situacao == 'C'}"   />  
+                        <p:outputLabel value="Reparos Concluído" rendered="#{item.situacao == 'R'}"   />  
+                        <p:outputLabel value="Finalizado" rendered="#{item.situacao == 'F'}"   />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog  widgetVar="modalPopup" modal="true" width="750" resizable="false"
+                   showEffect="fade" header="Ordem de Serviço" id="dialog"
+                   closable="false" closeOnEscape="false" >
+            <p:messages id="growl" autoUpdate="true" closable="true"  />
+            <h:form id="frmCadastro" prependId="false" enctype="multipart/form-data">
+                <script type="text/javascript">
+                    jQuery(function($) {
+                        $("#tabView\\:DataPrevEntregaInput_input").mask("99/99/9999");
+                    });
+                </script>
+                <p:tabView id="tabView">
+                    <p:tab id="tab2" title="Dados Básicos">
+                        <h:panelGrid columns="3" style="width: 100%;">
+                            <p:fieldset id="NumeroField" style="margin-right: 19px;">
+                                <p:outputLabel id="NumeroLabel" value="Número"/>
+                                <p:inputText id="NumeroInput" value="#{oSController.current.orcamento}" disabled="true"/>
+                            </p:fieldset>
+                            <p:fieldset id="DataEntradaField" style="margin-right: 19px;" >
+                                <p:outputLabel id="DataCadastroLabel" value="Data Cadastro"/>
+                                <p:calendar showButtonPanel="true" navigator="true" id="DataCadastroInput"
+                                            value="#{oSController.current.orcamento.dataCadastro}" pattern="dd/MM/yyyy" 
+                                            disabled="true" locale="pt"/>
+                            </p:fieldset>
+                            <p:fieldset >
+                                <label>Situação</label>
+                                <h:selectOneMenu disabled="true"
+                                                 value="#{oSController.current.situacao}">
+                                    <f:selectItem itemLabel="Em Execução" itemValue="E" />
+                                    <f:selectItem itemLabel="Cancelado" itemValue="C" />
+                                    <f:selectItem itemLabel="Reparos Concluído" itemValue="R" />
+                                    <f:selectItem itemLabel="Finalizado" itemValue="F" />
+                                </h:selectOneMenu>
+                            </p:fieldset>    
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2" style="width: 100%; ">
+                            <p:fieldset id="ClienteField" style="margin-right: 19px; width: 300px;">
+                                <label id="ClienteLabel">Cliente</label>
+                                <p:inputText id="ClienteText" disabled="true" value="#{oSController.current.orcamento.cliente}" />
+                            </p:fieldset>
+                            <p:fieldset id="VeiculoField" >
+                                <label id="VeiculoLabel">Veículo</label>
+                                <p:inputText id="VeiculoText" disabled="true" value="#{oSController.current.orcamento.veiculo}" />
+                            </p:fieldset>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" style="width: 100%;">
+                            <p:fieldset style="margin-right: 19px; width: 300px;">
+                                <label>Atividade Atual</label>
+                                <p:inputText disabled="true" value="#{oSController.current.etapaAtual.etapa}"/>
+                            </p:fieldset>
+                            <p:fieldset >
+                                <label>Situação</label>
+                                <h:selectOneMenu disabled="true"
+                                                 value="#{oSController.current.etapaAtual.situacao}">
+                                    <f:selectItem itemLabel="Em Execução" itemValue="E" />
+                                    <f:selectItem itemLabel="Cancelado" itemValue="A" />
+                                    <f:selectItem itemLabel="Parado" itemValue="P" />
+                                    <f:selectItem itemLabel="Fila de espera" itemValue="F" />
+                                    <f:selectItem itemLabel="Concluído" itemValue="C" />
+                                </h:selectOneMenu>
+                            </p:fieldset> 
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="3" style="width: 100%;">
+                            <p:fieldset style="margin-right: 19px;" >
+                                <p:outputLabel value="Data Aprovação"/>
+                                <p:calendar showButtonPanel="true" navigator="true" 
+                                            value="#{oSController.current.dataAprovacao}" pattern="dd/MM/yyyy" 
+                                            disabled="true" locale="pt"/>
+                            </p:fieldset>
+
+                            <p:fieldset id="DataPrevEntregaField" style="margin-right: 19px;">
+                                <p:outputLabel id="DataPrevEntregaLabel" value="Previsão de Entrega" 
+                                               style="width:100%"/>
+                                <p:calendar showButtonPanel="true" navigator="true" id="DataPrevEntregaInput"
+                                            value="#{oSController.current.dataPrevEntrega}" 
+                                            converterMessage="Valor inválido!" timeZone="America/Sao_Paulo" 
+                                            pattern="dd/MM/yyyy" locale="pt"
+                                            disabled="#{oSController.current.situacao != 'E'}"/>
+                            </p:fieldset>
+                            <p:fieldset >
+                                <p:outputLabel value="Última Alteração"/>
+                                <p:calendar showButtonPanel="true" navigator="true" 
+                                            value="#{oSController.current.etapaAtual.dataCadastro}" pattern="dd/MM/yyyy" 
+                                            disabled="true" locale="pt"/>
+                            </p:fieldset>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab id="tab3" title="Serviços">
+                        <p:dataTable var="atividade" 
+                                     value="#{oSController.atividades}" lazy="false"
+                                     widgetVar="dataTableAtividade" rowIndexVar="rowIx"
+                                     paginatorPosition="bottom"  
+                                     paginator="true"
+                                     emptyMessage="Nenhum serviço cadastrado."                   
+                                     rows="5" sortBy="dataEntrada" sortOrder="descending"
+                                     currentPageReportTemplate="Total de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                            <f:facet name="header">
+                                <div class="tabs_involved">
+                                    <h:outputLabel value="Histórico do Serviço" styleClass="tabs_involved" />                               
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Data Entrada" width="125">
+                                <h:outputText value="#{atividade.dataEntrada}" >
+                                    <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Atividade">
+                                <h:outputText value="#{atividade.etapa}" />
+                            </p:column>
+                            <p:column headerText="Data Saída" width="125">
+                                <h:outputText value="#{atividade.dataSaida}">
+                                    <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Horas Trab.">
+                                <h:outputText value="#{atividade.horasTrabalhadas}" />
+                            </p:column>
+                            <p:column headerText="Funcionário">
+                                <h:outputText value="#{atividade.funcionario}" />
+                            </p:column>
+                            <p:column headerText="Situação" width="100">
+                                <p:outputLabel value="Em Execução" rendered="#{atividade.situacao == 'E'}"   />  
+                                <p:outputLabel value="Cancelado" rendered="#{atividade.situacao == 'A'}"   />  
+                                <p:outputLabel value="Parado" rendered="#{atividade.situacao == 'P'}"   />  
+                                <p:outputLabel value="Fila de Espera" rendered="#{atividade.situacao == 'F'}"   />  
+                                <p:outputLabel value="Concluído" rendered="#{atividade.situacao == 'C'}"   /> 
+                            </p:column>
+
+                            <p:column headerText="Detalhes" width="60">
+                                <p:commandButton alt="Detalhes" title="Detalhes" icon="ui-icon-search"
+                                                 oncomplete="modalHistoricoPopup.show()" immediate="true"
+                                                 action="#{oSController.prepararEvento}"
+                                                 update=":frmHistoricoEvento" style="margin-left: 15px;">
+                                    <f:setPropertyActionListener value="#{atividade}" target="#{oSController.atividade}" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                    <p:tab id="tab4" title="Fotos">
+                        <h:panelGroup rendered="#{oSController.fotosOS.size() == 0}" 
+                                      layout="block">
+                            <div class="ui-messages-warn ui-corner-all" style="padding-bottom: 0px; padding-top: 0px; ">
+                                <span class="ui-messages-warn-icon" style="margin-right: 10px; margin-top: 10px;" ></span>
+                                <p>Nenhuma foto do veículo foi adicionada.</p>
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGroup layout="block" >
+                            <p:galleria value="#{oSController.fotosOS}" autoPlay="false"
+                                        rendered="#{oSController.fotosOS.size() > 0}"
+                                        var="galeria" effect="slide" effectSpeed="50" showCaption="false" 
+                                        showFilmstrip="true" panelHeight="300" panelWidth="400" frameHeight="50" frameWidth="50">
+                                <p:graphicImage value="/fotos/#{galeria.id}.jpg" cache="false" width="400" height="300" 
+                                                title="#{galeria.nomeArquivo}" alt="#{galeria.nomeArquivo}"  />
+
+                            </p:galleria>
+                        </h:panelGroup>
+                    </p:tab>
+                </p:tabView>
+                <h:panelGroup layout="block" style="margin-top: 10px" >
+                    <p:commandButton id="btnSalvar"
+                                     oncomplete="validarFormDialog(xhr, status, args)"
+                                     actionListener="#{oSController.salvar}" 
+                                     update=":growl, :frmPesquisa" value="Salvar"
+                                     disabled="#{oSController.current.situacao != 'E'}"/>
+
+                    <p:commandButton id="btnCancelar" value="Sair"
+                                     oncomplete="fecharFormDialog()"
+                                     update=":frmPesquisa"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="750" height="340" resizable="false"
+                   showEffect="fade" header="Detalhes da atividade" >
+            <h:form id="frmHistoricoEvento" prependId="false">
+                <p:dataTable var="evento" value="#{oSController.eventos}" lazy="false"
+                             widgetVar="dataTableEventos" rowIndexVar="rowIx"
+                             paginatorPosition="bottom"  
+                             emptyMessage="Nenhum resultado encontrado."                   
+                             rows="5" paginator="true"
+                             currentPageReportTemplate="Total de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                    <p:column headerText="Ocorrência" width="125">
+                        <h:outputText value="#{evento.dataOcorrencia}" >
+                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Evento" width="140">
+                        <h:outputText value="#{evento.tipoEvento.toString()}" />
+                    </p:column>
+                    <p:column headerText="Mensagem">
+                        <h:outputText value="#{evento.descricao}" />
+                    </p:column>
+                    <p:column headerText="Enviou E-mail">
+                        <h:selectBooleanCheckbox value="#{evento.notificaViaEmail}" disabled="true" />
+                    </p:column>
+                    <p:column headerText="Data Parada/Reinicio" width="125">
+                        <h:outputText value="#{evento.dataInicioParada}">
+                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+    <ui:define name="Rodape">
+    </ui:define>
+
+</ui:composition>

@@ -70,7 +70,10 @@
                                         <h:panelGrid columns="2">  
                                             <p:inputText id="DocumentoInput" style="width: 160px;"
                                                          value="#{paginaInicialController.documento}"
-                                                         required="true" requiredMessage="Informe o seu CPF/CNPJ."/>                                        
+                                                         required="true" requiredMessage="Informe o seu CPF/CNPJ."
+                                                         validatorMessage="Valor inválido para o campo de documento." >
+                                                <f:validateRegex pattern="[0-9]*"  /> 
+                                            </p:inputText>                                        
                                             <p:message for="DocumentoInput" display="icon"/> 
                                         </h:panelGrid>
                                     </h:panelGrid>

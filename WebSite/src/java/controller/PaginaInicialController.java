@@ -19,13 +19,26 @@ public class PaginaInicialController implements Serializable {
     }
 
     public void acompanhar() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
         if (placa.isEmpty() || documento.isEmpty()) {
-            FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Paramêtros inválidos. Informe a placa e o documento.", ""));
         } else {
-
-            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-            externalContext.redirect("http://reimanscar.com.br/SGOA/faces/acompanharservico.xhtml?placa=" + placa + "&doc=" + documento);
+            boolean docValido = true;
+            if (documento.length() == 11) {
+                if (!util.Comum.isValidoCPF(documento)) {
+                    docValido = false;
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "CPF inválido.", ""));
+                }
+            } else {
+                if (!util.Comum.isValidoCNPJ(documento)) {
+                    docValido = false;
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "CNPJ inválido.", ""));
+                }
+            }
+            if (docValido) {
+                ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+                externalContext.redirect("http://reimanscar.com.br/SGOA/faces/acompanharservico.xhtml?placa=" + placa + "&doc=" + documento);
+            }
         }
     }
 

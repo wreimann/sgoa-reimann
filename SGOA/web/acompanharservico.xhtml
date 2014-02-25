@@ -19,20 +19,21 @@
         </p:dialog>
         <header id="header" >
             <hgroup>
-                <h1 class="site_title">
+                <h1 class="site_title" style="width: 160px;">
                     <h:graphicImage id="logoMaster" url="/images/logoReimansCar.png"  style="margin-top: 5px;"/>
                 </h1>
+                <h2 class="section_title" style="width: 70%;">Reiman´s Car - Recuperadora de Veículos</h2>
                 <div class="btn_view_site" style="float: right;">
                     <h:outputLink value="http://www.reimanscar.com.br">Sair</h:outputLink>
                 </div>
             </hgroup>
         </header> 
-        <section id="main" class="full"  >
+        <section id="main" class="full" sytle="margin-top:0;" >
             <article class="module width_full">
                 <header>
                     <h2>Andamento do serviço</h2>
                 </header>
-                <div class="module_content">
+                <div class="module_content" style="margin-bottom: 30px;">
                     <h:form id="frmConsulta" prependId="false">
                         <p:growl autoUpdate="true" />
                         <h:panelGroup rendered="#{acompanharServicoController.etapa==null}" layout="block" style="margin-top: 20px;">
@@ -44,7 +45,7 @@
                         </h:panelGroup>
                         <h:panelGroup rendered="#{acompanharServicoController.etapa!=null}" layout="block" >
                             <p:messages id="grow" />
-                            <div style="width: 100%; display:block; height: 400px; min-height: 400px;">
+                            <div style="width: 100%; display:block; min-height: 410px;">
                                 <div style="width: 65%; float: left;">
                                     <p:panelGrid styleClass="semBorda" >
                                         <p:row>  
@@ -101,8 +102,9 @@
                                                  value="#{acompanharServicoController.atividades}" lazy="false"
                                                  widgetVar="dataTableAtividade" rowIndexVar="rowIx"
                                                  paginatorPosition="bottom"  
+                                                 paginator="true"
                                                  emptyMessage="Nenhum serviço cadastrado."                   
-                                                 rows="10" sortBy="dataEntrada" sortOrder="descending"
+                                                 rows="5" sortBy="dataEntrada" sortOrder="descending"
                                                  currentPageReportTemplate="Total de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
                                         <f:facet name="header">
@@ -164,73 +166,77 @@
 
                         </h:panelGroup>
                     </h:form>
+                    <div class="spacer"></div>
                 </div>
+                <div class="spacer"></div>
                 <footer style="height: 35px;">
                     <p style="text-align: center; margin: 0px; margin-top: 5px;">
                         <b>Rua Rodolfo Bernardelli, 697 - Curitiba - Paraná / Telefone: (41)3277-3031 / contato@reimanscar.com.br 
-                     </b>
+                        </b>
                     </p>
                 </footer>
             </article>
 
-            <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="750" height="340" resizable="false"
-                       showEffect="fade" header="Detalhes da atividade" >
-                <h:form id="frmHistoricoEvento" prependId="false">
-                    <p:dataTable var="evento" value="#{acompanharServicoController.eventos}" lazy="false"
-                                 widgetVar="dataTableEventos" rowIndexVar="rowIx"
-                                 paginatorPosition="bottom"  
-                                 emptyMessage="Nenhum resultado encontrado."                   
-                                 rows="5" paginator="true"
-                                 currentPageReportTemplate="Total de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
-                        <p:column headerText="Ocorrência" width="125">
-                            <h:outputText value="#{evento.dataOcorrencia}" >
-                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="Evento" width="140">
-                            <h:outputText value="#{evento.tipoEvento.toString()}" />
-                        </p:column>
-                        <p:column headerText="Mensagem">
-                            <h:outputText value="#{evento.descricao}" />
-                        </p:column>
-                        <p:column headerText="Data Parada/Reinicio" width="125">
-                            <h:outputText value="#{evento.dataInicioParada}">
-                                <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
-                            </h:outputText>
-                        </p:column>
-                    </p:dataTable>
-                </h:form>
-            </p:dialog>
-
-
-            <p:dialog widgetVar="modalPopup" modal="true" width="450"  resizable="false"
-                      showEffect="fade" header="Contato" id="dialog">
-                <h:form id="frmEvento">
-                    <p:messages autoUpdate="true" />
-                    <p:fieldset>
-                        <label>Mensagem*</label>
-                        <p:inputTextarea value="#{acompanharServicoController.informacao}" required="true"
-                                         requiredMessage="O campo 'Mensagem' é obrigatório."/>
-                    </p:fieldset>
-                    <h:panelGroup layout="block" style="margin-top: 10px; float: right;" >
-                        <p:commandButton actionListener="#{acompanharServicoController.adicionarEvento}"
-                                         update=":frmEvento" value="Enviar" oncomplete="validarFormDialog(xhr, status, args)" />
-
-                    </h:panelGroup>
-                </h:form>
-            </p:dialog>
-            <script type="text/javascript">
-                function validarFormDialog(xhr, status, args) {
-                    if (args.validationFailed || args.exceptionThrown) {
-                        jQuery('#dialog').effect("shake", {times: 3}, 100);
-                    } else {
-                        modalPopup.hide();
-
-                    }
-                }
-            </script> 
+            <div class="spacer"></div>
         </section>
+        <p:dialog  widgetVar="modalHistoricoPopup" modal="true" width="750" height="340" resizable="false"
+                   showEffect="fade" header="Detalhes da atividade" >
+            <h:form id="frmHistoricoEvento" prependId="false">
+                <p:dataTable var="evento" value="#{acompanharServicoController.eventos}" lazy="false"
+                             widgetVar="dataTableEventos" rowIndexVar="rowIx"
+                             paginatorPosition="bottom"  
+                             emptyMessage="Nenhum resultado encontrado."                   
+                             rows="5" paginator="true"
+                             currentPageReportTemplate="Total de Registros: {totalRecords} - Página: {currentPage}/{totalPages}"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >
+                    <p:column headerText="Ocorrência" width="125">
+                        <h:outputText value="#{evento.dataOcorrencia}" >
+                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Evento" width="140">
+                        <h:outputText value="#{evento.tipoEvento.toString()}" />
+                    </p:column>
+                    <p:column headerText="Mensagem">
+                        <h:outputText value="#{evento.descricao}" />
+                    </p:column>
+                    <p:column headerText="Data Parada/Reinicio" width="125">
+                        <h:outputText value="#{evento.dataInicioParada}">
+                            <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo" />
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+
+
+        <p:dialog widgetVar="modalPopup" modal="true" width="450"  resizable="false"
+                  showEffect="fade" header="Contato" id="dialog">
+            <h:form id="frmEvento">
+                <p:messages autoUpdate="true" />
+                <p:fieldset>
+                    <label>Mensagem*</label>
+                    <p:inputTextarea value="#{acompanharServicoController.informacao}" required="true"
+                                     requiredMessage="O campo 'Mensagem' é obrigatório."/>
+                </p:fieldset>
+                <h:panelGroup layout="block" style="margin-top: 10px; float: right;" >
+                    <p:commandButton actionListener="#{acompanharServicoController.adicionarEvento}"
+                                     update=":frmEvento" value="Enviar" oncomplete="validarFormDialog(xhr, status, args)" />
+
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+        <script type="text/javascript">
+            function validarFormDialog(xhr, status, args) {
+                if (args.validationFailed || args.exceptionThrown) {
+                    jQuery('#dialog').effect("shake", {times: 3}, 100);
+                } else {
+                    modalPopup.hide();
+
+                }
+            }
+        </script> 
+
 
     </h:body>
 </html>
