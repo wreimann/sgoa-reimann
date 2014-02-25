@@ -12,8 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -147,7 +145,7 @@ public final class AcompanharServicoController implements Serializable {
     private List<OrdemServicoEvento> eventos;
     private OrdemServicoEtapa atividade;
     private OrdemServicoEvento evento;
-     private List<OrdemServicoFoto> fotosOS;
+    private List<OrdemServicoFoto> fotosOS;
 
     // <editor-fold defaultstate="collapsed" desc="gets e sets">
     public OrdemServicoEvento getEvento() {

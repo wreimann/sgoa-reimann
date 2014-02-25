@@ -421,4 +421,71 @@ public class OrdemServicoFacade extends BaseFacade<OrdemServico> {
         }
 
     }
+    
+     public List<OrdemServico> selecionarPorParametros(Session sessao, String sort, SortOrder order,
+            Integer page, Integer maxPage, String orcamento, String situacao, Etapa etapaAtual,
+            Cliente cliente, String placa) throws Exception {
+        if (sessao == null) {
+            throw new Exception("Sessão não iniciada.");
+        }
+
+        // <editor-fold defaultstate="collapsed" desc="busca o total de registro que atendam o filtro da pesquisa">
+        Criteria c = sessao.createCriteria(OrdemServico.class, "os");
+        c.createCriteria("orcamento", "o");
+        if (orcamento != null && !orcamento.isEmpty()) {
+            c.add(Restrictions.eq("o.ano", Integer.parseInt(orcamento.substring(0, 4))));
+            c.add(Restrictions.eq("o.numero", Integer.parseInt(orcamento.substring(5))));
+        }
+        if (situacao != null && !situacao.isEmpty()) {
+            c.add(Restrictions.eq("os.situacao", situacao.charAt(0)));
+
+        }
+        if (cliente != null) {
+            c.add(Restrictions.eq("o.cliente", cliente));
+        }
+        if (placa != null && !placa.isEmpty()) {
+            c.createCriteria("o.cliente", "cli").createCriteria("pessoa", "pes");
+            DetachedCriteria veiculosCriteria = DetachedCriteria.forClass(Veiculo.class, "veiculos");
+            veiculosCriteria.add(Restrictions.like("veiculos.placa", placa, MatchMode.EXACT).ignoreCase());
+            veiculosCriteria.add(Restrictions.eqProperty("veiculos.pessoa.id", "pes.id"));
+            c.add(Subqueries.exists(veiculosCriteria.setProjection(Projections.property("veiculos.id"))));
+        }
+        if (etapaAtual != null) {
+            c.createCriteria("os.etapaAtual", "ea");
+            c.add(Restrictions.eq("ea.etapa", etapaAtual));
+        }
+       
+        super.setRowCount((Long) c.setProjection(Projections.rowCount()).uniqueResult());
+        // </editor-fold>
+
+        // <editor-fold defaultstate="collapsed" desc="paginacao por demanda">
+        c = sessao.createCriteria(OrdemServico.class, "os");
+        c.createCriteria("orcamento", "o");
+        c.setFirstResult(page).setMaxResults(maxPage);
+        if (orcamento != null && !orcamento.isEmpty()) {
+            c.add(Restrictions.eq("o.ano", Integer.parseInt(orcamento.substring(0, 4))));
+            c.add(Restrictions.eq("o.numero", Integer.parseInt(orcamento.substring(5))));
+        }
+        if (situacao != null && !situacao.isEmpty()) {
+            c.add(Restrictions.eq("os.situacao", situacao.charAt(0)));
+
+        }
+        if (cliente != null) {
+            c.add(Restrictions.eq("o.cliente", cliente));
+        }
+        if (placa != null && !placa.isEmpty()) {
+            c.createCriteria("o.cliente", "cli").createCriteria("pessoa", "pes");
+            DetachedCriteria veiculosCriteria = DetachedCriteria.forClass(Veiculo.class, "veiculos");
+            veiculosCriteria.add(Restrictions.like("veiculos.placa", placa, MatchMode.EXACT).ignoreCase());
+            veiculosCriteria.add(Restrictions.eqProperty("veiculos.pessoa.id", "pes.id"));
+            c.add(Subqueries.exists(veiculosCriteria.setProjection(Projections.property("veiculos.id"))));
+        }
+        if (etapaAtual != null) {
+            c.createCriteria("os.etapaAtual", "ea");
+            c.add(Restrictions.eq("ea.etapa", etapaAtual));
+        }
+        // </editor-fold>
+        List<OrdemServico> resultado = c.list();
+        return resultado;
+    }
 }
