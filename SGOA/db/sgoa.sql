@@ -431,7 +431,7 @@ CREATE TABLE IF NOT EXISTS `ordemservico_evento` (
   `IdOrdemServicoEtapa` int(11) NOT NULL,
   `DataOcorrencia` datetime NOT NULL,
   `TipoEvento` char(1) NOT NULL,
-  `IdFuncionario` int(11) NOT NULL,
+  `IdFuncionario` int(11) NULL,
   `Descricao` varchar(250) NOT NULL,
   `Ativo` tinyint(1) NOT NULL,
   `DataInicioParada` date DEFAULT NULL,
