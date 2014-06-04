@@ -364,9 +364,11 @@ public class ClienteController implements Serializable {
             Session sessao = HibernateFactory.currentSession();
             PessoaFacade pessoaFacade = new PessoaFacade();
             String numDoc = documento;
+            String tipoAux = tipoPessoa;
             Pessoa pessoa = pessoaFacade.selecionarPorNumeroDocumento(sessao, tipoPessoa.equals("F"), numDoc.replaceAll("\\.", "").replaceAll("-", "").replace("/", ""));
             if (pessoa != null) {
                 prepararInclusao(null);
+                tipoPessoa = tipoAux;
                 if (tipoPessoa.equals("F")) {
                     sexo = String.valueOf(((PessoaFisica) pessoa).getSexo());
                     dataNasc = ((PessoaFisica) pessoa).getDataNascimento();
